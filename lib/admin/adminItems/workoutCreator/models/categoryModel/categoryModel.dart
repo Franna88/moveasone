@@ -1,0 +1,54 @@
+import 'package:flutter/material.dart';
+
+
+class CategoryModel {
+  final String workoutImage;
+  final String categoryName;
+  Function() onTap;
+
+  CategoryModel(
+      {required this.categoryName,
+      required this.workoutImage,
+      required this.onTap});
+}
+
+List workoutCategories = [
+  CategoryModel(
+    categoryName: 'At Home',
+    workoutImage: 'images/placeHolder2.jpg',
+    onTap: () {
+      //Navigator.push(context,MaterialPageRoute(builder: (context) => const ),);
+              
+              
+      //ADD PAGE INDEX
+    },
+  ),
+  CategoryModel(
+    categoryName: 'Functional Training',
+    workoutImage: 'images/placeholder3.jpg',
+     onTap: () {
+      //ADD PAGE INDEX
+    },
+  ),
+  CategoryModel(
+    categoryName: 'Strength',
+    workoutImage: 'images/placeHolder2.jpg',
+     onTap: () {
+      //ADD PAGE INDEX
+    },
+  ),
+  CategoryModel(
+    categoryName: 'Special Challenge',
+    workoutImage: 'images/placeholder3.jpg',
+     onTap: () {
+      //ADD PAGE INDEX
+    },
+  ),
+  CategoryModel(
+    categoryName: 'Outdoor',
+    workoutImage: 'images/placeHolder2.jpg',
+     onTap: () {
+      //ADD PAGE INDEX
+    },
+  ),
+];
