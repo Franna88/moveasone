@@ -1,34 +1,47 @@
 import 'package:flutter/material.dart';
 
-
-
 class MyTimeSlider extends StatefulWidget {
+  final Function(double) onChanged; // Add this line
+
+  MyTimeSlider({required this.onChanged}); // Add this line
+
   @override
   _MyTimeSliderState createState() => _MyTimeSliderState();
 }
 
 class _MyTimeSliderState extends State<MyTimeSlider> {
-  double _sliderValue = 1;
+  double _sliderValue = 1.0;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Row(mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
               _sliderValue.toInt().toString(),
-              style: TextStyle(fontSize: 35, color: Colors.white, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 35,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
             ),
-            Text(' min', style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold, height: 2),)
+            Text(
+              ' min',
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  height: 2),
+            )
           ],
         ),
         SliderTheme(
           data: SliderTheme.of(context).copyWith(
             thumbShape: RectangularSliderThumbShape(),
-            
+
             overlayShape: RoundSliderOverlayShape(overlayRadius: 28.0),
             thumbColor: Colors.white,
             activeTrackColor: _getTrackColor(),
@@ -36,7 +49,6 @@ class _MyTimeSliderState extends State<MyTimeSlider> {
             trackHeight: 7.0, // Increase the height of the track
           ),
           child: Slider(
-            
             value: _sliderValue,
             min: 1,
             max: 35,
@@ -45,6 +57,7 @@ class _MyTimeSliderState extends State<MyTimeSlider> {
               setState(() {
                 _sliderValue = value;
               });
+              widget.onChanged(value);
             },
           ),
         ),
@@ -60,7 +73,7 @@ class _MyTimeSliderState extends State<MyTimeSlider> {
 
 class RectangularSliderThumbShape extends SliderComponentShape {
   static const double _thumbHeight = 20.0; // Increased thumb height
-  static const double _thumbWidth = 5.0;  // Increased thumb width
+  static const double _thumbWidth = 5.0; // Increased thumb width
 
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
@@ -93,4 +106,3 @@ class RectangularSliderThumbShape extends SliderComponentShape {
     context.canvas.drawRect(rect, paint);
   }
 }
-

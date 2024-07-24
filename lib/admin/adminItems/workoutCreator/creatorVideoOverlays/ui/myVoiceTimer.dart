@@ -47,9 +47,14 @@ class _MyVoiceTimerState extends State<MyVoiceTimer> {
       children: [
         Text(
           _formatTime(_start),
-          style: TextStyle(fontSize: 40, color: UiColors().teal, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontSize: 40,
+              color: UiColors().teal,
+              fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: heightDevice * 0.15,),
+        SizedBox(
+          height: heightDevice * 0.15,
+        ),
         Center(
           child: GestureDetector(
             onTap: _startPauseTimer,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/PageIndicator.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/ProgressBar.dart';
@@ -26,7 +28,25 @@ class _HowTallState extends State<HowTall> {
         .join(", ");
   }).join(", ").split(", "); // Generate heights in feet and inches
 
-  HeightUnit selectedUnit = HeightUnit.centimeters; // Default unit
+  HeightUnit selectedUnit = HeightUnit.centimeters; // Default to centimieters
+
+  void _storeHeight(dynamic height) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(user.uid)
+            .update({"height": height.toString()});
+      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Weight()),
+      );
+    } catch (e) {
+      // Handle error if needed
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +179,8 @@ class _HowTallState extends State<HowTall> {
                                           ),
                                           SizedBox(width: 10),
                                           Text(
-                                            selectedUnit == HeightUnit.centimeters
+                                            selectedUnit ==
+                                                    HeightUnit.centimeters
                                                 ? 'cm'
                                                 : 'ft',
                                             style: TextStyle(
@@ -184,11 +205,9 @@ class _HowTallState extends State<HowTall> {
               height: MyUtility(context).height * 0.06,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const Weight()),
-                              );
+                  if (selectedHeight != -1) {
+                    _storeHeight(selectedHeight);
+                  }
                 },
                 style: ButtonStyle(
                   backgroundColor:
@@ -200,7 +219,8 @@ class _HowTallState extends State<HowTall> {
                   ),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                   child: Text(
                     'Continue',
                     style: TextStyle(

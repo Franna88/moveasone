@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "71225097326",
+    "project_id": "moveasone-1e3e5",
+    "storage_bucket": "moveasone-1e3e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:71225097326:android:6c9b257bdbe8885d72fa7f",
+        "android_client_info": {
+          "package_name": "com.app.moveAsOne"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDp9J53_HB5qmuddgzCe762T0LaW_GCn2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:move_as_one/Services/auth_services.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/Goal.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Login/LoginComponents/SvgIconButton.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/CustomTextField.dart';
@@ -14,8 +17,39 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
-  final email = TextEditingController();
-  final password = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
+  void_signup() async {
+    String password = _passwordController.text;
+    String confirmPassword = _confirmPasswordController.text;
+
+    //check to confirm if passwords are the same before continuing.
+    if (password != confirmPassword) {
+      Fluttertoast.showToast(
+          msg: 'Passwords do not match.',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.SNACKBAR,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+
+      return;
+    }
+    //awaits on sign ups until passwords are the same.
+    if (password == confirmPassword) {
+      await AuthService().Signup(
+          userName: _nameController.text,
+          email: _emailController.text,
+          password: password,
+          context: context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -49,28 +83,28 @@ class _SignupState extends State<Signup> {
                   height: MyUtility(context).height * 0.05,
                 ),
                 CustomTextField(
-                  controller: email,
+                  controller: _nameController,
                   hintText: 'Name',
                 ),
                 SizedBox(
                   height: MyUtility(context).height * 0.02,
                 ),
                 CustomTextField(
-                  controller: email,
+                  controller: _emailController,
                   hintText: 'E-mail',
                 ),
                 SizedBox(
                   height: MyUtility(context).height * 0.02,
                 ),
                 PasswordTextField(
-                  controller: password,
+                  controller: _passwordController,
                   hintText: 'Password',
                 ),
                 SizedBox(
                   height: MyUtility(context).height * 0.02,
                 ),
                 PasswordTextField(
-                  controller: password,
+                  controller: _confirmPasswordController,
                   hintText: 'Confirm password',
                 ),
                 Padding(
@@ -99,12 +133,12 @@ class _SignupState extends State<Signup> {
                         width: MyUtility(context).width * 0.45,
                         height: MyUtility(context).height * 0.06,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: void_signup,
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
                                 Color(0xFF006261)),
-                            shape:
-                                MaterialStateProperty.all<RoundedRectangleBorder>(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
                               ),
@@ -152,10 +186,10 @@ class _SignupState extends State<Signup> {
                       TextButton(
                         onPressed: () {
                           Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const Goal()),
-                              );
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Goal()),
+                          );
                         },
                         child: Text(
                           'Sign up',

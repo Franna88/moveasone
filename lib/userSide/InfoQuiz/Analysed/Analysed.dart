@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:move_as_one/myutility.dart';
+import 'package:move_as_one/userSide/Home/GetStarted.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Login/Signin.dart';
 
 class Analysed extends StatefulWidget {
@@ -10,8 +11,44 @@ class Analysed extends StatefulWidget {
   State<Analysed> createState() => _AnalysedState();
 }
 
-class _AnalysedState extends State<Analysed> {
-  double _progress = 0.73;
+class _AnalysedState extends State<Analysed>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    );
+
+    _animation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    )..addListener(() {
+        setState(() {});
+      });
+
+    _controller.forward();
+
+    // Navigate to WorkoutCreatorVideo after the animation completes
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const GetStarted()),
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +66,7 @@ class _AnalysedState extends State<Analysed> {
         child: Column(
           children: [
             SizedBox(height: MyUtility(context).height * 0.15),
-            CircularProgressBar(progress: _progress),
+            CircularProgressBar(progress: _animation.value),
             SizedBox(height: MyUtility(context).height * 0.5),
             SizedBox(
               width: MyUtility(context).width / 1.2,
@@ -47,9 +84,9 @@ class _AnalysedState extends State<Analysed> {
               width: MyUtility(context).width / 1.2,
               child: GestureDetector(
                 onTap: () => Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const Signin()),
-  ),
+                  context,
+                  MaterialPageRoute(builder: (context) => const Signin()),
+                ),
                 child: Text(
                   'Being Analysed',
                   style: TextStyle(

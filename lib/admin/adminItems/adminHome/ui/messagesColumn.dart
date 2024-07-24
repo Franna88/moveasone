@@ -21,26 +21,25 @@ class _MessagesColumnState extends State<MessagesColumn> {
         children: [
           ColumnHeader(header: 'Messages'),
           CommonButtons(
-              buttonText: 'Inbox',
-              onTap: () {
-                //ADD LOGIC HERE
-              },
-              buttonColor: AdminColors().lightTeal),
-          const SizedBox(
-            height: 10,
+            buttonText: 'Inbox',
+            onTap: () {
+              Navigator.pushNamed(context, '/inbox');
+            },
+            buttonColor: AdminColors().lightTeal,
           ),
+          const SizedBox(height: 10),
           CommonButtons(
-              buttonText: 'Message a Member',
-              onTap: () {
-                //ADD LOGIC HERE
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => WriteAMessage(),
-                  ),
-                );
-              },
-              buttonColor: AdminColors().lightTeal),
+            buttonText: 'Message a Member',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WriteAMessage(),
+                ),
+              );
+            },
+            buttonColor: AdminColors().lightTeal,
+          ),
         ],
       ),
     );

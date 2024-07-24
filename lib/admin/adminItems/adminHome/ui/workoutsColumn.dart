@@ -4,6 +4,7 @@ import 'package:move_as_one/admin/adminItems/workoutCreator/questionsScreens/che
 import 'package:move_as_one/admin/adminItems/workoutCreator/workoutCategory/workoutCategoryMain.dart';
 import 'package:move_as_one/admin/commonUi/commonButtons.dart';
 import 'package:move_as_one/admin/commonUi/adminColors.dart';
+import 'package:move_as_one/userSide/fromRochelle/videoCategory/videoCategoryItems/videoBrowsPage.dart';
 
 class WorkoutsColumn extends StatefulWidget {
   const WorkoutsColumn({super.key});
@@ -25,9 +26,10 @@ class _WorkoutsColumnState extends State<WorkoutsColumn> {
               buttonText: 'New Workout',
               onTap: () {
                 Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const WorkoutCategoryMain()),
-        );
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const WorkoutCategoryMain()),
+                );
                 //ADD LOGIC HERE
               },
               buttonColor: AdminColors().lightTeal),
@@ -37,7 +39,10 @@ class _WorkoutsColumnState extends State<WorkoutsColumn> {
           CommonButtons(
               buttonText: 'All Workouts',
               onTap: () {
-                //ADD LOGIC HERE
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => VideoBrowsPage()),
+                );
               },
               buttonColor: AdminColors().lightTeal),
           const SizedBox(
@@ -47,13 +52,13 @@ class _WorkoutsColumnState extends State<WorkoutsColumn> {
               buttonText: 'Check In Questions',
               onTap: () {
                 Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const CheckInQuestions()),
-        );
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const CheckInQuestions()),
+                );
                 //ADD LOGIC HERE
               },
               buttonColor: AdminColors().lightTeal),
-          
         ],
       ),
     );

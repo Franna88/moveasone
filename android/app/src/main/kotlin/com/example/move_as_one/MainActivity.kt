@@ -1,4 +1,4 @@
-package com.example.move_as_one
+package com.app.moveAsOne
 
 import io.flutter.embedding.android.FlutterActivity
 

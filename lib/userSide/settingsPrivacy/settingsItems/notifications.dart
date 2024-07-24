@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:move_as_one/commonUi/CategoryButton.dart';
 import 'package:move_as_one/commonUi/mySwitchButton.dart';
 import 'package:move_as_one/userSide/settingsPrivacy/ui/customSwitch.dart';
 import 'package:move_as_one/commonUi/headerWidget.dart';
@@ -37,7 +38,10 @@ class _NotificationsState extends State<Notifications> {
             alignment: Alignment.centerLeft,
             child: Text(
               'Social',
-              style: TextStyle(fontSize: 18, fontFamily: 'BeVietnam',),
+              style: TextStyle(
+                fontSize: 18,
+                fontFamily: 'BeVietnam',
+              ),
             ),
           ),
         ),

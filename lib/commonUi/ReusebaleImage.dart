@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class ImageButton extends StatelessWidget {
+class VideoButton extends StatelessWidget {
   final bool isSelected;
-  final VoidCallback onPressed;
-  final String image;
+  final String videoUrl;
+  final String thumbnailUrl;
   final String description;
   final VoidCallback onTap;
 
-  const ImageButton({
+  const VideoButton({
     Key? key,
     required this.isSelected,
-    required this.onPressed,
-    required this.image,
+    required this.videoUrl,
+    required this.thumbnailUrl,
     required this.description,
     required this.onTap,
   }) : super(key: key);
@@ -38,8 +38,8 @@ class ImageButton extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 35,
                       backgroundColor: Colors
-                          .white, // White space between image and blue outline
-                      backgroundImage: AssetImage(image),
+                          .white, // White space between thumbnail and blue outline
+                      backgroundImage: NetworkImage(thumbnailUrl),
                     ),
                   ),
                 ),

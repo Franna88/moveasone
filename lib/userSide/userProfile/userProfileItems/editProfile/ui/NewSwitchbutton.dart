@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 
-class MySwitchButton extends StatefulWidget {
-  const MySwitchButton({super.key});
+class NewSwitchButton extends StatefulWidget {
+  const NewSwitchButton({super.key});
 
   @override
-  State<MySwitchButton> createState() => _MySwitchButtonState();
+  State<NewSwitchButton> createState() => _NewSwitchButtonState();
 }
 
-class _MySwitchButtonState extends State<MySwitchButton> {
-  bool status = false;
+class _NewSwitchButtonState extends State<NewSwitchButton> {
+  bool status = true;
 
   @override
   Widget build(BuildContext context) {

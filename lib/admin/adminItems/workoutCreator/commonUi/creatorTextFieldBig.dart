@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
-class CreatorTextFieldBig extends StatelessWidget {
+class CreatorTextFieldBig extends StatefulWidget {
   Function() onChanged;
   final String hintText;
+  final TextEditingController controller;
 
-  CreatorTextFieldBig({
-    super.key,
-    required this.onChanged,
-    required this.hintText,
-  });
+  CreatorTextFieldBig(
+      {super.key,
+      required this.onChanged,
+      required this.hintText,
+      required this.controller});
 
+  @override
+  State<CreatorTextFieldBig> createState() => _CreatorTextFieldBigState();
+}
+
+class _CreatorTextFieldBigState extends State<CreatorTextFieldBig> {
   @override
   Widget build(BuildContext context) {
     var widthDevice = MediaQuery.of(context).size.width;
@@ -36,12 +42,13 @@ class CreatorTextFieldBig extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 5),
           child: TextField(
             style: TextStyle(color: Colors.black),
-            onChanged: (value) => onChanged,
+            controller: widget.controller,
+            onChanged: (value) => widget.onChanged,
             cursorColor: Colors.black,
             maxLines: 5,
             minLines: 1,
             decoration: InputDecoration(
-              hintText: hintText,
+              hintText: widget.hintText,
               hintStyle: TextStyle(fontWeight: FontWeight.w400),
               contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
               border: InputBorder.none,

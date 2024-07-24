@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Gender/Gender.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/CustomButton.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/PageIndicator.dart';
@@ -15,8 +17,35 @@ class Goal extends StatefulWidget {
 class _GoalState extends State<Goal> {
   int selectedIndex = -1; // Initially no button is selected
 
-  final email = TextEditingController();
-  final password = TextEditingController();
+  void _storeGoal(String goal) async {
+    try {
+      // Retrieve the current user
+      User? user = FirebaseAuth.instance.currentUser;
+
+      // Check if the user is authenticated and exists
+      if (user != null) {
+        // Update the 'goal' field in the user's document in Firestore
+        await FirebaseFirestore.instance
+            .collection("users") // Accessing the 'users' collection
+            .doc(
+                user.uid) // Accessing the document specific to the current user
+            .update({
+          "goal": goal
+        }); // Updating the 'goal' field with the provided goal value
+      }
+
+      // Navigate to the next screen after updating the goal
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                const Gender()), // Navigate to the Gender screen
+      );
+    } catch (e) {
+      // Handle any errors that occur during the update or navigation
+      // You can add specific error handling logic here if needed
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +57,7 @@ class _GoalState extends State<Goal> {
           image: DecorationImage(
             image: AssetImage('images/quiz1.png'),
             fit: BoxFit.cover,
-            alignment: Alignment(0.4, 1)
+            alignment: Alignment(0.4, 1),
           ),
         ),
         child: Column(
@@ -50,11 +79,9 @@ class _GoalState extends State<Goal> {
                 setState(() {
                   selectedIndex = isSelected ? 0 : -1;
                 });
-                Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const Gender()),
-                              );
+                if (isSelected) {
+                  _storeGoal('Lose weight');
+                }
               },
             ),
             CustomButton(
@@ -64,6 +91,9 @@ class _GoalState extends State<Goal> {
                 setState(() {
                   selectedIndex = isSelected ? 1 : -1;
                 });
+                if (isSelected) {
+                  _storeGoal('Build muscle');
+                }
               },
             ),
             CustomButton(
@@ -73,6 +103,9 @@ class _GoalState extends State<Goal> {
                 setState(() {
                   selectedIndex = isSelected ? 2 : -1;
                 });
+                if (isSelected) {
+                  _storeGoal('Keep fit');
+                }
               },
             ),
           ],

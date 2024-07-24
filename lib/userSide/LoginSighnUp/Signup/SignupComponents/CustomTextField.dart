@@ -32,10 +32,10 @@ class CustomTextField extends StatelessWidget {
         child: TextFormField(
           controller: controller,
           style: TextStyle(
-            color: Color(0xFF6F6F6F),
-            fontSize: 15,
+            color: Colors.black,
+            fontSize: 16,
             fontFamily: 'belight',
-            fontWeight: FontWeight.w100,
+            fontWeight: FontWeight.bold,
             height: 0.09,
           ),
           decoration: InputDecoration(
@@ -46,6 +46,7 @@ class CustomTextField extends StatelessWidget {
             hintStyle: TextStyle(
               fontSize: 18,
               fontFamily: 'raleway',
+              fontWeight: FontWeight.normal,
               color: Color(0xFF707070),
             ),
           ),

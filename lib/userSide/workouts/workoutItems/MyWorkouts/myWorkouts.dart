@@ -37,7 +37,9 @@ class _MyWorkoutsState extends State<MyWorkouts> {
         ),
         Visibility(
           visible: pageIndex == 1 ? true : false,
-          child: DefaultWorkoutDetails(),
+          child: DefaultWorkoutDetails(
+            docId: '',
+          ),
         ),
         //SizedBox(height: 100, child: BottomNavBar(),)
       ],

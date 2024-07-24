@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/PageIndicator.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/ProgressBar.dart';
@@ -28,6 +30,24 @@ class _WeightState extends State<Weight> {
     selectedWeightIndex = (weightsKg.length ~/ 2);
     // Initially, kg is selected
     isKgSelected = true;
+  }
+
+  void _storeWeight(dynamic weight, String unit) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(user.uid)
+            .update({"weight": "$weight $unit"});
+      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const PhysicalLevel()),
+      );
+    } catch (e) {
+      // Handle error if needed
+    }
   }
 
   @override
@@ -184,11 +204,12 @@ class _WeightState extends State<Weight> {
               height: MyUtility(context).height * 0.06,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const PhysicalLevel()),
-                              );
+                  final weight = isKgSelected
+                      ? weightsKg[selectedWeightIndex]
+                      : (weightsKg[selectedWeightIndex] * kgToLbs)
+                          .toStringAsFixed(2);
+                  final unit = isKgSelected ? 'kg' : 'lbs';
+                  _storeWeight(weight, unit);
                 },
                 style: ButtonStyle(
                   backgroundColor:

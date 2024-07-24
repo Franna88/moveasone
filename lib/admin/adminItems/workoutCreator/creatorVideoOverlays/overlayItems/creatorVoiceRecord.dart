@@ -7,7 +7,9 @@ import 'package:move_as_one/commonUi/navVideoButton.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 
 class CreatorVoiceRecord extends StatelessWidget {
-  const CreatorVoiceRecord({super.key});
+  final String docId;
+
+  const CreatorVoiceRecord({super.key, required this.docId});
 
   @override
   Widget build(BuildContext context) {

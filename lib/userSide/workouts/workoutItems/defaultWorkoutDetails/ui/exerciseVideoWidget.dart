@@ -1,33 +1,52 @@
 import 'package:flutter/material.dart';
+
+import 'package:move_as_one/admin/adminItems/workoutCreator/creatorFullView/warmUpCreator.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 
 class ExerciseVideoWidget extends StatefulWidget {
-  final String assetName;
+  final String docId;
+  final String imageUrl;
   final String header;
   final String info;
-  const ExerciseVideoWidget({super.key, required this.assetName, required this.header, required this.info});
+  final Map<String, dynamic> warmupData;
+  final List list;
+
+  const ExerciseVideoWidget(
+      {super.key,
+      required this.docId,
+      required this.imageUrl,
+      required this.header,
+      required this.info,
+      required this.warmupData,
+      required this.list});
 
   @override
   State<ExerciseVideoWidget> createState() => _ExerciseVideoWidgetState();
 }
 
 class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
-
   bool isActive = false;
-  
+
   @override
   Widget build(BuildContext context) {
     var heightDevice = MediaQuery.of(context).size.height;
     var widthDevice = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
-        setState(() {
-          isActive = !isActive;
-        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WarmUpCreator(
+                docId: widget.docId,
+                type: 'type',
+                warmupData: widget.warmupData,
+                exerciseList: widget.list),
+          ),
+        );
       },
       child: Container(
-        height: heightDevice *0.15,
-        color: isActive? UiColors().teal : Colors.white,
+        height: heightDevice * 0.15,
+        color: isActive ? UiColors().teal : Colors.white,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
@@ -38,14 +57,17 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   image: DecorationImage(
-                    image: AssetImage(widget.assetName),
+                    image: widget.imageUrl.isNotEmpty
+                        ? NetworkImage(widget.imageUrl)
+                        : AssetImage('images/placeholder.jpg') as ImageProvider,
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Column(mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(

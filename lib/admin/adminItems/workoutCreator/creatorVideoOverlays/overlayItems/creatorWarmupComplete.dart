@@ -31,7 +31,7 @@ class CreatorWarmupComplete extends StatelessWidget {
               Text(
                 'Well done!',
                 style: TextStyle(
-                  fontFamily: 'Inter',
+                    fontFamily: 'Inter',
                     color: Colors.white,
                     fontSize: 40,
                     fontWeight: FontWeight.bold),
@@ -57,21 +57,26 @@ class CreatorWarmupComplete extends StatelessWidget {
                       //ADD LOGIC
                     },
                   ),
-                  const SizedBox(width: 5,),
+                  const SizedBox(
+                    width: 5,
+                  ),
                   NavVideoButton(
                     buttonColor: UiColors().teal,
                     buttonText: 'To Workout',
                     onTap: () {
                       Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const CreatorVideoRecord()),
-  );
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CreatorVideoRecord()),
+                      );
                       //ADD ROUTE
                     },
                   )
                 ],
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -82,7 +87,9 @@ class CreatorWarmupComplete extends StatelessWidget {
                       //ADD LOGIC
                     },
                   ),
-                  const SizedBox(width: 5,),
+                  const SizedBox(
+                    width: 5,
+                  ),
                   NavVideoButton(
                     buttonColor: UiColors().brown,
                     buttonText: 'Cancel',

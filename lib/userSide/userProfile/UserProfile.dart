@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:move_as_one/userSide/UserProfile/LastWorkout/LastWorkout.dart';
 import 'package:move_as_one/userSide/UserProfile/MemberOptions/MemberOption.dart';
-import 'package:move_as_one/userSide/UserProfile/MemberOptions/MemberOptionComponents/MemberOptionsButton.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/settingsPrivacy/settingsItems/settingsMain.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/editProfile/editProfileMain.dart';
@@ -30,10 +29,12 @@ class _UserProfileState extends State<UserProfile> {
                   height: MyUtility(context).height * 0.05,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 11,),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 11,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      
                       Align(
                         alignment: Alignment.centerLeft,
                         child: GestureDetector(
@@ -47,21 +48,25 @@ class _UserProfileState extends State<UserProfile> {
                           ),
                         ),
                       ),
-                  
                       GestureDetector(
-                        onTap: (){
-                           Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const SettingsMain()),
-                                );
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SettingsMain()),
+                          );
                         },
-                        child: Icon(Icons.settings_outlined, size: 30,),
+                        child: Icon(
+                          Icons.settings_outlined,
+                          size: 30,
+                        ),
                       )
                     ],
                   ),
                 ),
-                const SizedBox(height: 25,),
+                const SizedBox(
+                  height: 25,
+                ),
                 SizedBox(
                   width: MyUtility(context).width / 1.0,
                   child: Row(
@@ -129,11 +134,12 @@ class _UserProfileState extends State<UserProfile> {
                         padding: const EdgeInsets.only(right: 10),
                         child: InkWell(
                           onTap: () {
-                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const EditProfileMain()),
-                              );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const EditProfileMain()),
+                            );
                           },
                           child: SvgPicture.asset(
                             'images/Edit.svg',
@@ -262,11 +268,11 @@ class _UserProfileState extends State<UserProfile> {
                         ),
                         InkWell(
                           onTap: () {
-                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const MyProgressMain()),
-                              );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const MyProgressMain()),
+                            );
                           },
                           child: SvgPicture.asset(
                             'images/settingline.svg',

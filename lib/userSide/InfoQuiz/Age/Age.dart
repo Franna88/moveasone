@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 
@@ -17,6 +19,26 @@ class _AgeState extends State<Age> {
   int selectedAge = -1;
   final scrollController = FixedExtentScrollController();
   final List<int> ages = List.generate(100, (index) => index + 1);
+
+  //stores selected age into collection
+  void _storeAge(int age) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(user.uid)
+            .update({"age": age});
+      }
+      //navigate to next page
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HowTall()),
+      );
+    } catch (e) {
+      // Handle error if needed
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +85,6 @@ class _AgeState extends State<Age> {
                         right: 0,
                         child: Container(
                           height: 3,
-                          
                           color: UiColors().teal,
                         ),
                       ),
@@ -91,7 +112,8 @@ class _AgeState extends State<Age> {
                                           color: age == selectedAge
                                               ? Color(0xFF1E1E1E)
                                               : Color(0xFFADADAD),
-                                          fontSize: age == selectedAge ? 50 : 40,
+                                          fontSize:
+                                              age == selectedAge ? 50 : 40,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -109,12 +131,11 @@ class _AgeState extends State<Age> {
               width: MyUtility(context).width / 1.2,
               height: MyUtility(context).height * 0.06,
               child: ElevatedButton(
+                //id selected age isnt -1 stores age inside int 'selectedAage'
                 onPressed: () {
-                  Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const HowTall()),
-                              );
+                  if (selectedAge != -1) {
+                    _storeAge(selectedAge);
+                  }
                 },
                 style: ButtonStyle(
                   backgroundColor:
@@ -126,7 +147,8 @@ class _AgeState extends State<Age> {
                   ),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                   child: Text(
                     'Continue',
                     style: TextStyle(

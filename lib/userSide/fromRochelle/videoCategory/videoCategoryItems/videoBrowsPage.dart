@@ -37,11 +37,9 @@ class _VideoBrowsPageState extends State<VideoBrowsPage> {
         ),
         Visibility(
             visible: pageIndex == 0 ? true : false,
-
             child: VideoGridView(changePageIndex: changePageIndex)),
         Visibility(
             visible: pageIndex == 1 ? true : false,
-            
             child: DisplayVideoScreen()),
       ],
     );

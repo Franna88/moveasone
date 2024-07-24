@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/commonUi/ReusebaleImage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:move_as_one/WorkoutCreatorVideo/FullScreenVideoPlayer.dart';
 
+import 'package:move_as_one/commonUi/ReusebaleImage.dart';
 import 'package:move_as_one/myutility.dart';
 
 class AdminRachelle extends StatefulWidget {
@@ -12,6 +14,32 @@ class AdminRachelle extends StatefulWidget {
 
 class _AdminRachelleState extends State<AdminRachelle> {
   int _selectedIndex = -1;
+  List<Map<String, String>> videos = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchVideos();
+  }
+
+  Future<void> _fetchVideos() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('shorts')
+        .orderBy('timestamp', descending: true)
+        .get();
+
+    setState(() {
+      videos = querySnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return {
+          'videoUrl': data['videoUrl'] as String,
+          'thumbnailUrl': data['thumbnailUrl'] as String,
+          'description': data['videoName'] as String,
+        };
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,96 +55,47 @@ class _AdminRachelleState extends State<AdminRachelle> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Rochelle',
+                  'Rachelle',
                   style: TextStyle(
                     color: Color(0xFF1E1E1E),
                     fontSize: 20,
                     fontFamily: 'belight',
                   ),
                 ),
-                
               ],
             ),
           ),
           SizedBox(
             height: MyUtility(context).height * 0.01,
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MyUtility(context).width * 0.02,
-                ),
-                ImageButton(
-                  isSelected: _selectedIndex == 0,
-                  onPressed: () {},
-                  image: 'images/Beach.png',
-                  description: 'Beach Stretch',
-                  onTap: () {
-                    setState(() {
-                      _selectedIndex = 0;
-                    });
-                  },
-                ),
-                ImageButton(
-                  isSelected: _selectedIndex == 1,
-                  onPressed: () {},
-                  image: 'images/Running.png',
-                  description: 'Running',
-                  onTap: () {
-                    setState(() {
-                      _selectedIndex = 1;
-                    });
-                  },
-                ),
-                ImageButton(
-                  isSelected: _selectedIndex == 2,
-                  onPressed: () {},
-                  image: 'images/avatar2.png',
-                  description: 'Outdoor',
-                  onTap: () {
-                    setState(() {
-                      _selectedIndex = 2;
-                    });
-                  },
-                ),
-                ImageButton(
-                  isSelected: _selectedIndex == 3,
-                  onPressed: () {},
-                  image: 'images/password.png',
-                  description: 'Breathing',
-                  onTap: () {
-                    setState(() {
-                      _selectedIndex = 3;
-                    });
-                  },
-                ),
-                ImageButton(
-                  isSelected: _selectedIndex == 4,
-                  onPressed: () {},
-                  image: 'images/avatar4.png',
-                  description: 'Beach Stretch',
-                  onTap: () {
-                    setState(() {
-                      _selectedIndex = 4;
-                    });
-                  },
-                ),
-                ImageButton(
-                  isSelected: _selectedIndex == 5,
-                  onPressed: () {},
-                  image: 'images/avatar5.png',
-                  description: 'Beach Stretch',
-                  onTap: () {
-                    setState(() {
-                      _selectedIndex = 5;
-                    });
-                  },
-                ),
-              ],
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: List.generate(videos.length, (index) {
+                  return VideoButton(
+                    isSelected: _selectedIndex == index,
+                    videoUrl: videos[index]['videoUrl']!,
+                    thumbnailUrl: videos[index]['thumbnailUrl']!,
+                    description: videos[index]['description']!,
+                    onTap: () {
+                      setState(() {
+                        _selectedIndex = index;
+                      });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FullScreenVideoPlayer(
+                            videoUrl: videos[index]['videoUrl']!,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }),
+              ),
             ),
-          )
+          ),
         ],
       ),
     );

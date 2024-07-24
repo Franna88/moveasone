@@ -23,7 +23,9 @@ class CreatorVideoRecord extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              SizedBox(height: heightDevice * 0.08,),
+              SizedBox(
+                height: heightDevice * 0.08,
+              ),
               Align(
                 alignment: Alignment.topRight,
                 child: Padding(
@@ -58,9 +60,12 @@ class CreatorVideoRecord extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const CreatorWorkoutCompleted()),
-  );
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CreatorWorkoutCompleted(
+                                  videoUrl: '',
+                                )),
+                      );
                     },
                     child: Container(
                       height: 65,

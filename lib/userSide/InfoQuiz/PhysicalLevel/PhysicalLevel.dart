@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Analysed/Analysed.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/CustomButton.dart';
@@ -17,6 +19,24 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
 
   final email = TextEditingController();
   final password = TextEditingController();
+
+  void _storeactivityLevel(String activityLevel) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(user.uid)
+            .update({"activityLevel": activityLevel});
+      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Analysed()),
+      );
+    } catch (e) {
+      // Handle error if needed
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +77,9 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
                 setState(() {
                   selectedIndex = isSelected ? 0 : -1;
                 });
-                Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const Analysed()),
-                              );
+                if (isSelected) {
+                  _storeactivityLevel('Rookie');
+                }
               },
             ),
             CustomButton(
@@ -71,6 +89,9 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
                 setState(() {
                   selectedIndex = isSelected ? 1 : -1;
                 });
+                if (isSelected) {
+                  _storeactivityLevel('Beginner');
+                }
               },
             ),
             CustomButton(
@@ -80,6 +101,9 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
                 setState(() {
                   selectedIndex = isSelected ? 2 : -1;
                 });
+                if (isSelected) {
+                  _storeactivityLevel('Intermediate');
+                }
               },
             ),
             CustomButton(
@@ -89,6 +113,9 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
                 setState(() {
                   selectedIndex = isSelected ? 3 : -1;
                 });
+                if (isSelected) {
+                  _storeactivityLevel('Advance');
+                }
               },
             ),
             CustomButton(
@@ -98,6 +125,9 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
                 setState(() {
                   selectedIndex = isSelected ? 4 : -1;
                 });
+                if (isSelected) {
+                  _storeactivityLevel('Ultimate');
+                }
               },
             ),
           ],

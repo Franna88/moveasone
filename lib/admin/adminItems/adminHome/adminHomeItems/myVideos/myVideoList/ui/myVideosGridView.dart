@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideoList/myVideoList.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyVideoGridView extends StatefulWidget {
   const MyVideoGridView({super.key});
@@ -40,22 +40,46 @@ class _MyVideoGridViewState extends State<MyVideoGridView>
       animation: _animationController,
       child: SizedBox(
         height: heightDevice * 0.72,
-        child: GridView.builder(
-          itemCount: myVideos.length,
-          gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(1.0),
-              child: Container(
-                height: heightDevice * 0.10,
-                width: widthDevice * 0.10,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(myVideos[index]),
-                      fit: BoxFit.cover),
-                ),
-              ),
+        child: FutureBuilder<QuerySnapshot>(
+          future: FirebaseFirestore.instance.collection('shorts').get(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            }
+            var videos = snapshot.data!.docs;
+
+            return GridView.builder(
+              itemCount: videos.length,
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+              itemBuilder: (context, index) {
+                var video = videos[index];
+                var thumbnailUrl = video['thumbnailUrl'];
+                var videoName = video['videoName'];
+
+                return Padding(
+                  padding: const EdgeInsets.all(1.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: heightDevice * 0.10,
+                        width: widthDevice * 0.10,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: NetworkImage(thumbnailUrl),
+                              fit: BoxFit.cover),
+                        ),
+                      ),
+                      Text(
+                        videoName,
+                        style: TextStyle(fontSize: 12),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                );
+              },
             );
           },
         ),

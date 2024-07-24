@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CommonButtons extends StatelessWidget {
+class CommonButtons extends StatefulWidget {
   final String buttonText;
   Function() onTap;
   final Color buttonColor;
@@ -11,21 +11,26 @@ class CommonButtons extends StatelessWidget {
       required this.buttonColor});
 
   @override
+  State<CommonButtons> createState() => _CommonButtonsState();
+}
+
+class _CommonButtonsState extends State<CommonButtons> {
+  @override
   Widget build(BuildContext context) {
     var widthDevice = MediaQuery.of(context).size.width;
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: Container(
-        width: widthDevice ,
+        width: widthDevice,
         decoration: BoxDecoration(
-          color: buttonColor,
+          color: widget.buttonColor,
           borderRadius: BorderRadius.circular(28),
         ),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 18),
             child: Text(
-              buttonText,
+              widget.buttonText,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,

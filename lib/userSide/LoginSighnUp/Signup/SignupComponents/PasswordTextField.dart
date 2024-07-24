@@ -43,10 +43,10 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
               controller: widget.controller,
               obscureText: _isObscure,
               style: TextStyle(
-                color: Color(0xFF6F6F6F),
-                fontSize: 15,
+                color: Colors.black,
+                fontSize: 16,
                 fontFamily: 'belight',
-                fontWeight: FontWeight.w100,
+                fontWeight: FontWeight.bold,
                 height: 0.09,
               ),
               decoration: InputDecoration(
@@ -57,6 +57,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
                 hintStyle: TextStyle(
                   fontSize: 18,
                   fontFamily: 'raleway',
+                  fontWeight: FontWeight.normal,
                   color: Color(0xFF707070),
                 ),
               ),

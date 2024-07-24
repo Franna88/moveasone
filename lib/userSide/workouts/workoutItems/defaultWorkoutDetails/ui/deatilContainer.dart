@@ -23,8 +23,8 @@ class DetailContainer extends StatelessWidget {
       height: heightDevice * 0.40,
       width: widthDevice,
       decoration: BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage(assetName), fit: BoxFit.cover),
+        image:
+            DecorationImage(image: NetworkImage(assetName), fit: BoxFit.cover),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),

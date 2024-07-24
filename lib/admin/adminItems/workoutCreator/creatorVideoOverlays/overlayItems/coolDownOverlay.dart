@@ -51,11 +51,13 @@ class CoolDownOverlay extends StatelessWidget {
                 buttonText: 'Done',
                 onTap: () {
                   Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const DefaultWorkoutDetails()),
-  );
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const DefaultWorkoutDetails(
+                              docId: '',
+                            )),
+                  );
                   //ADD ROUTE
-                  
                 },
               )
             ],

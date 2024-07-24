@@ -1,27 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-
-List videoGridImages = [
-  'images/videos1.jpg',
-  'images/videos2.jpg',
-  'images/videos3.jpg',
-  'images/videos4.jpg',
-  'images/videos5.jpg',
-  'images/videos6.jpg',
-  'images/videos7.jpg',
-  'images/videos8.jpg',
-  'images/videos1.jpg',
-  'images/videos2.jpg',
-  'images/videos3.jpg',
-  'images/videos4.jpg',
-  'images/videos5.jpg',
-  'images/videos6.jpg',
-  'images/videos7.jpg',
-  'images/videos8.jpg',
-];
+import 'package:move_as_one/userSide/workouts/workoutItems/defaultWorkoutDetails/defaultWorkoutDetails.dart';
 
 class VideoGridView extends StatefulWidget {
-  Function(int) changePageIndex;
+  final Function(int) changePageIndex;
   VideoGridView({super.key, required this.changePageIndex});
 
   @override
@@ -31,19 +13,27 @@ class VideoGridView extends StatefulWidget {
 class _VideoGridViewState extends State<VideoGridView>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
+  List<DocumentSnapshot> workoutDocuments = [];
 
   @override
   void initState() {
     super.initState();
-
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
       lowerBound: 0,
       upperBound: 1,
     );
-
     _animationController.forward();
+    fetchWorkouts();
+  }
+
+  Future<void> fetchWorkouts() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('createWorkout').get();
+    setState(() {
+      workoutDocuments = querySnapshot.docs;
+    });
   }
 
   @override
@@ -62,23 +52,32 @@ class _VideoGridViewState extends State<VideoGridView>
         color: Colors.white,
         height: heightDevice * 0.79,
         child: GridView.builder(
-          itemCount: videoGridImages.length,
+          itemCount: workoutDocuments.length,
           gridDelegate:
               SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
           itemBuilder: (context, index) {
+            var workout = workoutDocuments[index];
             return Padding(
               padding: const EdgeInsets.all(1.0),
               child: GestureDetector(
                 onTap: () {
-                  widget.changePageIndex(1);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DefaultWorkoutDetails(
+                        docId: workout.id,
+                      ),
+                    ),
+                  );
                 },
                 child: Container(
                   height: heightDevice * 0.10,
                   width: widthDevice * 0.10,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage(videoGridImages[index]),
-                        fit: BoxFit.cover),
+                      image: NetworkImage(workout['warmupPhoto']),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
