@@ -53,7 +53,7 @@ class _SelectWeekdayScreenState extends State<SelectWeekdayScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
               child: CommonButtons(
-                buttonText: 'Save',
+                buttonText: 'Setup Workout',
                 onTap: () {
                   Navigator.push(
                     context,

@@ -32,7 +32,7 @@ class _NewswitchbuttonState extends State<Newswitchbutton> {
       borderRadius: 20,
       activeColor: UiColors().teal,
       inactiveColor: Colors.grey,
-      value: status,
+      value: widget.initialValue,
       onToggle: (val) {
         setState(() {
           status = val;

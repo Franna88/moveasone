@@ -45,14 +45,14 @@ class _WorkoutCategoryMainState extends State<WorkoutCategoryMain> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
                 child: CommonButtons(
-                  buttonText: 'Create New Workout',
+                  buttonText: 'Select Level',
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => SelectDifficultyScreen(
                           documentId: documentId,
-                          category: '', // Pass appropriate category if needed
+                          category: 'Select Difficulty',
                           selectedCategories: selectedCategories,
                         ),
                       ),

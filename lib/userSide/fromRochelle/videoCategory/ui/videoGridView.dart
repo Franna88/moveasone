@@ -76,7 +76,7 @@ class _VideoGridViewState extends State<VideoGridView>
                   width: widthDevice * 0.10,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage(workout['warmupPhoto']),
+                      image: NetworkImage(workout['displayImage']),
                       fit: BoxFit.cover,
                     ),
                   ),

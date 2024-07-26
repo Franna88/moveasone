@@ -123,15 +123,16 @@ class _CreatorWorkoutCompletedState extends State<CreatorWorkoutCompleted> {
                             const SizedBox(width: 10),
                             NavVideoButton(
                               buttonColor: UiColors().teal,
-                              buttonText: 'To Cool Down',
+                              buttonText: 'Save Video',
                               onTap: () {
-                                Navigator.push(
+                                Navigator.pop(context);
+                                /*   Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
                                         const CoolDownOverlay(),
                                   ),
-                                );
+                                );*/
                               },
                             ),
                           ],
@@ -140,14 +141,6 @@ class _CreatorWorkoutCompletedState extends State<CreatorWorkoutCompleted> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            NavVideoButton(
-                              buttonColor: UiColors().brown,
-                              buttonText: 'Upload Other',
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                            const SizedBox(width: 10),
                             NavVideoButton(
                               buttonColor: UiColors().brown,
                               buttonText: 'Cancel',

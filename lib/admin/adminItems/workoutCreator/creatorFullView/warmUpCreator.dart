@@ -64,10 +64,13 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
   String selectedDifficulty = '';
   String selectedEquipment = '';
 
-  String? imageUrl;
+  String imageUrl = "";
   String? videoUrl;
   bool isLoading = false;
-  var itemId = 0;
+  var itemId = "";
+
+//Set var states
+  getWarmupDetails() {}
 
   @override
   void initState() {
@@ -79,7 +82,7 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
       selectedTopic = widget.warmupData!['topic'] ?? '';
       selectedDifficulty = widget.warmupData!['difficulty'] ?? '';
       selectedEquipment = widget.warmupData!['equipment'] ?? '';
-      imageUrl = widget.warmupData!['warmupImage'];
+      imageUrl = widget.warmupData!['image'];
       videoUrl = widget.warmupData!['videoUrl'];
     }
   }
@@ -91,25 +94,71 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
 
     String docId = widget.docId;
     var uuid = Uuid();
-    itemId =
-        widget.warmupData != null ? widget.warmupData!['itemId'] : uuid.v1();
+    itemId = widget.warmupData != null
+        ? widget.warmupData!['itemId']
+        : uuid.v1().toString(); /**/
 
     // Create a new warmup item
     Map<String, dynamic> newItem = {
       'itemId': itemId,
-      'name': 'test',
+      'name': _warmupName.text,
       'description': _warmupDescription.text,
-      'time': 10,
+      'time': selectedTime,
       'topic': selectedTopic,
       'difficulty': selectedDifficulty,
       'equipment': selectedEquipment,
-      'warmupImage': imageUrl,
+      'image': imageUrl,
       'videoUrl': videoUrl,
+      'audioUrl': ""
     };
 
     DocumentReference docRef =
         FirebaseFirestore.instance.collection('createWorkout').doc(docId);
 
+    if (widget.warmupData != null) {
+      //Edit
+
+      setState(() async {
+        var findExerciseIndex = (widget.exerciseList)
+            .indexWhere((item) => item["itemId"] == itemId);
+
+        await widget.exerciseList.removeAt(findExerciseIndex);
+        widget.exerciseList.insert(findExerciseIndex, newItem);
+
+        print(findExerciseIndex);
+        print(widget.exerciseList);
+
+        docRef.update({widget.type: widget.exerciseList}).whenComplete(() {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DefaultWorkoutDetails(
+                docId: widget.docId,
+                userType: '',
+              ),
+            ),
+          );
+        });
+        ;
+      });
+    } else {
+      //Add
+      setState(() {
+        widget.exerciseList.add(newItem);
+      });
+      docRef.update({widget.type: widget.exerciseList}).whenComplete(() {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DefaultWorkoutDetails(
+              docId: widget.docId,
+              userType: '',
+            ),
+          ),
+        );
+      });
+    } /* */
+/* 
     try {
       if (widget.warmupData != null) {
         // Editing existing warmup
@@ -144,7 +193,7 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
       setState(() {
         isLoading = false;
       });
-    }
+    }*/
   }
 
   Future<void> _selectAndUploadImage(String imageType) async {
@@ -434,7 +483,9 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
                                 ? 'Update'
                                 : 'Create Warmup',
                             onTap: () {
-                              _addWarmupToFirestore().then((_) {
+                              _addWarmupToFirestore();
+
+                              /*  .then((_) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -444,7 +495,7 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
                                     ),
                                   ),
                                 );
-                              });
+                              });*/
                             },
                             buttonColor: AdminColors().lightBrown,
                           ),

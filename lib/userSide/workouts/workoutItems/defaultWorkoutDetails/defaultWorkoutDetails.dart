@@ -27,11 +27,20 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
   int? currentOpenDropdown;
   DocumentSnapshot? workout;
 
-  @override
-  void initState() {
-    super.initState();
-    fetchWorkoutDetails();
-  }
+  var imageUrl = "";
+  var difficulty = "";
+  List selectedCategories = [];
+  var bodyArea = "";
+  var description = "";
+  var time = 0;
+  List warmUps = [];
+  List workouts = [];
+  List coolDowns = [];
+  var test = "";
+
+  List<Widget> warmupWidgets = [];
+  List<Widget> workoutWidgets = [];
+  List<Widget> cooldownWidgets = [];
 
   void toggleDropdown(int index) {
     setState(() {
@@ -50,9 +59,71 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
         .collection('createWorkout')
         .doc(widget.docId)
         .get();
-    setState(() {
-      workout = document;
-    });
+
+    if (document.exists) {
+      setState(() {
+        workout = document;
+        imageUrl = document.get('displayImage');
+        difficulty = document.get('difficulty');
+        selectedCategories = document.get('selectedCategories');
+        bodyArea = document.get('bodyArea');
+        description = document.get('description');
+        //  time = document.get('time');
+
+        warmUps.addAll(document.get('warmUps'));
+        workouts = document.get('workouts');
+        coolDowns = document.get('coolDowns');
+
+        for (var i = 0; i < warmUps.length; i++) {
+          warmupWidgets.add(
+            ExerciseVideoWidget(
+              imageUrl: warmUps[i]['image'] ?? 'images/upperBody.png',
+              header: warmUps[i]['name']?.toString() ?? 'Warmup',
+              info: warmUps[i]['description']?.toString() ?? '',
+              docId: widget.docId,
+              list: warmUps,
+              userType: 'Admin',
+              warmupData: warmUps[i],
+              type: "warmUps",
+            ),
+          );
+        }
+        for (var i = 0; i < workouts.length; i++) {
+          workoutWidgets.add(
+            ExerciseVideoWidget(
+              imageUrl: workouts[i]['image'] ?? 'images/upperBody.png',
+              header: workouts[i]['name']?.toString() ?? 'Workout',
+              info: workouts[i]['description']?.toString() ?? '',
+              docId: widget.docId,
+              list: workouts,
+              userType: 'Admin',
+              warmupData: workouts[i],
+              type: "workouts",
+            ),
+          );
+        }
+        for (var i = 0; i < coolDowns.length; i++) {
+          cooldownWidgets.add(
+            ExerciseVideoWidget(
+              imageUrl: coolDowns[i]['image'] ?? 'images/upperBody.png',
+              header: coolDowns[i]['name']?.toString() ?? 'Cooldown',
+              info: coolDowns[i]['description']?.toString() ?? '',
+              docId: widget.docId,
+              list: coolDowns,
+              userType: 'Admin',
+              warmupData: coolDowns[i],
+              type: "coolDowns",
+            ),
+          );
+        }
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    fetchWorkoutDetails();
+    super.initState();
   }
 
   @override
@@ -60,19 +131,9 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
     var heightDevice = MediaQuery.of(context).size.height;
     var widthDevice = MediaQuery.of(context).size.width;
 
-    if (workout == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Workout Details'),
-        ),
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-
+/*
     var data = workout!.data() as Map<String, dynamic>;
-    var imageUrl = data['warmupPhoto']?.toString() ?? 'images/upperBody.png';
+    var imageUrl = data['displayImage']?.toString() ?? 'images/upperBody.png';
     var difficulty = data['difficulty']?.toString() ?? 'BEGINNER';
     var selectedCategories =
         data['selectedCategories']?.toString() ?? 'AT HOME';
@@ -121,7 +182,7 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
                 ))
             .toList() ??
         [];
-
+*/
     return Scaffold(
       appBar: AppBar(
         title: Text('Workout Details'),
@@ -143,6 +204,7 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
                 duration: '$time minutes',
                 kcalAmount: ''),
           ),
+          /**/
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             child: GestureDetector(
@@ -168,6 +230,10 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
             thickness: 0.2,
             height: 1,
           ),
+          Text(
+            test,
+            style: TextStyle(color: Colors.black),
+          ),
           ExerciseDropDown(
             addSectionPress: () {
               Navigator.push(
@@ -175,8 +241,8 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
                 MaterialPageRoute(
                     builder: (context) => WarmUpCreator(
                           docId: widget.docId,
-                          type: 'warmup',
-                          exerciseList: [],
+                          type: 'warmUps',
+                          exerciseList: warmUps,
                         )),
               );
             },
@@ -184,19 +250,7 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
             addSectionText: 'Add Warmup',
             buttonTitle: 'Warm Up',
             dropdownContent: DropDownContent(
-              widgets: warmupWidgets.isNotEmpty
-                  ? warmupWidgets
-                  : [
-                      ExerciseVideoWidget(
-                        imageUrl: 'images/upperBody.png',
-                        header: 'Default Warmup',
-                        info: 'No warmup added yet.',
-                        docId: '',
-                        warmupData: {},
-                        list: data['warmup'],
-                        userType: 'user',
-                      )
-                    ],
+              widgets: warmupWidgets,
             ),
             onToggle: () {
               toggleDropdown(1);
@@ -212,29 +266,15 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
                 MaterialPageRoute(
                     builder: (context) => WarmUpCreator(
                           docId: widget.docId,
-                          type: 'workout',
-                          exerciseList: [],
+                          type: 'workouts',
+                          exerciseList: workouts,
                         )),
               );
             },
             isButtonVisible: widget.userType != "user",
             addSectionText: 'Add Workout',
             buttonTitle: 'Workout',
-            dropdownContent: DropDownContent(
-              widgets: workoutWidgets.isNotEmpty
-                  ? workoutWidgets
-                  : [
-                      ExerciseVideoWidget(
-                        imageUrl: 'images/upperBody.png',
-                        header: 'Default Workout',
-                        info: 'No workout added yet.',
-                        docId: '',
-                        warmupData: {},
-                        list: data['warmup'],
-                        userType: 'user',
-                      )
-                    ],
-            ),
+            dropdownContent: DropDownContent(widgets: workoutWidgets),
             onToggle: () => toggleDropdown(2),
             isOpen: currentOpenDropdown == 2,
             iconData:
@@ -247,34 +287,21 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
                 MaterialPageRoute(
                     builder: (context) => WarmUpCreator(
                           docId: widget.docId,
-                          type: 'cooldown',
-                          exerciseList: [],
+                          type: 'coolDowns',
+                          exerciseList: coolDowns,
                         )),
               );
             },
             isButtonVisible: widget.userType != "user",
             addSectionText: 'Add Cool down',
             buttonTitle: 'Cool Down',
-            dropdownContent: DropDownContent(
-              widgets: cooldownWidgets.isNotEmpty
-                  ? cooldownWidgets
-                  : [
-                      ExerciseVideoWidget(
-                        imageUrl: 'images/upperBody.png',
-                        header: 'Default Cool Down',
-                        info: 'No cool down added yet.',
-                        docId: '',
-                        warmupData: {},
-                        list: data['warmup'],
-                        userType: 'user',
-                      )
-                    ],
-            ),
+            dropdownContent: DropDownContent(widgets: cooldownWidgets),
             onToggle: () => toggleDropdown(3),
             isOpen: currentOpenDropdown == 3,
             iconData:
                 isDroped ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
           )
+          /* */
         ],
       ),
     );

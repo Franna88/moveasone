@@ -70,13 +70,13 @@ class _DifficultyListState extends State<DifficultyList> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(
+                        /*  Text(
                           difficultyItems[index].memberCount,
                           style: TextStyle(
                             fontFamily: 'Inter',
                             fontSize: 12,
                           ),
-                        ),
+                        ),*/
                       ],
                     ),
                     const SizedBox(width: 25),

@@ -12,6 +12,7 @@ class ExerciseVideoWidget extends StatefulWidget {
   final Map<String, dynamic> warmupData;
   final List list;
   final String userType;
+  final String type;
 
   const ExerciseVideoWidget(
       {super.key,
@@ -19,9 +20,10 @@ class ExerciseVideoWidget extends StatefulWidget {
       required this.imageUrl,
       required this.header,
       required this.info,
-      required this.warmupData,
       required this.userType,
-      required this.list});
+      required this.list,
+      required this.warmupData,
+      required this.type});
 
   @override
   State<ExerciseVideoWidget> createState() => _ExerciseVideoWidgetState();
@@ -46,12 +48,13 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
                   )
                 : WarmUpCreator(
                     docId: widget.docId,
-                    type: 'type', // Replace with the actual type if needed
+                    type: widget.type, // Replace with the actual type if needed
                     warmupData: widget.warmupData,
                     exerciseList: widget.list,
                   ),
           ),
         );
+        /* */
       },
       child: Container(
         height: heightDevice * 0.15,
@@ -66,7 +69,7 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   image: DecorationImage(
-                    image: widget.imageUrl.isNotEmpty
+                    image: widget.imageUrl != ""
                         ? NetworkImage(widget.imageUrl)
                         : AssetImage('images/placeholder.jpg') as ImageProvider,
                     fit: BoxFit.cover,
@@ -101,6 +104,7 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
                   ],
                 ),
               )
+              /**/
             ],
           ),
         ),

@@ -66,7 +66,9 @@ class _ExerciseDropDownState extends State<ExerciseDropDown> {
                       visible: widget
                           .isButtonVisible, // Determine visibility based on a condition
                       child: TextButton(
-                        onPressed: widget.addSectionPress,
+                        onPressed: () {
+                          widget.addSectionPress();
+                        },
                         style: TextButton.styleFrom(
                           backgroundColor: Color(0xFFAA5F3A),
                           foregroundColor: Colors.white,

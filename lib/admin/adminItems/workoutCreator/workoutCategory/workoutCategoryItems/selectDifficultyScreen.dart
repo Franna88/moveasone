@@ -38,6 +38,7 @@ class _SelectDifficultyScreenState extends State<SelectDifficultyScreen> {
             DifficultyList(
               onDifficultySelected: (difficulty) {
                 setState(() {
+                  selectedDifficulty = "";
                   selectedDifficulty = difficulty;
                 });
               },
@@ -47,7 +48,7 @@ class _SelectDifficultyScreenState extends State<SelectDifficultyScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
                 child: CommonButtons(
-                  buttonText: 'Save',
+                  buttonText: 'Select a Day',
                   onTap: () {
                     Navigator.push(
                       context,

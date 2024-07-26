@@ -70,14 +70,14 @@ class _WeekdaySelectListViewState extends State<WeekdaySelectListView> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Text(
-                              weekDaySelection[index].exerciseType,
+                            /*   Text(
+                             weekDaySelection[index].exerciseType,
                               style: const TextStyle(
                                 fontFamily: 'Inter',
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
                               ),
-                            ),
+                            ),*/
                           ],
                         ),
                         const Spacer(),

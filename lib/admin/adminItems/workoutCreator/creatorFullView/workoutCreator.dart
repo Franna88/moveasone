@@ -105,8 +105,11 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
         'equipment': selectedEquipment,
         'restingPeriod': selectedResting,
         'time': selectedTime,
-        'warmupPhoto': warmupPhotoUrl ?? '',
+        'displayImage': warmupPhotoUrl ?? '',
         'id': widget.documentId,
+        "warmUps": [],
+        "workouts": [],
+        "coolDowns": []
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -322,16 +325,16 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
                             ],
                           ),
                           const SizedBox(height: 25),
-                          MyCreatorHeaders(text: 'Warmup Photo'),
+                          MyCreatorHeaders(text: 'Select Display image'),
                           CommonButtons(
                             buttonText: 'Select Image',
-                            onTap: () => _selectAndUploadImage('warmupPhoto'),
+                            onTap: () => _selectAndUploadImage('displayPhoto'),
                             buttonColor: AdminColors().lightTeal,
                           ),
                           if (isLoading)
                             Center(child: CircularProgressIndicator()),
                           const SizedBox(height: 10),
-                          MyCreatorHeaders(text: 'Workout Photo'),
+                          /*  MyCreatorHeaders(text: 'Workout Photo'),
                           CommonButtons(
                             buttonText: 'Select Image',
                             onTap: () {},
@@ -340,14 +343,14 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
                           if (isLoading)
                             Center(child: CircularProgressIndicator()),
                           const SizedBox(height: 10),
-                          MyCreatorHeaders(text: 'Cooldown Photo'),
+                          MyCreatorHeaders(text: 'Select display image'),
                           CommonButtons(
                             buttonText: 'Select Image',
                             onTap: () {},
                             buttonColor: AdminColors().lightTeal,
                           ),
                           if (isLoading)
-                            Center(child: CircularProgressIndicator()),
+                            Center(child: CircularProgressIndicator()),*/
                           SizedBox(height: heightDevice * 0.08),
                           MyDivider(),
                           const SizedBox(height: 15),

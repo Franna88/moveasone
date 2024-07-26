@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/workoutsFullLenght.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 
 import 'package:move_as_one/myutility.dart';
@@ -42,11 +41,12 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   TextSpan(
-                    text: 'One', style: TextStyle(
-                fontSize: 36,
-                fontFamily: 'belight',
-                color: UiColors().teal,
-              ),
+                    text: 'One',
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontFamily: 'belight',
+                      color: UiColors().teal,
+                    ),
                   ),
                 ],
               ),
@@ -125,39 +125,6 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(
               height: 15,
-            ),
-            SizedBox(
-              width: MyUtility(context).width * 0.55,
-              height: MyUtility(context).height * 0.06,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const WorkoutsFullLenght()),
-                  );
-                },
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Color(0xFF006261)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                  ),
-                ),
-                child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                  child: Text(
-                    'Admin Start',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                    ),
-                  ),
-                ),
-              ),
             ),
           ],
         ),
