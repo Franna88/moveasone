@@ -33,7 +33,9 @@ class CoolDownOverlay extends StatelessWidget {
               SizedBox(
                 height: heightDevice * 0.05,
               ),
-              MyVoiceTimer(),
+              MyVoiceTimer(
+                audioUrl: '',
+              ),
               SizedBox(
                 height: heightDevice * 0.05,
               ),

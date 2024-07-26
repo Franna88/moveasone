@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -57,6 +58,7 @@ class WarmUpCreator extends StatefulWidget {
 
 class _WarmUpCreatorState extends State<WarmUpCreator> {
   final TextEditingController _warmupName = TextEditingController();
+  final TextEditingController _repetition = TextEditingController();
   final TextEditingController _warmupDescription = TextEditingController();
   double selectedTime = 1.0;
 
@@ -84,6 +86,7 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
       selectedEquipment = widget.warmupData!['equipment'] ?? '';
       imageUrl = widget.warmupData!['image'];
       videoUrl = widget.warmupData!['videoUrl'];
+      _repetition.text = widget.warmupData!['repetition'];
     }
   }
 
@@ -101,6 +104,7 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
     // Create a new warmup item
     Map<String, dynamic> newItem = {
       'itemId': itemId,
+      'repetition': _repetition.text,
       'name': _warmupName.text,
       'description': _warmupDescription.text,
       'time': selectedTime,
@@ -157,43 +161,7 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
           ),
         );
       });
-    } /* */
-/* 
-    try {
-      if (widget.warmupData != null) {
-        // Editing existing warmup
-        /*final docSnapshot = await docRef.get();
-        final data = docSnapshot.data() as Map<String, dynamic>;*/
-
-        /* // Retrieve and update the list of warmups
-        List<dynamic> warmups = List.from(data[widget.type] as List<dynamic>);
-        warmups.remove(widget.warmupData); // Remove the old warmup data
-        warmups.add(newItem); // Add the updated warmup data
-
-        await docRef.update({
-          widget.type: warmups, // Update the warmups list in Firestore
-        });*/
-        /*var exerciseindex = (widget.exerciseList)
-            .indexWhere((item) => item["itemId"] == itemId);
-        widget.exerciseList.remove(exerciseindex);
-        widget.exerciseList.insert(exerciseindex, newItem);*/
-        //docRef.update({'workout': widget.exerciseList});
-      } else {
-        // Adding new warmup
-        await docRef.update({
-          widget.type: FieldValue.arrayUnion([newItem]),
-        });
-      }
-
-      print(
-          "${widget.type} ${widget.warmupData != null ? 'updated' : 'added'} successfully.");
-    } catch (e) {
-      print('Error updating Firestore: $e');
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }*/
+    }
   }
 
   Future<void> _selectAndUploadImage(String imageType) async {
@@ -281,6 +249,55 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
       print('Error uploading video: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to upload video. Please try again.')),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  PlatformFile? pickedFile;
+
+  Future<void> _selectAndUploadAudio() async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result == null) return;
+
+    setState(() {
+      pickedFile = result.files.first;
+      isLoading = true;
+    });
+
+    try {
+      final path = '${pickedFile!.name}';
+      final file = File(pickedFile!.path!);
+
+      Reference storageRef =
+          FirebaseStorage.instance.ref().child('workout_audio/$path');
+      await storageRef.putFile(file);
+
+      String downloadUrl = await storageRef.getDownloadURL();
+
+      setState(() {
+        imageUrl = downloadUrl;
+        isLoading = true;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CreatorVoiceRecord(
+              audioUrl: downloadUrl,
+            ),
+          ),
+        );
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('File uploaded successfully')),
+      );
+    } catch (e) {
+      print('Error uploading file $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to upload filee. Please try again.')),
       );
     } finally {
       setState(() {
@@ -379,6 +396,13 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
                             },
                             hintText: 'Content',
                           ),
+                          CreatorTextFieldSmall(
+                            controller: _repetition,
+                            hintText: 'Repetitions',
+                            onChanged: () {
+                              // ADD LOGIC HERE
+                            },
+                          ),
                           MyCreatorHeaders(text: 'Topics'),
                           Wrap(
                             children: [
@@ -447,17 +471,9 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
                             height: 25,
                           ),
                           CommonButtons(
-                            buttonText: 'Upload Media',
+                            buttonText: 'Upload Audio',
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const CreatorVoiceRecord(
-                                    docId: '',
-                                  ),
-                                ),
-                              );
+                              _selectAndUploadAudio();
                             },
                             buttonColor: AdminColors().lightTeal,
                           ),

@@ -1,16 +1,64 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 
 class MyVoiceTimer extends StatefulWidget {
+  final String audioUrl;
+
+  const MyVoiceTimer({super.key, required this.audioUrl});
+
   @override
-  _MyVoiceTimerState createState() => _MyVoiceTimerState();
+  State<MyVoiceTimer> createState() => _MyVoiceTimerState();
 }
 
 class _MyVoiceTimerState extends State<MyVoiceTimer> {
   Timer? _timer;
-  int _start = 0; // Starting at 0 seconds
+  late int _start;
   bool _isRunning = false;
+
+  final AudioPlayer audioPlayer = AudioPlayer();
+  bool isPlaying = false;
+  Duration duration = Duration.zero;
+  Duration position = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    audioPlayer.setUrl(widget.audioUrl);
+
+    audioPlayer.playerStateStream.listen((PlayerState state) {
+      setState(() {
+        isPlaying = state.playing;
+      });
+    });
+
+    audioPlayer.durationStream.listen((newDuration) {
+      setState(() {
+        duration = newDuration ?? Duration.zero;
+
+        _start = newDuration!.inSeconds;
+      });
+    });
+
+    audioPlayer.positionStream.listen((newPosition) {
+      setState(() {
+        position = newPosition;
+      });
+    });
+  }
+
+  Future<void> _playAudio() async {
+    await audioPlayer.play();
+  }
+
+  Future<void> _pauseAudio() async {
+    await audioPlayer.pause();
+  }
+
+  Future<void> _stopAudio() async {
+    await audioPlayer.stop();
+  } /* */
 
   void _startPauseTimer() {
     if (_isRunning) {
@@ -23,9 +71,13 @@ class _MyVoiceTimerState extends State<MyVoiceTimer> {
   void _startTimer() {
     _isRunning = true;
     _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
-      setState(() {
-        _start++;
-      });
+      if (_start == 0) {
+        timer.cancel();
+      } else {
+        setState(() {
+          _start--;
+        });
+      }
     });
   }
 
@@ -36,6 +88,7 @@ class _MyVoiceTimerState extends State<MyVoiceTimer> {
 
   @override
   void dispose() {
+    audioPlayer.dispose();
     _timer?.cancel();
     super.dispose();
   }
@@ -57,7 +110,15 @@ class _MyVoiceTimerState extends State<MyVoiceTimer> {
         ),
         Center(
           child: GestureDetector(
-            onTap: _startPauseTimer,
+            onTap: () async {
+              _startPauseTimer();
+              if (isPlaying) {
+                await audioPlayer.pause();
+              } else {
+                await audioPlayer.play();
+              }
+              ;
+            },
             child: Container(
               height: 150,
               width: 150,

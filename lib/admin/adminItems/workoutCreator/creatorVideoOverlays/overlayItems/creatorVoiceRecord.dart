@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/overlayItems/creatorWarmupComplete.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/ui/commonOverlayHeader.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/ui/contentGlassContainer.dart';
@@ -6,11 +7,16 @@ import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays
 import 'package:move_as_one/commonUi/navVideoButton.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 
-class CreatorVoiceRecord extends StatelessWidget {
-  final String docId;
+class CreatorVoiceRecord extends StatefulWidget {
+  final String audioUrl;
 
-  const CreatorVoiceRecord({super.key, required this.docId});
+  const CreatorVoiceRecord({super.key, required this.audioUrl});
 
+  @override
+  State<CreatorVoiceRecord> createState() => _CreatorVoiceRecordState();
+}
+
+class _CreatorVoiceRecordState extends State<CreatorVoiceRecord> {
   @override
   Widget build(BuildContext context) {
     var heightDevice = MediaQuery.of(context).size.height;
@@ -34,7 +40,7 @@ class CreatorVoiceRecord extends StatelessWidget {
               SizedBox(
                 height: heightDevice * 0.05,
               ),
-              MyVoiceTimer(),
+              MyVoiceTimer(audioUrl: widget.audioUrl),
               SizedBox(
                 height: heightDevice * 0.05,
               ),
@@ -52,11 +58,7 @@ class CreatorVoiceRecord extends StatelessWidget {
                 buttonText: 'Done',
                 onTap: () {
                   //ADD ROUTE
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CreatorWarmupComplete()),
-                  );
+                  Navigator.pop(context);
                 },
               )
             ],
