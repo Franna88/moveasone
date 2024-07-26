@@ -55,6 +55,7 @@ class CoolDownOverlay extends StatelessWidget {
                     MaterialPageRoute(
                         builder: (context) => const DefaultWorkoutDetails(
                               docId: '',
+                              userType: '',
                             )),
                   );
                   //ADD ROUTE

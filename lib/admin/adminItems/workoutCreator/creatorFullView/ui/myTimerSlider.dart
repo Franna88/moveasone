@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class MyTimeSlider extends StatefulWidget {
-  final Function(double) onChanged; // Add this line
+  final Function(double) onChanged;
 
-  MyTimeSlider({required this.onChanged}); // Add this line
+  MyTimeSlider({required this.onChanged});
 
   @override
   _MyTimeSliderState createState() => _MyTimeSliderState();

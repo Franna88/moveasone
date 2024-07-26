@@ -440,6 +440,7 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
                                   MaterialPageRoute(
                                     builder: (context) => DefaultWorkoutDetails(
                                       docId: widget.docId,
+                                      userType: '',
                                     ),
                                   ),
                                 );

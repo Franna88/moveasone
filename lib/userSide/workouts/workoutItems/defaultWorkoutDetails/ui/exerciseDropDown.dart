@@ -8,16 +8,19 @@ class ExerciseDropDown extends StatefulWidget {
   IconData iconData;
   final VoidCallback addSectionPress;
   final String addSectionText;
+  final bool isButtonVisible;
 
-  ExerciseDropDown(
-      {super.key,
-      required this.buttonTitle,
-      required this.dropdownContent,
-      required this.onToggle,
-      required this.isOpen,
-      required this.iconData,
-      required this.addSectionPress,
-      required this.addSectionText});
+  ExerciseDropDown({
+    super.key,
+    required this.buttonTitle,
+    required this.dropdownContent,
+    required this.onToggle,
+    required this.isOpen,
+    required this.iconData,
+    required this.addSectionPress,
+    required this.addSectionText,
+    required this.isButtonVisible,
+  });
 
   @override
   State<ExerciseDropDown> createState() => _ExerciseDropDownState();
@@ -58,29 +61,33 @@ class _ExerciseDropDownState extends State<ExerciseDropDown> {
               Padding(
                 padding: const EdgeInsets.only(left: 15),
                 child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: TextButton(
-                      onPressed: widget.addSectionPress,
-                      style: TextButton.styleFrom(
-                        backgroundColor: Color(0xFFAA5F3A),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
+                    alignment: Alignment.centerLeft,
+                    child: Visibility(
+                      visible: widget
+                          .isButtonVisible, // Determine visibility based on a condition
+                      child: TextButton(
+                        onPressed: widget.addSectionPress,
+                        style: TextButton.styleFrom(
+                          backgroundColor: Color(0xFFAA5F3A),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 10.0),
                         ),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 10.0),
+                        child: Text(
+                          widget.addSectionText,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                            height: 0.10,
+                          ),
+                        ),
                       ),
-                      child: Text(
-                        widget.addSectionText,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w500,
-                          height: 0.10,
-                        ),
-                      )),
-                ),
+                    )),
               ),
               widget.dropdownContent
             ],

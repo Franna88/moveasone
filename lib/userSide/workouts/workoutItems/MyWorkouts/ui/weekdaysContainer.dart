@@ -1,20 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
-import 'package:move_as_one/userSide/workouts/workoutItems/MyWorkouts/ui/weekdayModel/weekdayListModel.dart';
+import 'package:move_as_one/userSide/workouts/workoutItems/defaultWorkoutDetails/defaultWorkoutDetails.dart';
 
-class WeekdaysContainer extends StatelessWidget {
-  Function(int) changePageIndex;
-  WeekdaysContainer({super.key, required this.changePageIndex});
+class WeekdaysContainer extends StatefulWidget {
+  final Function(int) changePageIndex;
+  final List<Map<String, dynamic>> workoutDocuments;
 
+  WeekdaysContainer({
+    super.key,
+    required this.changePageIndex,
+    required this.workoutDocuments,
+  });
+
+  @override
+  State<WeekdaysContainer> createState() => _WeekdaysContainerState();
+}
+
+class _WeekdaysContainerState extends State<WeekdaysContainer> {
   @override
   Widget build(BuildContext context) {
     var heightDevice = MediaQuery.of(context).size.height;
     var widthDevice = MediaQuery.of(context).size.width;
+
     return Container(
       height: heightDevice * 0.75,
       child: ListView.builder(
-        itemCount: weekdayExercise.length,
+        itemCount: widget.workoutDocuments.length,
         itemBuilder: (context, index) {
+          var workout = widget.workoutDocuments[index];
+          var docId = workout['docId'];
+          var warmupPhoto = workout['warmupPhoto'];
+          var selectedWeekdays = workout['selectedWeekdays'];
+          var bodyArea = workout['bodyArea'];
+
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
             child: Material(
@@ -22,16 +40,28 @@ class WeekdaysContainer extends StatelessWidget {
               elevation: 10,
               child: GestureDetector(
                 onTap: () {
-                  changePageIndex(1);
+                  widget.changePageIndex(1);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DefaultWorkoutDetails(
+                        docId: docId,
+                        userType: 'user',
+                      ),
+                    ),
+                  );
                 },
                 child: Container(
                   height: heightDevice * 0.22,
                   width: widthDevice * 0.85,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    image: DecorationImage(
-                        image: AssetImage(weekdayExercise[index].assetName),
-                        fit: BoxFit.cover),
+                    image: warmupPhoto.isNotEmpty
+                        ? DecorationImage(
+                            image: NetworkImage(warmupPhoto),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(15),
@@ -41,7 +71,7 @@ class WeekdaysContainer extends StatelessWidget {
                         TextSpan(
                           children: [
                             TextSpan(
-                              text: '${weekdayExercise[index].weekday} \n',
+                              text: '$selectedWeekdays \n',
                               style: TextStyle(
                                 fontFamily: 'BeVietnam',
                                 fontSize: 23,
@@ -49,13 +79,13 @@ class WeekdaysContainer extends StatelessWidget {
                               ),
                             ),
                             TextSpan(
-                              text: weekdayExercise[index].exercise,
+                              text: bodyArea,
                               style: TextStyle(
                                 fontFamily: 'Inter',
                                 fontSize: 16,
                                 color: const Color.fromARGB(170, 95, 58, 1),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),

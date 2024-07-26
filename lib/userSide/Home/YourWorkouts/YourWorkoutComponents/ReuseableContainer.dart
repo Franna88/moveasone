@@ -6,11 +6,12 @@ class ReuseableContainer extends StatefulWidget {
   final String day;
   final String workout;
 
-  const ReuseableContainer(
-      {super.key,
-      required this.image,
-      required this.day,
-      required this.workout});
+  const ReuseableContainer({
+    super.key,
+    required this.image,
+    required this.day,
+    required this.workout,
+  });
 
   @override
   State<ReuseableContainer> createState() => _ReuseableContainerState();
@@ -27,7 +28,8 @@ class _ReuseableContainerState extends State<ReuseableContainer> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30.0),
           image: DecorationImage(
-            image: AssetImage(widget.image),
+            image: NetworkImage(
+                widget.image.isNotEmpty ? widget.image : 'default_image_url'),
             fit: BoxFit.cover,
           ),
         ),

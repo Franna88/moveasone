@@ -66,6 +66,7 @@ class _VideoGridViewState extends State<VideoGridView>
                     MaterialPageRoute(
                       builder: (context) => DefaultWorkoutDetails(
                         docId: workout.id,
+                        userType: '',
                       ),
                     ),
                   );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:move_as_one/admin/adminItems/workoutCreator/creatorFullView/warmUpCreator.dart';
+import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/overlayItems/resultsScreenTwo.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 
 class ExerciseVideoWidget extends StatefulWidget {
@@ -10,6 +11,7 @@ class ExerciseVideoWidget extends StatefulWidget {
   final String info;
   final Map<String, dynamic> warmupData;
   final List list;
+  final String userType;
 
   const ExerciseVideoWidget(
       {super.key,
@@ -18,6 +20,7 @@ class ExerciseVideoWidget extends StatefulWidget {
       required this.header,
       required this.info,
       required this.warmupData,
+      required this.userType,
       required this.list});
 
   @override
@@ -36,11 +39,17 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => WarmUpCreator(
-                docId: widget.docId,
-                type: 'type',
-                warmupData: widget.warmupData,
-                exerciseList: widget.list),
+            builder: (context) => widget.userType == "user"
+                ? ResultsScreenTwo(
+                    videoUrl:
+                        widget.warmupData['videoUrl'], // Pass video URL here
+                  )
+                : WarmUpCreator(
+                    docId: widget.docId,
+                    type: 'type', // Replace with the actual type if needed
+                    warmupData: widget.warmupData,
+                    exerciseList: widget.list,
+                  ),
           ),
         );
       },

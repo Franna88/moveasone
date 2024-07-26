@@ -56,9 +56,12 @@ class ResultsScreenOne extends StatelessWidget {
                 onTap: () {
                   //ADD ROUTE
                   Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const ResultsScreenTwo()),
-  );
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ResultsScreenTwo(
+                              videoUrl: '',
+                            )),
+                  );
                 },
               ),
               SizedBox(
@@ -71,5 +74,3 @@ class ResultsScreenOne extends StatelessWidget {
     );
   }
 }
-
-
