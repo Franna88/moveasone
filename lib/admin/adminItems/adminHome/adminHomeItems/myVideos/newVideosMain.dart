@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideoList/ui/myVideosGridView.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideoList/ui/newVideosGridView.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideosMain.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/workoutsFullLenght.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/ui/uploadButton.dart';
-import 'package:move_as_one/commonUi/headerWidget.dart';
+import 'package:move_as_one/commonUi/headerWidget1.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/myutility.dart';
@@ -21,7 +20,15 @@ class _NewVideosMainState extends State<NewVideosMain> {
   Widget build(BuildContext context) {
     return MainContainer(
       children: [
-        HeaderWidget(header: 'NEW SHORT'),
+        HeaderWidget1(
+          header: 'NEW SHORT',
+          onPress: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => WorkoutsFullLenght()),
+            );
+          },
+        ),
         SizedBox(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
