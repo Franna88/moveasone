@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideoList/ui/myVideosGridView.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/newVideosMain.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/ui/uploadButton.dart';
-import 'package:move_as_one/commonUi/headerWidget.dart';
+import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/workoutsFullLenght.dart';
+import 'package:move_as_one/commonUi/headerWidget1.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
-import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/myutility.dart';
 
 class MyVideosMain extends StatelessWidget {
@@ -14,7 +13,15 @@ class MyVideosMain extends StatelessWidget {
   Widget build(BuildContext context) {
     return MainContainer(
       children: [
-        HeaderWidget(header: 'NEW SHORT'),
+        HeaderWidget1(
+          header: 'NEW SHORT',
+          onPress: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => WorkoutsFullLenght()),
+            );
+          },
+        ),
         SizedBox(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -50,7 +57,11 @@ class MyVideosMain extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: () {
-                      Navigator.push(context,MaterialPageRoute( builder: (context) => NewVideosMain()), );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NewVideosMain()),
+                      );
                     },
                     style: TextButton.styleFrom(
                       foregroundColor: Color(0xFF1E1E1E),
@@ -80,7 +91,6 @@ class MyVideosMain extends StatelessWidget {
           height: 10,
         ),
         MyVideoGridView(),
-        
       ],
     );
   }

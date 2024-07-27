@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:move_as_one/WorkoutCreatorVIdeo/FullScreenVideoPlayer.dart';
+import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideoList/ui/DeleteButtonPopup.dart';
 
 class MyVideoGridView extends StatefulWidget {
   const MyVideoGridView({super.key});
@@ -11,6 +13,7 @@ class MyVideoGridView extends StatefulWidget {
 class _MyVideoGridViewState extends State<MyVideoGridView>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
+  late Future<QuerySnapshot> _videoFuture;
 
   @override
   void initState() {
@@ -24,12 +27,19 @@ class _MyVideoGridViewState extends State<MyVideoGridView>
     );
 
     _animationController.forward();
+    _videoFuture = FirebaseFirestore.instance.collection('shorts').get();
   }
 
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
+  }
+
+  void _refreshVideos() {
+    setState(() {
+      _videoFuture = FirebaseFirestore.instance.collection('shorts').get();
+    });
   }
 
   @override
@@ -41,7 +51,7 @@ class _MyVideoGridViewState extends State<MyVideoGridView>
       child: SizedBox(
         height: heightDevice * 0.72,
         child: FutureBuilder<QuerySnapshot>(
-          future: FirebaseFirestore.instance.collection('shorts').get(),
+          future: _videoFuture,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
@@ -54,29 +64,46 @@ class _MyVideoGridViewState extends State<MyVideoGridView>
                   SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
               itemBuilder: (context, index) {
                 var video = videos[index];
+                var videoId = video.id;
                 var thumbnailUrl = video['thumbnailUrl'];
                 var videoName = video['videoName'];
+                var videoUrl = video['videoUrl'];
 
-                return Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: heightDevice * 0.10,
-                        width: widthDevice * 0.10,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: NetworkImage(thumbnailUrl),
-                              fit: BoxFit.cover),
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FullScreenVideoPlayer(
+                          videoUrl: videoUrl,
                         ),
                       ),
-                      Text(
-                        videoName,
-                        style: TextStyle(fontSize: 12),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ],
+                    );
+                  },
+                  onLongPress: () {
+                    showDeleteDialog(context, videoId, _refreshVideos);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: heightDevice * 0.12,
+                          width: widthDevice * 0.25,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: NetworkImage(thumbnailUrl),
+                                fit: BoxFit.cover),
+                          ),
+                        ),
+                        Text(
+                          videoName,
+                          style: TextStyle(fontSize: 12),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

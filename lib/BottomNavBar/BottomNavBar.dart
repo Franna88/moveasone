@@ -26,7 +26,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       VideoBrowsPage(),
       MyWorkouts(),
       Placeholder(),
-     UserProfile(),
+      UserProfile(),
     ];
   }
 
@@ -89,10 +89,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
             ),
             BottomNavigationBarItem(
               icon: CircleAvatar(
-              backgroundColor: Colors.grey,
-              radius: 18,
-              backgroundImage: AssetImage('images/Avatar1.jpg'),
-            ),
+                backgroundColor: Colors.grey,
+                radius: 18,
+                backgroundImage: AssetImage('images/Avatar1.jpg'),
+              ),
               // _buildIcon('images/comment1.jpg', 4),
               label: '', // Empty label
             ),
