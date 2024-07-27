@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -168,7 +169,7 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
     setState(() {
       isLoading = true;
     });
-
+    Uint8List webImage = Uint8List(8);
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
@@ -177,35 +178,28 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
         isLoading = false;
       });
       return;
-    }
-
-    try {
-      String fileName = '${widget.docId}_${imageType}.jpg';
-      Reference storageRef =
-          FirebaseStorage.instance.ref().child('workout_images/$fileName');
-      await storageRef.putFile(File(image.path));
-
-      String downloadUrl = await storageRef.getDownloadURL();
-
+    } else {
+      var f = await image.readAsBytes();
       setState(() {
-        imageUrl = downloadUrl;
+        webImage = f;
       });
-
+    }
+    var uuid = Uuid();
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child('workout_images')
+        .child("${uuid.v1()}.png");
+    await ref.putData(webImage);
+    imageUrl = await ref.getDownloadURL().whenComplete(() {
+      isLoading = false;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('$imageType image uploaded successfully')),
       );
-    } catch (e) {
-      print('Error uploading $imageType image: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content:
-                Text('Failed to upload $imageType image. Please try again.')),
-      );
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
+    });
+    final String downloadUrl = imageUrl.toString();
+    setState(() {
+      imageUrl = downloadUrl;
+    });
   }
 
   Future<void> _selectAndUploadVideo() async {

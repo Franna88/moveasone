@@ -71,8 +71,8 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
         //  time = document.get('time');
 
         warmUps.addAll(document.get('warmUps'));
-        workouts = document.get('workouts');
-        coolDowns = document.get('coolDowns');
+        workouts.addAll(document.get('workouts'));
+        coolDowns.addAll(document.get('coolDowns'));
 
         for (var i = 0; i < warmUps.length; i++) {
           warmupWidgets.add(
