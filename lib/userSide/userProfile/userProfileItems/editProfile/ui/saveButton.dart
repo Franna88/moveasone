@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 
-class SaveButton extends StatelessWidget {
+class SaveButton extends StatefulWidget {
   final String buttonText;
-  Function() onTap;
+  final VoidCallback onTap;
   SaveButton({super.key, required this.buttonText, required this.onTap});
 
+  @override
+  State<SaveButton> createState() => _SaveButtonState();
+}
+
+class _SaveButtonState extends State<SaveButton> {
   @override
   Widget build(BuildContext context) {
     var widthDevice = MediaQuery.of(context).size.width;
     return GestureDetector(
-      onTap: () => onTap,
+      onTap: widget.onTap,
       child: Container(
         width: widthDevice * 0.90,
         decoration: BoxDecoration(
@@ -21,7 +26,7 @@ class SaveButton extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 18),
             child: Text(
-              buttonText,
+              widget.buttonText,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,

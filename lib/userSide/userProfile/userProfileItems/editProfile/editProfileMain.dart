@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:move_as_one/commonUi/headerWidget.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
@@ -22,7 +24,49 @@ class _EditProfileMainState extends State<EditProfileMain> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _websiteController = TextEditingController();
-  final TextEditingController _editController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    getUserDetails();
+  }
+
+  Future<void> getUserDetails() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final doc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    if (doc.exists) {
+      setState(() {
+        _nameController.text = doc.get('name');
+        _bioController.text = doc.get('bio');
+        _websiteController.text = doc.get('website');
+        _genderController.text = doc.get('gender');
+        _ageController.text = doc.get('age');
+        _heightController.text = doc.get('height');
+        _weightController.text = doc.get('weight');
+      });
+    }
+  }
+
+  Future<void> saveUserDetails() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    await FirebaseFirestore.instance.collection('users').doc(uid).update({
+      'name': _nameController.text,
+      'bio': _bioController.text,
+      'website': _websiteController.text,
+      'gender': _genderController.text,
+      'age': _ageController.text,
+      'height': _heightController.text,
+      'weight': _weightController.text
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Profile updated successfully!')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +90,6 @@ class _EditProfileMainState extends State<EditProfileMain> {
                     //ADD LOGIC
                   },
                   textColor: Colors.black,
-                  keyType: TextInputType.name,
                 ),
                 ProfileEditTextField(
                   controller: _bioController,
@@ -56,7 +99,6 @@ class _EditProfileMainState extends State<EditProfileMain> {
                     //ADD LOGIC
                   },
                   textColor: Colors.black,
-                  keyType: TextInputType.text,
                 ),
                 ProfileEditTextField(
                   controller: _websiteController,
@@ -66,7 +108,6 @@ class _EditProfileMainState extends State<EditProfileMain> {
                     //ADD LOGIC
                   },
                   textColor: UiColors().teal,
-                  keyType: TextInputType.url,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 20, top: 30, bottom: 15),
@@ -83,44 +124,40 @@ class _EditProfileMainState extends State<EditProfileMain> {
                   ),
                 ),
                 ProfileEditTextField(
-                  controller: _editController,
+                  controller: _genderController,
                   labelText: 'Gender',
                   fieldWidth: widthDevice,
                   onChanged: () {
                     //ADD LOGIC
                   },
                   textColor: Colors.black,
-                  keyType: TextInputType.text,
                 ),
                 ProfileEditTextField(
-                  controller: _editController,
+                  controller: _ageController,
                   labelText: 'Age',
                   fieldWidth: widthDevice,
                   onChanged: () {
                     //ADD LOGIC
                   },
                   textColor: Colors.black,
-                  keyType: TextInputType.number,
                 ),
                 ProfileEditTextField(
-                  controller: _editController,
+                  controller: _heightController,
                   labelText: 'Height',
                   fieldWidth: widthDevice,
                   onChanged: () {
                     //ADD LOGIC
                   },
                   textColor: Colors.black,
-                  keyType: TextInputType.number,
                 ),
                 ProfileEditTextField(
-                  controller: _editController,
+                  controller: _weightController,
                   labelText: 'Weight',
                   fieldWidth: widthDevice,
                   onChanged: () {
                     //ADD LOGIC
                   },
                   textColor: Colors.black,
-                  keyType: TextInputType.number,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 20, top: 30, bottom: 15),
@@ -385,11 +422,11 @@ class _EditProfileMainState extends State<EditProfileMain> {
                   height: 50,
                 ),
                 SaveButton(
-                  buttonText: 'Save',
-                  onTap: () {
-                    //ADD LOGIC
-                  },
-                )
+                    buttonText: 'Save',
+                    onTap: () {
+                      saveUserDetails;
+                      Navigator.pop(context);
+                    })
               ],
             ),
           ),

@@ -7,7 +7,7 @@ class ProfileEditTextField extends StatefulWidget {
   Function() onChanged;
   final double fieldWidth;
   final Color textColor;
-  final TextInputType keyType;
+
   final TextEditingController controller;
 
   ProfileEditTextField(
@@ -16,7 +16,6 @@ class ProfileEditTextField extends StatefulWidget {
       required this.fieldWidth,
       required this.onChanged,
       required this.textColor,
-      required this.keyType,
       required this.controller});
 
   @override
@@ -57,7 +56,6 @@ class _ProfileEditTextFieldState extends State<ProfileEditTextField> {
                 cursorColor: Colors.black,
                 maxLines: 5,
                 minLines: 1,
-                keyboardType: widget.keyType,
                 decoration: InputDecoration(
                   contentPadding:
                       EdgeInsets.symmetric(horizontal: 15, vertical: 0),

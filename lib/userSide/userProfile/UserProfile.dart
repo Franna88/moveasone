@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:move_as_one/userSide/UserProfile/LastWorkout/LastWorkout.dart';
@@ -15,6 +17,29 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  String name = '';
+  String bio = '';
+  String website = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getUserDetails();
+  }
+
+  Future<void> getUserDetails() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final doc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    if (doc.exists) {
+      setState(() {
+        name = doc.get('name');
+        bio = doc.get('bio');
+        website = doc.get('website');
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -161,7 +186,7 @@ class _UserProfileState extends State<UserProfile> {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: 'Lana Stepsson',
+                            text: name,
                             style: TextStyle(
                               color: Color(0xFF1E1E1E),
                               fontSize: 18,
@@ -197,7 +222,7 @@ class _UserProfileState extends State<UserProfile> {
                   child: SizedBox(
                     width: 311,
                     child: Text(
-                      "I love doing fitness, it's true that I hate everything else ",
+                      bio,
                       style: TextStyle(
                         color: Color(0xFF1E1E1E),
                         fontSize: 17,
@@ -211,7 +236,7 @@ class _UserProfileState extends State<UserProfile> {
                   padding: const EdgeInsets.only(left: 20),
                   child: SizedBox(
                     child: Text(
-                      'taplink.cc/lana_steps',
+                      website,
                       style: TextStyle(
                         color: Color(0xFF006261),
                         fontSize: 14,
