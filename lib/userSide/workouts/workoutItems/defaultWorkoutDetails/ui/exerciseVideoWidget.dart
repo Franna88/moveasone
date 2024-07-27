@@ -43,8 +43,7 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
           MaterialPageRoute(
             builder: (context) => widget.userType == "user"
                 ? ResultsScreenTwo(
-                    videoUrl:
-                        widget.warmupData['videoUrl'], // Pass video URL here
+                    videoUrl: widget.warmupData['videoUrl'],
                   )
                 : WarmUpCreator(
                     docId: widget.docId,
