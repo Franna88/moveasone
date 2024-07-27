@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideoList/ui/myVideosGridView.dart';
+import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideoList/ui/newVideosGridView.dart';
+import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideosMain.dart';
+import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/newVideosMain.dart';
 import 'package:move_as_one/userSide/Home/GetStarted.dart';
 import 'package:move_as_one/userSide/UserProfile/MyCommuity/MyCommnity.dart';
 import 'package:move_as_one/userSide/UserProfile/Sendhi5Back/Sendhi5Back.dart';
 import 'package:move_as_one/userSide/UserProfile/UserProfile.dart';
+import 'package:move_as_one/userSide/UserVideo/UserVideoAdd.dart';
+import 'package:move_as_one/userSide/UserVideo/UserVideoView.dart';
 import 'package:move_as_one/userSide/fromRochelle/videoCategory/videoCategoryItems/videoBrowsPage.dart';
 import 'package:move_as_one/userSide/workouts/workoutItems/MyWorkouts/myWorkouts.dart';
 
@@ -25,7 +31,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       GetStarted(),
       VideoBrowsPage(),
       MyWorkouts(),
-      Placeholder(),
+      UserAddVideo(),
       UserProfile(),
     ];
   }
