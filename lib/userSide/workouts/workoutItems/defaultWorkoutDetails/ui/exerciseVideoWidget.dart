@@ -57,7 +57,7 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
         /* */
       },
       child: Container(
-        height: heightDevice * 0.15,
+        //  height: heightDevice * 0.15,
         color: isActive ? UiColors().teal : Colors.white,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -93,12 +93,15 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
                     const SizedBox(
                       height: 3,
                     ),
-                    Text(
-                      widget.info,
-                      style: TextStyle(
-                        fontFamily: 'BeVietnam',
-                        fontSize: 14,
-                        color: Colors.black,
+                    SizedBox(
+                      width: widthDevice * 0.55,
+                      child: Text(
+                        widget.info,
+                        style: TextStyle(
+                          fontFamily: 'BeVietnam',
+                          fontSize: 14,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                   ],
