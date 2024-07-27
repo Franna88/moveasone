@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:move_as_one/commonUi/navVideoButton.dart';
+import 'package:move_as_one/commonUi/uiColors.dart';
+import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/audioScreen.dart';
+import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/rest.dart';
 import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/videoScreen.dart';
 
 class ExerciseProcess extends StatefulWidget {
@@ -13,13 +17,14 @@ class ExerciseProcess extends StatefulWidget {
 class _ExerciseProcessState extends State<ExerciseProcess> {
   //var
   List exerciseBuildList = [];
-  var exerciseIndex = 0;
+  late int exerciseIndex = 0;
 
 //change index
-  changePageIndex(value) {
+  changePageIndex() {
     setState(() {
-      exerciseIndex = value;
+      exerciseIndex++;
     });
+    setState(() {});
   }
 
 //breakDown Excercise list to get order
@@ -31,6 +36,7 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
       "image": "",
       "timer": "",
       "repsTotal": "",
+      "repCounter": 0
     };
 
     var restBuild = {
@@ -40,40 +46,69 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
       "image": "",
       "timer": "",
       "repsTotal": "",
+      "repCounter": 0
     };
 
     for (var i = 0; i < (widget.entireExercise['warmUps']).length; i++) {
       var warmUpData = widget.entireExercise['warmUps'][i];
-      print(warmUpData['name']);
+
       for (var r = 0; r < (int.parse(warmUpData['repetition'])); r++) {
-        /*     exerciseBuild = {
+        exerciseBuild = {
           "type": "warmUp",
           "mediaType": warmUpData['videoUrl'] == "" ? "Audio" : "Video",
           "mediaTypeUrl": warmUpData['videoUrl'] == ""
               ? warmUpData['audioUrl']
               : warmUpData['videoUrl'],
           "image": warmUpData['image'],
-          "timer": warmUpData['time'],
           "repsTotal": warmUpData['repetition'],
+          "repCounter": r + 1
         };
 
         restBuild = {
           "type": "rest",
-          "mediaType": "",
+          "mediaType": "Rest",
           "mediaTypeUrl": "",
           "image": warmUpData['image'],
-          "timer": widget.entireExercise['time'],
-          "repsTotal": "",
+          "repsTotal": warmUpData['repetition'],
+          "repCounter": r + 1
         };
-      */
+
         setState(() {
           exerciseBuildList.add(exerciseBuild);
           exerciseBuildList.add(restBuild);
         });
-      } /**/
+      }
     }
-    print("exerciseBuildList");
-    print(exerciseBuildList);
+    for (var i = 0; i < (widget.entireExercise['workouts']).length; i++) {
+      var warmUpData = widget.entireExercise['workouts'][i];
+
+      for (var r = 0; r < (int.parse(warmUpData['repetition'])); r++) {
+        exerciseBuild = {
+          "type": "warmUp",
+          "mediaType": warmUpData['videoUrl'] == "" ? "Audio" : "Video",
+          "mediaTypeUrl": warmUpData['videoUrl'] == ""
+              ? warmUpData['audioUrl']
+              : warmUpData['videoUrl'],
+          "image": warmUpData['image'],
+          "repsTotal": warmUpData['repetition'],
+          "repCounter": r + 1
+        };
+
+        restBuild = {
+          "type": "rest",
+          "mediaType": "Rest",
+          "mediaTypeUrl": "",
+          "image": warmUpData['image'],
+          "repsTotal": warmUpData['repetition'],
+          "repCounter": r + 1
+        };
+
+        setState(() {
+          exerciseBuildList.add(exerciseBuild);
+          exerciseBuildList.add(restBuild);
+        });
+      }
+    }
   }
 
   @override
@@ -87,12 +122,37 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        /*  Visibility(
-            visible: exerciseBuildList[exerciseIndex]['type'] == "Video",
-            child: VideoScreen(
+        Visibility(
+          visible: exerciseBuildList[exerciseIndex]['mediaType'] == "Video",
+          child: Material(
+              child: VideoScreen(
+            changePageIndex: changePageIndex,
+            videoUrl: exerciseBuildList[exerciseIndex]['mediaTypeUrl'],
+            workoutType: exerciseBuildList[exerciseIndex]['type'],
+            repsCounter: exerciseBuildList[exerciseIndex]['repCounter'],
+          )),
+        ),
+        Visibility(
+            visible: exerciseBuildList[exerciseIndex]['mediaType'] == "Audio",
+            child: Material(
+              child: AudioScreen(
+                changePageIndex: changePageIndex,
+                audioUrl: exerciseBuildList[exerciseIndex]['mediaTypeUrl'],
+                imageUrl: exerciseBuildList[exerciseIndex]['image'],
+                workoutType: exerciseBuildList[exerciseIndex]['type'],
+                reps: exerciseBuildList[exerciseIndex]['repsTotal'],
+                repsCounter: exerciseBuildList[exerciseIndex]['repCounter'],
+              ),
+            )),
+        Visibility(
+          visible: exerciseBuildList[exerciseIndex]['mediaType'] == "Rest",
+          child: Material(
+            child: Rest(
               changePageIndex: changePageIndex,
-              videoUrl: exerciseBuildList[exerciseIndex]['mediaTypeUrl'],
-            ))*/
+              imageUrl: exerciseBuildList[exerciseIndex]['image'],
+            ),
+          ),
+        ),
       ],
     );
   }
