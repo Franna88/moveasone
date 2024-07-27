@@ -82,7 +82,7 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
               info: warmUps[i]['description']?.toString() ?? '',
               docId: widget.docId,
               list: warmUps,
-              userType: 'Admin',
+              userType: widget.userType,
               warmupData: warmUps[i],
               type: "warmUps",
             ),

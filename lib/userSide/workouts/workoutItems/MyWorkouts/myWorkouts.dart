@@ -73,7 +73,7 @@ class _MyWorkoutsState extends State<MyWorkouts> {
           visible: pageIndex == 1,
           child: DefaultWorkoutDetails(
             docId: '',
-            userType: '',
+            userType: 'user',
           ),
         ),
       ],
