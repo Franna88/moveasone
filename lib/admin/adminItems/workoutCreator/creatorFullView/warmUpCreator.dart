@@ -69,6 +69,7 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
 
   String imageUrl = "";
   String? videoUrl;
+  String audioUrl = "";
   bool isLoading = false;
   var itemId = "";
 
@@ -88,6 +89,7 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
       imageUrl = widget.warmupData!['image'];
       videoUrl = widget.warmupData!['videoUrl'];
       _repetition.text = widget.warmupData!['repetition'];
+      audioUrl = widget.warmupData!['audioUrl'];
     }
   }
 
@@ -114,7 +116,7 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
       'equipment': selectedEquipment,
       'image': imageUrl,
       'videoUrl': videoUrl,
-      'audioUrl': ""
+      'audioUrl': audioUrl
     };
 
     DocumentReference docRef =
@@ -227,6 +229,7 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
 
       setState(() {
         videoUrl = downloadUrl;
+        audioUrl = "";
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -273,7 +276,9 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
       String downloadUrl = await storageRef.getDownloadURL();
 
       setState(() {
-        imageUrl = downloadUrl;
+        // imageUrl = downloadUrl;
+        audioUrl = downloadUrl;
+        videoUrl = "";
         isLoading = true;
         Navigator.push(
           context,
@@ -345,7 +350,11 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
                       child: Center(
                         child: Text(
                           textAlign: TextAlign.center,
-                          'WARMUP CREATOR',
+                          widget.type == "warmUps"
+                              ? 'WARMUP CREATOR'
+                              : widget.type == "workouts"
+                                  ? "WORKOUT CREATOR"
+                                  : "COOLDOWN CREATOR",
                           style: TextStyle(
                             fontFamily: 'Inter',
                             fontSize: 16,
@@ -375,7 +384,13 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          QuestionConHeader(header: 'WARMUP CREATOR'),
+                          QuestionConHeader(
+                            header: widget.type == "warmUps"
+                                ? 'WARMUP CREATOR'
+                                : widget.type == "workouts"
+                                    ? "WORKOUT CREATOR"
+                                    : "COOLDOWN CREATOR",
+                          ),
                           CreatorTextFieldSmall(
                             controller: _warmupName,
                             hintText: 'Warmup Title',
