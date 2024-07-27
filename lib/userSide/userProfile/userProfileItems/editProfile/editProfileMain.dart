@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/commonUi/headerWidget.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
-import 'package:move_as_one/commonUi/CategoryButton.dart';
 import 'package:move_as_one/commonUi/mySwitchButton.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/userSide/userProfile/commonUi/goalsColors.dart';
@@ -12,8 +11,18 @@ import 'package:move_as_one/userSide/userProfile/userProfileItems/editProfile/ui
 import 'package:move_as_one/userSide/userProfile/userProfileItems/editProfile/ui/smallEditTextField.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/editProfile/ui/userImageStack.dart';
 
-class EditProfileMain extends StatelessWidget {
+class EditProfileMain extends StatefulWidget {
   const EditProfileMain({super.key});
+
+  @override
+  State<EditProfileMain> createState() => _EditProfileMainState();
+}
+
+class _EditProfileMainState extends State<EditProfileMain> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _websiteController = TextEditingController();
+  final TextEditingController _editController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +39,7 @@ class EditProfileMain extends StatelessWidget {
               children: [
                 UserImageStack(userPic: 'images/comment1.jpg'),
                 ProfileEditTextField(
+                  controller: _nameController,
                   labelText: 'Name',
                   fieldWidth: widthDevice,
                   onChanged: () {
@@ -39,6 +49,7 @@ class EditProfileMain extends StatelessWidget {
                   keyType: TextInputType.name,
                 ),
                 ProfileEditTextField(
+                  controller: _bioController,
                   labelText: 'Bio',
                   fieldWidth: widthDevice,
                   onChanged: () {
@@ -48,6 +59,7 @@ class EditProfileMain extends StatelessWidget {
                   keyType: TextInputType.text,
                 ),
                 ProfileEditTextField(
+                  controller: _websiteController,
                   labelText: 'Website',
                   fieldWidth: widthDevice,
                   onChanged: () {
@@ -71,6 +83,7 @@ class EditProfileMain extends StatelessWidget {
                   ),
                 ),
                 ProfileEditTextField(
+                  controller: _editController,
                   labelText: 'Gender',
                   fieldWidth: widthDevice,
                   onChanged: () {
@@ -80,6 +93,7 @@ class EditProfileMain extends StatelessWidget {
                   keyType: TextInputType.text,
                 ),
                 ProfileEditTextField(
+                  controller: _editController,
                   labelText: 'Age',
                   fieldWidth: widthDevice,
                   onChanged: () {
@@ -89,6 +103,7 @@ class EditProfileMain extends StatelessWidget {
                   keyType: TextInputType.number,
                 ),
                 ProfileEditTextField(
+                  controller: _editController,
                   labelText: 'Height',
                   fieldWidth: widthDevice,
                   onChanged: () {
@@ -98,6 +113,7 @@ class EditProfileMain extends StatelessWidget {
                   keyType: TextInputType.number,
                 ),
                 ProfileEditTextField(
+                  controller: _editController,
                   labelText: 'Weight',
                   fieldWidth: widthDevice,
                   onChanged: () {

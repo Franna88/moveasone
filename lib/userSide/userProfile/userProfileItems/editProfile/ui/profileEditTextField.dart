@@ -2,27 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/userSide/userProfile/commonUi/mainContentContainer.dart';
 
-class ProfileEditTextField extends StatelessWidget {
+class ProfileEditTextField extends StatefulWidget {
   final String labelText;
   Function() onChanged;
   final double fieldWidth;
   final Color textColor;
   final TextInputType keyType;
+  final TextEditingController controller;
 
   ProfileEditTextField(
       {super.key,
       required this.labelText,
       required this.fieldWidth,
       required this.onChanged,
-      required this.textColor, required this.keyType});
+      required this.textColor,
+      required this.keyType,
+      required this.controller});
 
+  @override
+  State<ProfileEditTextField> createState() => _ProfileEditTextFieldState();
+}
+
+class _ProfileEditTextFieldState extends State<ProfileEditTextField> {
   @override
   Widget build(BuildContext context) {
     var widthDevice = MediaQuery.of(context).size.width;
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Container(
-          width: fieldWidth,
+          width: widget.fieldWidth,
           decoration: BoxDecoration(
             border: Border.all(width: 0.1),
             color: Colors.white,
@@ -40,18 +48,21 @@ class ProfileEditTextField extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: TextField(
-                style: TextStyle(color: textColor, fontFamily: 'BeVietnam',),
-                onChanged: (value) => onChanged,
+                controller: widget.controller,
+                style: TextStyle(
+                  color: widget.textColor,
+                  fontFamily: 'BeVietnam',
+                ),
+                onChanged: (value) => widget.onChanged,
                 cursorColor: Colors.black,
                 maxLines: 5,
                 minLines: 1,
-                keyboardType: keyType,
+                keyboardType: widget.keyType,
                 decoration: InputDecoration(
                   contentPadding:
                       EdgeInsets.symmetric(horizontal: 15, vertical: 0),
                   border: InputBorder.none,
-                  labelText: labelText,
-                  
+                  labelText: widget.labelText,
                   labelStyle: TextStyle(
                     fontFamily: 'BeVietnam',
                     fontSize: 14,
