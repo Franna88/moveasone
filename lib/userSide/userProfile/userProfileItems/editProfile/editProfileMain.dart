@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:move_as_one/commonUi/headerWidget.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
 import 'package:move_as_one/commonUi/mySwitchButton.dart';
@@ -28,6 +32,8 @@ class _EditProfileMainState extends State<EditProfileMain> {
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
+  String _profilePicUrl = '';
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -48,6 +54,7 @@ class _EditProfileMainState extends State<EditProfileMain> {
         _ageController.text = doc.get('age');
         _heightController.text = doc.get('height');
         _weightController.text = doc.get('weight');
+        _profilePicUrl = doc.get('profilePic');
       });
     }
   }
@@ -61,11 +68,54 @@ class _EditProfileMainState extends State<EditProfileMain> {
       'gender': _genderController.text,
       'age': _ageController.text,
       'height': _heightController.text,
-      'weight': _weightController.text
+      'weight': _weightController.text,
+      'profilePic': _profilePicUrl,
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Profile updated successfully!')),
     );
+  }
+
+  Future<void> pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      File imageFile = File(pickedFile.path);
+      await uploadImage(imageFile);
+    }
+  }
+
+  Future<void> uploadImage(File imageFile) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      final storageRef =
+          FirebaseStorage.instance.ref().child('profile_pics/$uid.jpg');
+      final uploadTask = storageRef.putFile(imageFile);
+
+      final snapshot = await uploadTask.whenComplete(() => {});
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+
+      setState(() {
+        _profilePicUrl = downloadUrl;
+      });
+
+      // image is stored to firebase on upload
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'profilePic': _profilePicUrl,
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to upload image: $e')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -81,7 +131,11 @@ class _EditProfileMainState extends State<EditProfileMain> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                UserImageStack(userPic: 'images/comment1.jpg'),
+                UserImageStack(
+                  userPic: _profilePicUrl,
+                  onpress: pickImage,
+                  isLoading: _isLoading,
+                ),
                 ProfileEditTextField(
                   controller: _nameController,
                   labelText: 'Name',

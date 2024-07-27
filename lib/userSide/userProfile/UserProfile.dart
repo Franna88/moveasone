@@ -20,6 +20,7 @@ class _UserProfileState extends State<UserProfile> {
   String name = '';
   String bio = '';
   String website = '';
+  String profilePicUrl = '';
 
   @override
   void initState() {
@@ -36,6 +37,7 @@ class _UserProfileState extends State<UserProfile> {
         name = doc.get('name');
         bio = doc.get('bio');
         website = doc.get('website');
+        profilePicUrl = doc.get('profilePic');
       });
     }
   }
@@ -101,8 +103,8 @@ class _UserProfileState extends State<UserProfile> {
                         width: MyUtility(context).width * 0.05,
                       ),
                       ClipOval(
-                        child: Image.asset(
-                          'images/Avatar1.jpg',
+                        child: Image.network(
+                          profilePicUrl,
                           width: 75,
                           height: 75,
                           fit: BoxFit.cover,
