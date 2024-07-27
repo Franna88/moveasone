@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:move_as_one/commonUi/navVideoButton.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/audioScreen.dart';
+import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/doneScreen.dart';
 import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/rest.dart';
 import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/videoScreen.dart';
 
@@ -36,7 +37,9 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
       "image": "",
       "timer": "",
       "repsTotal": "",
-      "repCounter": 0
+      "repCounter": 0,
+      "name": "",
+      "description": ""
     };
 
     var restBuild = {
@@ -46,7 +49,9 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
       "image": "",
       "timer": "",
       "repsTotal": "",
-      "repCounter": 0
+      "repCounter": 0,
+      "name": "",
+      "description": ""
     };
 
     for (var i = 0; i < (widget.entireExercise['warmUps']).length; i++) {
@@ -61,7 +66,9 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
               : warmUpData['videoUrl'],
           "image": warmUpData['image'],
           "repsTotal": warmUpData['repetition'],
-          "repCounter": r + 1
+          "repCounter": r + 1,
+          "name": warmUpData['name'],
+          "description": warmUpData['description'],
         };
 
         restBuild = {
@@ -70,7 +77,9 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
           "mediaTypeUrl": "",
           "image": warmUpData['image'],
           "repsTotal": warmUpData['repetition'],
-          "repCounter": r + 1
+          "repCounter": r + 1,
+          "name": warmUpData['name'],
+          "description": warmUpData['description'],
         };
 
         setState(() {
@@ -80,27 +89,66 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
       }
     }
     for (var i = 0; i < (widget.entireExercise['workouts']).length; i++) {
-      var warmUpData = widget.entireExercise['workouts'][i];
+      var workout = widget.entireExercise['workouts'][i];
 
-      for (var r = 0; r < (int.parse(warmUpData['repetition'])); r++) {
+      for (var r = 0; r < (int.parse(workout['repetition'])); r++) {
         exerciseBuild = {
-          "type": "warmUp",
-          "mediaType": warmUpData['videoUrl'] == "" ? "Audio" : "Video",
-          "mediaTypeUrl": warmUpData['videoUrl'] == ""
-              ? warmUpData['audioUrl']
-              : warmUpData['videoUrl'],
-          "image": warmUpData['image'],
-          "repsTotal": warmUpData['repetition'],
-          "repCounter": r + 1
+          "type": "workouts",
+          "mediaType": workout['videoUrl'] == "" ? "Audio" : "Video",
+          "mediaTypeUrl": workout['videoUrl'] == ""
+              ? workout['audioUrl']
+              : workout['videoUrl'],
+          "image": workout['image'],
+          "repsTotal": workout['repetition'],
+          "repCounter": r + 1,
+          "name": workout['name'],
+          "description": workout['description'],
         };
 
         restBuild = {
           "type": "rest",
           "mediaType": "Rest",
           "mediaTypeUrl": "",
-          "image": warmUpData['image'],
-          "repsTotal": warmUpData['repetition'],
-          "repCounter": r + 1
+          "image": workout['image'],
+          "repsTotal": workout['repetition'],
+          "repCounter": r + 1,
+          "name": workout['name'],
+          "description": workout['description'],
+        };
+
+        setState(() {
+          exerciseBuildList.add(exerciseBuild);
+          exerciseBuildList.add(restBuild);
+        });
+      }
+    }
+
+    for (var i = 0; i < (widget.entireExercise['workouts']).length; i++) {
+      var coolDown = widget.entireExercise['workouts'][i];
+
+      for (var r = 0; r < (int.parse(coolDown['repetition'])); r++) {
+        exerciseBuild = {
+          "type": "coolDowns",
+          "mediaType": coolDown['videoUrl'] == "" ? "Audio" : "Video",
+          "mediaTypeUrl": coolDown['videoUrl'] == ""
+              ? coolDown['audioUrl']
+              : coolDown['videoUrl'],
+          "image": coolDown['image'],
+          "repsTotal": coolDown['repetition'],
+          "repCounter": r + 1,
+          "name": coolDown['name'],
+          "description": coolDown['description'],
+        };
+
+        restBuild = {
+          "type": "rest",
+          "mediaType": "Rest",
+          "mediaTypeUrl": "",
+          "image": coolDown['image'],
+          "repsTotal": coolDown['repetition'],
+          "repCounter": r + 1,
+          "name": coolDown['name'],
+          "description": coolDown['description'],
         };
 
         setState(() {
@@ -129,7 +177,10 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
             changePageIndex: changePageIndex,
             videoUrl: exerciseBuildList[exerciseIndex]['mediaTypeUrl'],
             workoutType: exerciseBuildList[exerciseIndex]['type'],
+            reps: exerciseBuildList[exerciseIndex]['repsTotal'],
             repsCounter: exerciseBuildList[exerciseIndex]['repCounter'],
+            title: exerciseBuildList[exerciseIndex]['name'],
+            description: exerciseBuildList[exerciseIndex]['description'],
           )),
         ),
         Visibility(
@@ -142,10 +193,13 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
                 workoutType: exerciseBuildList[exerciseIndex]['type'],
                 reps: exerciseBuildList[exerciseIndex]['repsTotal'],
                 repsCounter: exerciseBuildList[exerciseIndex]['repCounter'],
+                title: exerciseBuildList[exerciseIndex]['name'],
+                description: exerciseBuildList[exerciseIndex]['description'],
               ),
             )),
         Visibility(
-          visible: exerciseBuildList[exerciseIndex]['mediaType'] == "Rest",
+          visible: exerciseBuildList[exerciseIndex]['mediaType'] == "Rest" &&
+              exerciseIndex != exerciseBuildList.length - 1,
           child: Material(
             child: Rest(
               changePageIndex: changePageIndex,
@@ -153,6 +207,9 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
             ),
           ),
         ),
+        Visibility(
+            visible: exerciseIndex == exerciseBuildList.length - 1,
+            child: DoneScreen()),
       ],
     );
   }

@@ -19,7 +19,7 @@ class CommonOverlayHeader extends StatelessWidget {
           const SizedBox(
             width: 15,
           ),
-          Align(
+          /*      Align(
             alignment: Alignment.centerLeft,
             child: GestureDetector(
               onTap: () {
@@ -31,7 +31,7 @@ class CommonOverlayHeader extends StatelessWidget {
                 size: 30,
               ),
             ),
-          ),
+          ),*/
           Container(
             width: widthDevice * 0.80,
             child: Center(
@@ -39,7 +39,7 @@ class CommonOverlayHeader extends StatelessWidget {
                 textAlign: TextAlign.center,
                 header,
                 style: TextStyle(
-                  fontFamily: 'Inter',
+                    fontFamily: 'Inter',
                     fontSize: 16,
                     color: textColor,
                     letterSpacing: 0.5,

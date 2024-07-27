@@ -12,13 +12,19 @@ class VideoScreen extends StatefulWidget {
   Function changePageIndex;
   String videoUrl;
   String workoutType;
+  String title;
   int repsCounter;
+  String reps;
+  String description;
   VideoScreen(
       {super.key,
       required this.changePageIndex,
       required this.videoUrl,
       required this.workoutType,
-      required this.repsCounter});
+      required this.title,
+      required this.repsCounter,
+      required this.reps,
+      required this.description});
 
   @override
   State<VideoScreen> createState() => _VideoScreenState();
@@ -41,6 +47,12 @@ class _VideoScreenState extends State<VideoScreen> {
         _isPlaying = _controller.value.isPlaying;
       });
     });
+  }
+
+  getVideoPosition() {
+    var duration = Duration(
+        milliseconds: _controller.value.position.inMilliseconds.round());
+    return duration.inSeconds;
   }
 
   @override
@@ -89,25 +101,81 @@ class _VideoScreenState extends State<VideoScreen> {
               children: [
                 if (!_isPlaying) ...[
                   CommonOverlayHeader(
-                      header: 'WORKOUT', textColor: UiColors().teal),
+                      header: widget.workoutType == "warmUp"
+                          ? 'WARMUP'
+                          : widget.workoutType == "workouts"
+                              ? "WORKOUT"
+                              : "COOLDOWN",
+                      textColor: UiColors().teal),
                   SizedBox(
                     height: heightDevice * 0.10,
                   ),
                 ],
                 if (!_isPlaying) ...[
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      Text(
+                        widget.title,
+                        style: TextStyle(
+                            fontSize: 22,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Text(
+                        widget.description,
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Text(
+                        textAlign: TextAlign.start,
+                        "Reps ${widget.repsCounter}  / ${widget.reps}",
+                        style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 25,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           NavVideoButton(
                             buttonColor: UiColors().teal,
-                            buttonText: 'Watch',
+                            buttonText:
+                                'Watch - ${_controller.value.duration.inMinutes} : ${_controller.value.duration.inSeconds}',
                             onTap: () {
                               setState(() {
                                 _controller.play();
                               });
                             },
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Column(
+                            children: [
+                              SizedBox(
+                                height: 25,
+                              ),
+                              NavVideoButton(
+                                buttonColor: UiColors().teal,
+                                buttonText: 'Next Workout',
+                                onTap: () {
+                                  widget.changePageIndex();
+                                },
+                              )
+                            ],
                           ),
                         ],
                       ),

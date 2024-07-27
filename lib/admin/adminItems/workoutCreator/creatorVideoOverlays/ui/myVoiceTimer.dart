@@ -14,7 +14,7 @@ class MyVoiceTimer extends StatefulWidget {
 
 class _MyVoiceTimerState extends State<MyVoiceTimer> {
   Timer? _timer;
-  late int _start;
+  int _start = 0;
   bool _isRunning = false;
 
   final AudioPlayer audioPlayer = AudioPlayer();
