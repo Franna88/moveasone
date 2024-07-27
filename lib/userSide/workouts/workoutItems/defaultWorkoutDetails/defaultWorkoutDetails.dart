@@ -62,6 +62,13 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
 
     if (document.exists) {
       setState(() {
+        var entireExercise = {
+          "warmUps": document.get('warmUps'),
+          "workouts": document.get('workouts'),
+          "coolDowns": document.get('coolDowns'),
+          "restTime": document.get('time'),
+        };
+
         workout = document;
         imageUrl = document.get('displayImage');
         difficulty = document.get('difficulty');
@@ -84,6 +91,7 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
               list: warmUps,
               userType: widget.userType,
               warmupData: warmUps[i],
+              entireExercise: entireExercise,
               type: "warmUps",
             ),
           );
@@ -98,6 +106,7 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
               list: workouts,
               userType: 'Admin',
               warmupData: workouts[i],
+              entireExercise: entireExercise,
               type: "workouts",
             ),
           );
@@ -112,6 +121,7 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
               list: coolDowns,
               userType: 'Admin',
               warmupData: coolDowns[i],
+              entireExercise: entireExercise,
               type: "coolDowns",
             ),
           );
