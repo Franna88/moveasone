@@ -94,7 +94,7 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
                       height: 3,
                     ),
                     SizedBox(
-                      width: widthDevice * 0.55,
+                      width: widthDevice * 0.54,
                       child: Text(
                         widget.info,
                         style: TextStyle(

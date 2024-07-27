@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:move_as_one/BottomNavBar/BottomNavBar.dart';
 import 'package:move_as_one/HomePage.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/workoutsFullLenght.dart';
 import 'package:move_as_one/userSide/Home/GetStarted.dart';
@@ -44,7 +45,7 @@ class _UserStateState extends State<UserState> {
             checkAdminType(user!.uid);
 
             if (userType == "user") {
-              return Material(child: GetStarted());
+              return Material(child: BottomNavBar());
             } else {
               return Material(child: WorkoutsFullLenght());
             }
