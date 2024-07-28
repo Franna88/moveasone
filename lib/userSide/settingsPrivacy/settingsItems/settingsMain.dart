@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:move_as_one/HomePage.dart';
+import 'package:move_as_one/Services/UserState.dart';
 import 'package:move_as_one/userSide/settingsPrivacy/settingsItems/language.dart';
 import 'package:move_as_one/userSide/settingsPrivacy/settingsItems/notifications.dart';
 import 'package:move_as_one/userSide/settingsPrivacy/settingsItems/privacyPolicy.dart';
@@ -92,16 +94,17 @@ class SettingsMain extends StatelessWidget {
                         children: [
                           GestureDetector(
                             onTap: () {
+                              FirebaseAuth.instance.signOut();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const HomePage()),
+                                    builder: (context) => const UserState()),
                               );
                             },
                             child: Text(
                               'Log Out',
                               style: TextStyle(
-                                fontFamily: 'BeVietnam',
+                                  fontFamily: 'BeVietnam',
                                   fontSize: 16,
                                   color: Colors.red,
                                   fontWeight: FontWeight.w400),

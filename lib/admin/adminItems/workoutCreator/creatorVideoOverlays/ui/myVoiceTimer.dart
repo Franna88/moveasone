@@ -5,8 +5,9 @@ import 'package:move_as_one/commonUi/uiColors.dart';
 
 class MyVoiceTimer extends StatefulWidget {
   final String audioUrl;
+  final double? customHeight;
 
-  const MyVoiceTimer({super.key, required this.audioUrl});
+  const MyVoiceTimer({super.key, required this.audioUrl, this.customHeight});
 
   @override
   State<MyVoiceTimer> createState() => _MyVoiceTimerState();
@@ -106,7 +107,9 @@ class _MyVoiceTimerState extends State<MyVoiceTimer> {
               fontWeight: FontWeight.bold),
         ),
         SizedBox(
-          height: heightDevice * 0.15,
+          height: widget.customHeight != null
+              ? widget.customHeight
+              : heightDevice * 0.15,
         ),
         Center(
           child: GestureDetector(

@@ -19,6 +19,9 @@ import 'package:move_as_one/admin/commonUi/commonButtons.dart';
 import 'package:move_as_one/commonUi/myDivider.dart';
 import 'package:move_as_one/userSide/workouts/workoutItems/defaultWorkoutDetails/defaultWorkoutDetails.dart';
 
+import '../../../../components/videoView.dart';
+import '../creatorVideoOverlays/ui/myVoiceTimer.dart';
+
 List<String> topicsList = [
   'Peace',
   'Radiance',
@@ -474,6 +477,23 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
                             onTap: () => _selectAndUploadImage('warmupImage'),
                             buttonColor: AdminColors().lightTeal,
                           ),
+                          Visibility(
+                            visible: imageUrl != "" ? true : false,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  height: heightDevice * 0.25,
+                                  width: widthDevice * 0.35,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: NetworkImage(imageUrl),
+                                        fit: BoxFit.cover),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                           if (isLoading)
                             Center(child: CircularProgressIndicator()),
                           const SizedBox(
@@ -486,6 +506,15 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
                             },
                             buttonColor: AdminColors().lightTeal,
                           ),
+                          Visibility(
+                              visible: audioUrl != "" ? true : false,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: MyVoiceTimer(
+                                  audioUrl: audioUrl,
+                                  customHeight: 25,
+                                ),
+                              )),
                           const SizedBox(
                             height: 25,
                           ),
@@ -494,6 +523,14 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
                             onTap: _selectAndUploadVideo,
                             buttonColor: AdminColors().lightTeal,
                           ),
+
+                          /*   Visibility(
+                              visible: videoUrl != "" ? true : false,
+                              child:
+                              VideoView(),
+                              
+                              
+                              ),*/
                           SizedBox(height: heightDevice * 0.08),
                           MyDivider(),
                           const SizedBox(

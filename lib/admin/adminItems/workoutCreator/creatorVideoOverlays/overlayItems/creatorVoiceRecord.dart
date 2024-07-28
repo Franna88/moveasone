@@ -40,16 +40,18 @@ class _CreatorVoiceRecordState extends State<CreatorVoiceRecord> {
               SizedBox(
                 height: heightDevice * 0.05,
               ),
-              MyVoiceTimer(audioUrl: widget.audioUrl),
+              MyVoiceTimer(
+                audioUrl: widget.audioUrl,
+              ),
               SizedBox(
                 height: heightDevice * 0.05,
               ),
-              ContentGlassContainer(
+              /*  ContentGlassContainer(
                   workoutName: 'Name here',
                   bodyPart: 'Full Body',
                   topic: 'Peace',
                   content1: 'Remember to breathe',
-                  content2: 'Muscle Tension'),
+                  content2: 'Muscle Tension'),*/
               SizedBox(
                 height: heightDevice * 0.05,
               ),
