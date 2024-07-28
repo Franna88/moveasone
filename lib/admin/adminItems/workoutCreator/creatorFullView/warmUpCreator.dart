@@ -71,7 +71,7 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
   String selectedEquipment = '';
 
   String imageUrl = "";
-  String? videoUrl;
+  String videoUrl = "";
   String audioUrl = "";
   bool isLoading = false;
   var itemId = "";
@@ -523,14 +523,18 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
                             onTap: _selectAndUploadVideo,
                             buttonColor: AdminColors().lightTeal,
                           ),
-
-                          /*   Visibility(
-                              visible: videoUrl != "" ? true : false,
-                              child:
-                              VideoView(),
-                              
-                              
-                              ),*/
+                          Visibility(
+                            visible: videoUrl != "" ? true : false,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: VideoView(
+                                  videoUrl: videoUrl,
+                                ),
+                              ),
+                            ),
+                          ),
+                          /**/
                           SizedBox(height: heightDevice * 0.08),
                           MyDivider(),
                           const SizedBox(

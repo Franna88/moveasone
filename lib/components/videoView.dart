@@ -43,8 +43,8 @@ class _VideoViewState extends State<VideoView> {
         });
       },
       child: SizedBox(
-        height: 150,
-        width: 150,
+        height: 200,
+        width: 200,
         child: FittedBox(
           fit: BoxFit.cover,
           child: SizedBox(
