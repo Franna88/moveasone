@@ -4,11 +4,11 @@ import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/CustomButton.d
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/PageIndicator.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/ProgressBar.dart';
 import 'package:move_as_one/myutility.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Gender extends StatefulWidget {
-  const Gender({Key? key});
+  final String goal;
+
+  const Gender({Key? key, required this.goal});
 
   @override
   State<Gender> createState() => _GenderState();
@@ -17,22 +17,15 @@ class Gender extends StatefulWidget {
 class _GenderState extends State<Gender> {
   int selectedIndex = -1;
 
-  void _storeGender(String gender) async {
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        await FirebaseFirestore.instance
-            .collection("users")
-            .doc(user.uid)
-            .update({"gender": gender});
-      }
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const Age()),
-      );
-    } catch (e) {
-      // Handle error if needed
-    }
+  void _navigateToAge(String gender) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Age(
+            goal: widget.goal,
+            gender: gender), // Pass both goal and gender to Age screen
+      ),
+    );
   }
 
   @override
@@ -77,12 +70,8 @@ class _GenderState extends State<Gender> {
                   selectedIndex = isSelected ? 0 : -1;
                 });
                 if (isSelected) {
-                  _storeGender('Female');
+                  _navigateToAge('Female');
                 }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Age()),
-                );
               },
             ),
             CustomButton(
@@ -93,7 +82,7 @@ class _GenderState extends State<Gender> {
                   selectedIndex = isSelected ? 1 : -1;
                 });
                 if (isSelected) {
-                  _storeGender('Male');
+                  _navigateToAge('Male');
                 }
               },
             ),
@@ -105,7 +94,7 @@ class _GenderState extends State<Gender> {
                   selectedIndex = isSelected ? 2 : -1;
                 });
                 if (isSelected) {
-                  _storeGender('Other');
+                  _navigateToAge('Other');
                 }
               },
             ),

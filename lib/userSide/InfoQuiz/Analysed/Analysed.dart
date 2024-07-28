@@ -3,9 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/Home/GetStarted.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Login/Signin.dart';
+import 'package:move_as_one/userSide/LoginSighnUp/Signup/Signup.dart';
 
 class Analysed extends StatefulWidget {
-  const Analysed({Key? key});
+  final String goal;
+  final String gender;
+  final String age;
+  final String height;
+  final String weight;
+  final String weightUnit;
+  final String activityLevel;
+
+  const Analysed({
+    Key? key,
+    required this.goal,
+    required this.gender,
+    required this.age,
+    required this.height,
+    required this.weight,
+    required this.weightUnit,
+    required this.activityLevel,
+  }) : super(key: key);
 
   @override
   State<Analysed> createState() => _AnalysedState();
@@ -38,7 +56,16 @@ class _AnalysedState extends State<Analysed>
       if (status == AnimationStatus.completed) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const GetStarted()),
+          MaterialPageRoute(
+              builder: (context) => Signup(
+                    goal: widget.goal,
+                    weight: widget.weight,
+                    gender: widget.gender,
+                    age: widget.age,
+                    height: widget.height,
+                    weightUnit: widget.weight,
+                    activityLevel: widget.activityLevel,
+                  )),
         );
       }
     });

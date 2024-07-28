@@ -50,10 +50,12 @@ class _QuizThreeState extends State<QuizThree> {
                   selectedIndex = isSelected ? 0 : -1;
                 });
                 Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const Gender()),
-                              );
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const Gender(
+                            goal: '',
+                          )),
+                );
               },
             ),
             CustomButton(

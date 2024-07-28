@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/MyHome.dart';
 import 'package:move_as_one/Services/auth_services.dart';
+import 'package:move_as_one/userSide/InfoQuiz/Goal/Goal.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/ForgotPassword/ForgotPassword.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Login/LoginComponents/SvgIconButton.dart';
 import 'package:move_as_one/myutility.dart';
@@ -171,7 +172,7 @@ class _SigninState extends State<Signin> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const Signup()),
+                                builder: (context) => const Goal()),
                           );
                         },
                         child: Text(

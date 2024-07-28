@@ -1,15 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
-
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/PageIndicator.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/ProgressBar.dart';
 import 'package:move_as_one/myutility.dart';
-import 'package:move_as_one/userSide/InfoQuiz/HowTall/HowTall.dart';
+
+import 'package:move_as_one/userSide/InfoQuiz/HowTall/HowTall.dart'; // Import HowTall screen
 
 class Age extends StatefulWidget {
-  const Age({Key? key});
+  final String goal;
+  final String gender;
+
+  const Age({Key? key, required this.goal, required this.gender});
 
   @override
   State<Age> createState() => _AgeState();
@@ -20,24 +21,17 @@ class _AgeState extends State<Age> {
   final scrollController = FixedExtentScrollController();
   final List<int> ages = List.generate(100, (index) => index + 1);
 
-  //stores selected age into collection
-  void _storeAge(int age) async {
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        await FirebaseFirestore.instance
-            .collection("users")
-            .doc(user.uid)
-            .update({"age": age});
-      }
-      //navigate to next page
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HowTall()),
-      );
-    } catch (e) {
-      // Handle error if needed
-    }
+  void _navigateToHowTall(int age) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HowTall(
+          goal: widget.goal,
+          gender: widget.gender,
+          age: age.toString(),
+        ),
+      ),
+    );
   }
 
   @override
@@ -131,10 +125,9 @@ class _AgeState extends State<Age> {
               width: MyUtility(context).width / 1.2,
               height: MyUtility(context).height * 0.06,
               child: ElevatedButton(
-                //id selected age isnt -1 stores age inside int 'selectedAage'
                 onPressed: () {
                   if (selectedAge != -1) {
-                    _storeAge(selectedAge);
+                    _navigateToHowTall(selectedAge);
                   }
                 },
                 style: ButtonStyle(

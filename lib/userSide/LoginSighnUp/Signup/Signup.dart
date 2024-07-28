@@ -10,7 +10,23 @@ import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/Privac
 import 'package:move_as_one/myutility.dart';
 
 class Signup extends StatefulWidget {
-  const Signup({super.key});
+  final String goal;
+  final String gender;
+  final String height;
+  final String weight;
+  final String weightUnit;
+  final String age;
+  final String activityLevel;
+
+  const Signup(
+      {super.key,
+      required this.goal,
+      required this.gender,
+      required this.age,
+      required this.height,
+      required this.weight,
+      required this.weightUnit,
+      required this.activityLevel});
 
   @override
   State<Signup> createState() => _SignupState();
@@ -46,6 +62,13 @@ class _SignupState extends State<Signup> {
           userName: _nameController.text,
           email: _emailController.text,
           password: password,
+          goal: widget.goal,
+          weight: widget.weight,
+          gender: widget.gender,
+          age: widget.age,
+          height: widget.height,
+          weightUnit: widget.weight,
+          activityLevel: widget.activityLevel,
           context: context);
     }
   }

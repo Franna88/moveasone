@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Analysed/Analysed.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/CustomButton.dart';
@@ -8,7 +6,22 @@ import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/ProgressBar.da
 import 'package:move_as_one/myutility.dart';
 
 class PhysicalLevel extends StatefulWidget {
-  const PhysicalLevel({Key? key});
+  final String goal;
+  final String gender;
+  final String height;
+  final String weight;
+  final String weightUnit;
+  final String age;
+
+  const PhysicalLevel({
+    Key? key,
+    required this.goal,
+    required this.gender,
+    required this.age,
+    required this.height,
+    required this.weight,
+    required this.weightUnit,
+  }) : super(key: key);
 
   @override
   State<PhysicalLevel> createState() => _PhysicalLevelState();
@@ -17,25 +30,21 @@ class PhysicalLevel extends StatefulWidget {
 class _PhysicalLevelState extends State<PhysicalLevel> {
   int selectedIndex = -1;
 
-  final email = TextEditingController();
-  final password = TextEditingController();
-
-  void _storeactivityLevel(String activityLevel) async {
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        await FirebaseFirestore.instance
-            .collection("users")
-            .doc(user.uid)
-            .update({"activityLevel": activityLevel});
-      }
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const Analysed()),
-      );
-    } catch (e) {
-      // Handle error if needed
-    }
+  void _storeActivityLevel(String activityLevel) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Analysed(
+          goal: widget.goal,
+          gender: widget.gender,
+          height: widget.height,
+          weight: widget.weight,
+          weightUnit: widget.weightUnit,
+          activityLevel: activityLevel,
+          age: widget.age,
+        ),
+      ),
+    );
   }
 
   @override
@@ -78,7 +87,7 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
                   selectedIndex = isSelected ? 0 : -1;
                 });
                 if (isSelected) {
-                  _storeactivityLevel('Rookie');
+                  _storeActivityLevel('Rookie');
                 }
               },
             ),
@@ -90,7 +99,7 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
                   selectedIndex = isSelected ? 1 : -1;
                 });
                 if (isSelected) {
-                  _storeactivityLevel('Beginner');
+                  _storeActivityLevel('Beginner');
                 }
               },
             ),
@@ -102,7 +111,7 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
                   selectedIndex = isSelected ? 2 : -1;
                 });
                 if (isSelected) {
-                  _storeactivityLevel('Intermediate');
+                  _storeActivityLevel('Intermediate');
                 }
               },
             ),
@@ -114,7 +123,7 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
                   selectedIndex = isSelected ? 3 : -1;
                 });
                 if (isSelected) {
-                  _storeactivityLevel('Advance');
+                  _storeActivityLevel('Advance');
                 }
               },
             ),
@@ -126,7 +135,7 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
                   selectedIndex = isSelected ? 4 : -1;
                 });
                 if (isSelected) {
-                  _storeactivityLevel('Ultimate');
+                  _storeActivityLevel('Ultimate');
                 }
               },
             ),

@@ -7,7 +7,18 @@ import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/InfoQuiz/PhysicalLevel/PhysicalLevel.dart';
 
 class Weight extends StatefulWidget {
-  const Weight({Key? key});
+  final String goal;
+  final String gender;
+  final String age;
+  final String height;
+
+  const Weight(
+      {Key? key,
+      required this.goal,
+      required this.gender,
+      required this.age,
+      required this.height})
+      : super(key: key);
 
   @override
   State<Weight> createState() => _WeightState();
@@ -43,7 +54,16 @@ class _WeightState extends State<Weight> {
       }
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const PhysicalLevel()),
+        MaterialPageRoute(
+          builder: (context) => PhysicalLevel(
+            goal: widget.goal,
+            gender: widget.gender,
+            age: widget.age,
+            height: widget.height,
+            weight: weight.toString(),
+            weightUnit: unit,
+          ),
+        ),
       );
     } catch (e) {
       // Handle error if needed

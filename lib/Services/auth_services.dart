@@ -28,6 +28,13 @@ class AuthService {
     required String password,
     required String userName,
     required BuildContext context,
+    required String goal,
+    required String gender,
+    required String height,
+    required String weight,
+    required String weightUnit,
+    required String age,
+    required String activityLevel,
   }) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
@@ -38,6 +45,13 @@ class AuthService {
         "email": email,
         "id": userCredential.user!.uid,
         "status": "user",
+        "goal": goal,
+        "gender": gender,
+        "age": age,
+        "height": height,
+        "weight": weight,
+        "activityLevel": activityLevel,
+        "userVideos": []
       };
       await FirebaseFirestore.instance
           .collection("users")

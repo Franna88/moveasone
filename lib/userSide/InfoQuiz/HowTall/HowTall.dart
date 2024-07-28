@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/PageIndicator.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/ProgressBar.dart';
@@ -10,7 +8,13 @@ import 'package:move_as_one/userSide/InfoQuiz/Weight/Weight.dart';
 enum HeightUnit { centimeters, feet }
 
 class HowTall extends StatefulWidget {
-  const HowTall({Key? key});
+  final String goal;
+  final String gender;
+  final String age;
+
+  const HowTall(
+      {Key? key, required this.goal, required this.gender, required this.age})
+      : super(key: key);
 
   @override
   State<HowTall> createState() => _HowTallState();
@@ -28,24 +32,20 @@ class _HowTallState extends State<HowTall> {
         .join(", ");
   }).join(", ").split(", "); // Generate heights in feet and inches
 
-  HeightUnit selectedUnit = HeightUnit.centimeters; // Default to centimieters
+  HeightUnit selectedUnit = HeightUnit.centimeters; // Default to centimeters
 
-  void _storeHeight(dynamic height) async {
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        await FirebaseFirestore.instance
-            .collection("users")
-            .doc(user.uid)
-            .update({"height": height.toString()});
-      }
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const Weight()),
-      );
-    } catch (e) {
-      // Handle error if needed
-    }
+  void _navigateToWeight(dynamic height) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Weight(
+          goal: widget.goal,
+          gender: widget.gender,
+          age: widget.age,
+          height: height.toString(),
+        ), // Pass goal, gender, age, and height to Weight screen
+      ),
+    );
   }
 
   @override
@@ -206,7 +206,7 @@ class _HowTallState extends State<HowTall> {
               child: ElevatedButton(
                 onPressed: () {
                   if (selectedHeight != -1) {
-                    _storeHeight(selectedHeight);
+                    _navigateToWeight(selectedHeight);
                   }
                 },
                 style: ButtonStyle(
