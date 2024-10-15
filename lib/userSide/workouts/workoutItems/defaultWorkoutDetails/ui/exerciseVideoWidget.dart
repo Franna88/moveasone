@@ -16,18 +16,21 @@ class ExerciseVideoWidget extends StatefulWidget {
   final String userType;
   final Map entireExercise;
   final String type;
+  final String restTime;
 
-  const ExerciseVideoWidget(
-      {super.key,
-      required this.docId,
-      required this.imageUrl,
-      required this.header,
-      required this.info,
-      required this.userType,
-      required this.list,
-      required this.warmupData,
-      required this.entireExercise,
-      required this.type});
+  const ExerciseVideoWidget({
+    super.key,
+    required this.docId,
+    required this.imageUrl,
+    required this.header,
+    required this.info,
+    required this.userType,
+    required this.list,
+    required this.warmupData,
+    required this.entireExercise,
+    required this.type,
+    required this.restTime,
+  });
 
   @override
   State<ExerciseVideoWidget> createState() => _ExerciseVideoWidgetState();

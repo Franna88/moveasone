@@ -8,7 +8,12 @@ import '../../../components/timerEdit.dart';
 class Rest extends StatefulWidget {
   String imageUrl;
   Function changePageIndex;
-  Rest({super.key, required this.imageUrl, required this.changePageIndex});
+  final int time;
+  Rest(
+      {super.key,
+      required this.imageUrl,
+      required this.changePageIndex,
+      required this.time});
 
   @override
   State<Rest> createState() => _RestState();
@@ -45,7 +50,7 @@ class _RestState extends State<Rest> {
               height: heightDevice * 0.05,
             ),
             TimeEdit(
-              timeCountDown: 25,
+              timeCountDown: widget.time,
             ),
             Spacer(),
             Row(

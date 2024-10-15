@@ -51,8 +51,8 @@ class _MyTimeSliderState extends State<MyTimeSlider> {
           child: Slider(
             value: _sliderValue,
             min: 1,
-            max: 35,
-            divisions: 34,
+            max: 90,
+            divisions: 89,
             onChanged: (value) {
               setState(() {
                 _sliderValue = value;
@@ -66,7 +66,7 @@ class _MyTimeSliderState extends State<MyTimeSlider> {
   }
 
   Color _getTrackColor() {
-    double t = (_sliderValue - 1) / (35 - 1);
+    double t = (_sliderValue - 1) / (90 - 1);
     return Color.lerp(Colors.blue, Colors.purple, t)!;
   }
 }

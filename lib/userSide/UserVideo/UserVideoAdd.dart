@@ -23,7 +23,7 @@ class _UserAddVideoState extends State<UserAddVideo> {
     return MainContainer(
       children: [
         HeaderWidget1(
-          header: 'NEW SHORT',
+          header: 'NEW Video',
           onPress: () {
             Navigator.push(
               context,

@@ -196,8 +196,8 @@ class _NewVideosGridViewState extends State<NewVideosGridView>
                     child: Column(
                       children: [
                         Container(
-                          height: heightDevice * 0.10,
-                          width: widthDevice * 0.10,
+                          height: heightDevice * 0.12,
+                          width: widthDevice * 0.25,
                           decoration: BoxDecoration(
                             image: DecorationImage(
                                 image: NetworkImage(

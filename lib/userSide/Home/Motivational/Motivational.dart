@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/userSide/Home/GetStartedComponents/ResueableImage.dart';
-import 'package:move_as_one/userSide/Home/Motivational/MotivationalComponents/MotivationalContainer.dart';
-import 'package:move_as_one/userSide/Home/YourWorkouts/YourWorkoutComponents/ReuseableContainer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:move_as_one/myutility.dart';
+import 'package:move_as_one/userSide/Home/Motivational/MotivationalComponents/MotivationalContainer.dart';
+import 'package:move_as_one/WorkoutCreatorVIdeo/FullScreenVideoPlayer.dart';
 
 class Motivational extends StatefulWidget {
   const Motivational({super.key});
@@ -46,29 +46,52 @@ class _MotivationalState extends State<Motivational> {
           SizedBox(
             height: MyUtility(context).height * 0.01,
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MyUtility(context).width * 0.02,
-                ),
-                MotivationalContainer(
-                  image: 'images/youJoy.png',
-                  motivational: "Your Joy",
-                  color: Colors.white,
-                ),
-                MotivationalContainer(
-                  image: 'images/innerPeace.png',
-                  motivational: "Inner Peace",
-                  color: Colors.black,
-                ),
-                MotivationalContainer(
-                  image: 'images/joy.png',
-                  motivational: "Weight loss\nTraining",
-                  color: Colors.white,
-                ),
-              ],
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('motivation')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return Center(
+                      child: Text('No motivational videos available.'));
+                }
+
+                var motivationalVideos = snapshot.data!.docs;
+
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: motivationalVideos.map((video) {
+                      var data = video.data() as Map<String, dynamic>;
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: MotivationalContainer(
+                          image: data['imageUrl'] ?? data['thumbnailUrl'],
+                          motivational: data['videoName'],
+                          color: Colors.white,
+                          onPress: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FullScreenVideoPlayer(
+                                  videoUrl: data['videoUrl'],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                );
+              },
             ),
           ),
         ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:move_as_one/admin/adminItems/bookings/chat/myChat.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/memberProgress.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/profileAboutItems/profileAbout.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/ui/MylinearProgressBar.dart';
@@ -11,13 +12,28 @@ import 'package:move_as_one/admin/adminItems/memberManagement/ui/workoutStatusWi
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/UserProfile/LastWorkout/LastWorkout.dart';
 import 'package:move_as_one/userSide/settingsPrivacy/settingsItems/settingsMain.dart';
+import 'package:move_as_one/userSide/userProfile/LastWorkout/LastWorkout.dart';
+import 'package:move_as_one/userSide/userProfile/LastWorkout/LastWorkoutComponents/LastworkoutsDisplay.dart';
 import 'package:move_as_one/userSide/userProfile/commonUi/mainContentContainer.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/editProfile/editProfileMain.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/myProgress/myProgressMain.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/ui/statusPaymentBar.dart';
 
 class MemberProfile extends StatelessWidget {
-  const MemberProfile({super.key});
+  final String memberName;
+  final String memberImage;
+  final String memberBio;
+  final String memberWebsite;
+  final String userId; // Add userId as a parameter to fetch specific user data
+
+  const MemberProfile({
+    super.key,
+    required this.memberName,
+    required this.memberImage,
+    required this.memberBio,
+    required this.memberWebsite,
+    required this.userId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -87,13 +103,11 @@ class MemberProfile extends StatelessWidget {
                                 builder: (context) => const ProfileAbout()),
                           );
                         },
-                        child: ClipOval(
-                          child: Image.asset(
-                            'images/Avatar1.jpg',
-                            width: 75,
-                            height: 75,
-                            fit: BoxFit.cover,
-                          ),
+                        child: CircleAvatar(
+                          radius: 40,
+                          backgroundImage: memberImage.isNotEmpty
+                              ? NetworkImage(memberImage)
+                              : AssetImage('images/avatar1.png'),
                         ),
                       ),
                       SizedBox(width: 10),
@@ -227,7 +241,7 @@ class MemberProfile extends StatelessWidget {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: 'Lana Stepsson',
+                            text: memberName,
                             style: TextStyle(
                               color: Color(0xFF1E1E1E),
                               fontSize: 18,
@@ -263,7 +277,7 @@ class MemberProfile extends StatelessWidget {
                   child: SizedBox(
                     width: 311,
                     child: Text(
-                      "I love doing fitness, it's true that I hate everything else ",
+                      memberBio,
                       style: TextStyle(
                         color: Color(0xFF1E1E1E),
                         fontSize: 17,
@@ -277,7 +291,7 @@ class MemberProfile extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 20),
                   child: SizedBox(
                     child: Text(
-                      'taplink.cc/lana_steps',
+                      memberWebsite,
                       style: TextStyle(
                         color: Color(0xFF006261),
                         fontSize: 14,
@@ -312,7 +326,19 @@ class MemberProfile extends StatelessWidget {
                             ),
                           ),
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MyChat(
+                                    userId: userId,
+                                    userName: memberName,
+                                    userPic: memberImage,
+                                    chatId: '',
+                                  ),
+                                ),
+                              );
+                            },
                             child: Center(
                               child: Text(
                                 'Message',
@@ -338,7 +364,8 @@ class MemberProfile extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const MemberProgressMain(),
+                                builder: (context) =>
+                                    const MemberProgressMain(),
                               ),
                             );
                           },
@@ -356,7 +383,9 @@ class MemberProfile extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 25),
                   child: MemberProfileDatCon(
-                    child: LastWorkout(),
+                    child: Lastworkoutsdisplay(
+                      userId: userId,
+                    ),
                   ),
                 ),
                 Padding(
@@ -414,7 +443,9 @@ class MemberProfile extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 35,),
+                const SizedBox(
+                  height: 35,
+                ),
                 Center(
                   child: Container(
                     width: 161,
@@ -451,7 +482,9 @@ class MemberProfile extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 35,),
+                const SizedBox(
+                  height: 35,
+                ),
               ],
             ),
           ),

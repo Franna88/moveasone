@@ -1,61 +1,170 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/models/watchMemberModel.dart';
+import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/memberProfile.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/ui/watchButton.dart';
 import 'package:move_as_one/commonUi/myDivider.dart';
 
-class WatchedMembersListView extends StatelessWidget {
-  const WatchedMembersListView({
-    super.key,
-  });
+class WatchedMembersListView extends StatefulWidget {
+  const WatchedMembersListView({super.key});
 
+  @override
+  State<WatchedMembersListView> createState() => _WatchedMembersListViewState();
+}
+
+class _WatchedMembersListViewState extends State<WatchedMembersListView> {
   @override
   Widget build(BuildContext context) {
     var heightDevice = MediaQuery.of(context).size.height;
     var widthDevice = MediaQuery.of(context).size.width;
+
+    // Stream that listens to changes in the users collection
+    Stream<QuerySnapshot> _usersStream =
+        FirebaseFirestore.instance.collection('users').snapshots();
+
     return Container(
       width: widthDevice,
       height: heightDevice * 0.90,
-      child: ListView.builder(
-          itemCount: watchedMembers.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          radius: 25,
-                          backgroundImage:
-                              AssetImage(watchedMembers[index].memberImage),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          watchedMembers[index].memberName,
-                          style: TextStyle(
-                            color: Color(0xFF1E1E1E),
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
-                            height: 1,
-                          ),
-                        ),
-                        Spacer(),
-                        WatchButton()
-                      ],
-                    ),
-                  ),
-                  MyDivider()
-                ],
-              ),
+      child: StreamBuilder<QuerySnapshot>(
+        stream: _usersStream,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          // Handling errors
+          if (snapshot.hasError) {
+            return Center(child: Text('Something went wrong'));
+          }
+
+          // Showing loading indicator while waiting for data
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          // Handling empty data
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No users found'));
+          }
+
+          // Get the current date and time
+          DateTime now = DateTime.now();
+
+          // Filter users based on their last workout date
+          var filteredMembers =
+              snapshot.data!.docs.where((DocumentSnapshot document) {
+            Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+            List<dynamic> userExercises = data['userExercises'] ?? [];
+
+            // Find the latest workout date
+            DateTime? lastWorkoutDate;
+            if (userExercises.isNotEmpty) {
+              lastWorkoutDate = userExercises
+                  .map((exercise) => DateTime.parse(exercise['date']))
+                  .reduce((a, b) => a.isAfter(b) ? a : b);
+            }
+
+            // Check if the last workout date is more than 6 days ago
+            return lastWorkoutDate == null ||
+                now.difference(lastWorkoutDate).inDays > 6;
+          }).toList();
+
+          // Handling empty filtered data
+          if (filteredMembers.isEmpty) {
+            return Center(
+                child: Text(
+                    'No users found who haven\'t logged a workout in the last 6 days'));
+          }
+
+          // Mapping Firestore documents to WatchMemberModel
+          var watchedMembers = filteredMembers.map((DocumentSnapshot document) {
+            Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+            return WatchMemberModel(
+              userId: document.id,
+              memberName: data['name'] ?? 'Unknown Name',
+              memberImage: data['profilePic'] ?? '',
+              memberBio: data['bio'] ?? 'No bio available',
+              memberWebsite: data['website'] ?? '',
             );
-          }),
+          }).toList();
+
+          return ListView.builder(
+            itemCount: watchedMembers.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MemberProfile(
+                        userId: watchedMembers[index].userId,
+                        memberName: watchedMembers[index].memberName,
+                        memberImage: watchedMembers[index].memberImage,
+                        memberBio: watchedMembers[index].memberBio,
+                        memberWebsite: watchedMembers[index].memberWebsite,
+                      ),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: Colors.grey,
+                              radius: 25,
+                              backgroundImage: watchedMembers[index]
+                                      .memberImage
+                                      .isNotEmpty
+                                  ? NetworkImage(
+                                      watchedMembers[index].memberImage)
+                                  : AssetImage(
+                                      'images/avatar1.png'), // Default image path
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Text(
+                              watchedMembers[index].memberName,
+                              style: TextStyle(
+                                color: Color(0xFF1E1E1E),
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                                height: 1,
+                              ),
+                            ),
+                            Spacer(),
+                            WatchButton()
+                          ],
+                        ),
+                      ),
+                      MyDivider()
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
+}
+
+// Model to represent a watched member
+class WatchMemberModel {
+  final String userId;
+  final String memberName;
+  final String memberImage;
+  final String memberBio;
+  final String memberWebsite;
+
+  WatchMemberModel({
+    required this.userId,
+    required this.memberName,
+    required this.memberImage,
+    required this.memberBio,
+    required this.memberWebsite,
+  });
 }

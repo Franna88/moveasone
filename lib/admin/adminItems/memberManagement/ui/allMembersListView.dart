@@ -24,12 +24,20 @@ class AllMembersListView extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const MemberProfile()),
-  );
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MemberProfile(
+                              memberName: '',
+                              memberImage: '',
+                              memberBio: '',
+                              memberWebsite: '',
+                              userId: '',
+                            )),
+                  );
                 },
                 child: FullMemberWidget(
-                  ratingContainerColor: fullMemberInfo[index].ratingContainerColor,
+                  ratingContainerColor:
+                      fullMemberInfo[index].ratingContainerColor,
                   memberImage: fullMemberInfo[index].memberImage,
                   memberName: fullMemberInfo[index].memberName,
                   trianingType: fullMemberInfo[index].trianingType,

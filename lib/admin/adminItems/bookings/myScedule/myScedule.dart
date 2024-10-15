@@ -32,7 +32,6 @@ class MyScedule extends StatelessWidget {
             ),
             child: Column(
               children: [
-                
                 BookingUserItem(
                     userPic: 'images/comment1.jpg',
                     userName: 'Anika Workman',

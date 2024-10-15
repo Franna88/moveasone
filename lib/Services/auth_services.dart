@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:move_as_one/MyHome.dart';
 import 'package:move_as_one/Services/UserState.dart';
-import 'package:move_as_one/userSide/LoginSighnUp/Login/Signin.dart';
+import 'package:move_as_one/userSide/LoginSighnUp/Signup/IntroVideoScreen.dart';
 
 class AuthService {
   successProcess(context) {
@@ -18,30 +17,33 @@ class AuthService {
         fontSize: 16.0);
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (BuildContext context) => Signin()),
+      MaterialPageRoute(builder: (BuildContext context) => IntroVideoScreen()),
     );
   }
 
   //sign up
-  Future<void> Signup({
-    required String email,
-    required String password,
-    required String userName,
-    required BuildContext context,
-    required String goal,
-    required String gender,
-    required String height,
-    required String weight,
-    required String weightUnit,
-    required String age,
-    required String activityLevel,
-  }) async {
+  Future<void> Signup(
+      {required String email,
+      required String password,
+      required String userName,
+      required BuildContext context,
+      required String goal,
+      required String gender,
+      required String height,
+      required String weight,
+      required String weightUnit,
+      required String age,
+      required String activityLevel,
+      int hiFive = 0}) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
       var userAccountDetails = {
         "name": userName,
+        "profilePic": "",
+        "bio": "",
+        "website": "",
         "email": email,
         "id": userCredential.user!.uid,
         "status": "user",
@@ -51,7 +53,10 @@ class AuthService {
         "height": height,
         "weight": weight,
         "activityLevel": activityLevel,
-        "userVideos": []
+        "userVideos": [],
+        "userExercises": [],
+        'friendsList': [],
+        "hiFive": hiFive
       };
       await FirebaseFirestore.instance
           .collection("users")

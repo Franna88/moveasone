@@ -28,7 +28,9 @@ class _LastWorkoutImagesState extends State<LastWorkoutImages> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
               image: DecorationImage(
-                image: AssetImage(widget.image),
+                image: widget.image.isNotEmpty
+                    ? NetworkImage(widget.image)
+                    : AssetImage('assets/placeholder.png') as ImageProvider,
                 fit: BoxFit.fill,
               ),
             ),
@@ -44,8 +46,8 @@ class _LastWorkoutImagesState extends State<LastWorkoutImages> {
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w400,
               ),
-              softWrap: true, // Allow text to wrap onto multiple lines
-              overflow: TextOverflow.visible, // Handle overflow appropriately
+              softWrap: true,
+              overflow: TextOverflow.visible,
             ),
           )
         ],

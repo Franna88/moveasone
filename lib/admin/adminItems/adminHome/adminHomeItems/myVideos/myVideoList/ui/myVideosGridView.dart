@@ -42,6 +42,73 @@ class _MyVideoGridViewState extends State<MyVideoGridView>
     });
   }
 
+  Future<void> _showEditDialog(String videoId, String currentName) async {
+    TextEditingController _controller =
+        TextEditingController(text: currentName);
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Edit Video'),
+              IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _controller,
+                decoration: InputDecoration(labelText: 'Video Name'),
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (_controller.text.isNotEmpty) {
+                        await FirebaseFirestore.instance
+                            .collection('shorts')
+                            .doc(videoId)
+                            .update({'videoName': _controller.text});
+                        _refreshVideos();
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.1,
+                        child: Text('Save')),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      showDeleteDialog(context, videoId, _refreshVideos);
+                    },
+                    child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.1,
+                        child: Text('Delete')),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var heightDevice = MediaQuery.of(context).size.height;
@@ -81,7 +148,7 @@ class _MyVideoGridViewState extends State<MyVideoGridView>
                     );
                   },
                   onLongPress: () {
-                    showDeleteDialog(context, videoId, _refreshVideos);
+                    _showEditDialog(videoId, videoName);
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(1.0),

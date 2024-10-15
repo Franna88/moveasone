@@ -39,7 +39,12 @@ class _UserImageStackState extends State<UserImageStack> {
                     CircleAvatar(
                       backgroundColor: Colors.grey,
                       radius: 40,
-                      backgroundImage: NetworkImage(widget.userPic),
+                      backgroundImage: widget.userPic.isNotEmpty
+                          ? NetworkImage(widget.userPic)
+                          : null,
+                      child: widget.userPic.isEmpty
+                          ? Icon(Icons.person, size: 40, color: Colors.white)
+                          : null,
                     ),
                     Positioned(
                       right: 19,

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/workoutsFullLenght.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/creatorFullView/warmUpCreator.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/overlayItems/resultsScreenOne.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
@@ -67,7 +68,11 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
           "workouts": document.get('workouts'),
           "coolDowns": document.get('coolDowns'),
           "restTime": document.get('time'),
+          "bodyArea": document.get("bodyArea"),
+          "displayImage": document.get('displayImage')
         };
+
+        print('entireExercise: $entireExercise'); // Debug print
 
         workout = document;
         imageUrl = document.get('displayImage');
@@ -82,6 +87,10 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
         coolDowns.addAll(document.get('coolDowns'));
 
         for (var i = 0; i < warmUps.length; i++) {
+          int minutes = warmUps[i]['selectedMinutes'] ?? 0;
+          int seconds = warmUps[i]['selectedSeconds'] ?? 0;
+          String restTime = '$minutes min $seconds sec';
+
           warmupWidgets.add(
             ExerciseVideoWidget(
               imageUrl: warmUps[i]['image'] ?? 'images/upperBody.png',
@@ -93,10 +102,15 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
               warmupData: warmUps[i],
               entireExercise: entireExercise,
               type: "warmUps",
+              restTime: restTime, // Fetch rest time
             ),
           );
         }
         for (var i = 0; i < workouts.length; i++) {
+          int minutes = workouts[i]['selectedMinutes'] ?? 0;
+          int seconds = workouts[i]['selectedSeconds'] ?? 0;
+          String restTime = '$minutes min $seconds sec';
+
           workoutWidgets.add(
             ExerciseVideoWidget(
               imageUrl: workouts[i]['image'] ?? 'images/upperBody.png',
@@ -108,10 +122,15 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
               warmupData: workouts[i],
               entireExercise: entireExercise,
               type: "workouts",
+              restTime: restTime, // Fetch rest time
             ),
           );
         }
         for (var i = 0; i < coolDowns.length; i++) {
+          int minutes = coolDowns[i]['selectedMinutes'] ?? 0;
+          int seconds = coolDowns[i]['selectedSeconds'] ?? 0;
+          String restTime = '$minutes min $seconds sec';
+
           cooldownWidgets.add(
             ExerciseVideoWidget(
               imageUrl: coolDowns[i]['image'] ?? 'images/upperBody.png',
@@ -123,6 +142,7 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
               warmupData: coolDowns[i],
               entireExercise: entireExercise,
               type: "coolDowns",
+              restTime: restTime, // Fetch rest time
             ),
           );
         }
@@ -204,7 +224,8 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const ResultsScreenOne()),
+                    builder: (context) =>
+                        const /*ResultsScreenOne()*/ WorkoutsFullLenght()),
               );
             },
             child: DetailContainer(

@@ -114,7 +114,8 @@ class _GetStartedState extends State<GetStarted> {
                           child: Text(
                             subtitleText,
                             style: TextStyle(
-                              color: Color(0xA5006261),
+                              color: /*Color(0xA5006261)*/
+                                  Color.fromARGB(255, 116, 235, 217),
                               fontSize: 16,
                               fontFamily: 'Be Vietnam',
                               fontWeight: FontWeight.w400,

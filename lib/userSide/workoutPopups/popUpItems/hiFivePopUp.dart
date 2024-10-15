@@ -4,7 +4,9 @@ import 'package:move_as_one/userSide/workoutPopups/ui/replyEmoji.dart';
 import 'package:move_as_one/userSide/workoutPopups/ui/senderName.dart';
 
 class HiFivePopUp extends StatelessWidget {
-  const HiFivePopUp({super.key});
+  final String senderName;
+
+  const HiFivePopUp({Key? key, required this.senderName}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +21,10 @@ class HiFivePopUp extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             image: DecorationImage(
               colorFilter: ColorFilter.mode(
-                    Color.fromARGB(151, 0, 0, 0), BlendMode.colorBurn),
-                image: AssetImage('images/commonImg.png'),
-                fit: BoxFit.cover),
+                  Color.fromARGB(151, 0, 0, 0), BlendMode.colorBurn),
+              image: AssetImage('images/commonImg.png'),
+              fit: BoxFit.cover,
+            ),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -32,10 +35,13 @@ class HiFivePopUp extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.close,
-                        size: 30,
-                        color: Colors.white,
+                      GestureDetector(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Icon(
+                          Icons.close,
+                          size: 30,
+                          color: Colors.white,
+                        ),
                       ),
                       AnimatedEmoji(),
                     ],
@@ -43,7 +49,7 @@ class HiFivePopUp extends StatelessWidget {
                 ),
                 Spacer(),
                 //SENDERS NAME
-                SenderName(senderName: 'Anika Mango'),
+                SenderName(senderName: senderName),
                 Text(
                   'Just gave you a Hi-Five',
                   style: TextStyle(
@@ -60,12 +66,20 @@ class HiFivePopUp extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ReplyEmoji(replyText: 'Reply Thank you', emojiImage: 'images/thankYou.png',),
-                      ReplyEmoji(replyText: 'Hi-Five back', emojiImage: 'images/hiFive.png',)
+                      ReplyEmoji(
+                        replyText: 'Reply Thank you',
+                        emojiImage: 'images/thankYou.png',
+                      ),
+                      ReplyEmoji(
+                        replyText: 'Hi-Five back',
+                        emojiImage: 'images/hiFive.png',
+                      )
                     ],
                   ),
                 ),
-                const SizedBox(height: 30,)
+                const SizedBox(
+                  height: 30,
+                )
               ],
             ),
           ),

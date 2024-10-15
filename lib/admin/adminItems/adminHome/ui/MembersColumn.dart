@@ -4,7 +4,7 @@ import 'package:move_as_one/admin/adminItems/bookings/bookingsRequested/bookings
 import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/WatchedMembers.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/allMembers.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/lowMotivatedMembers.dart';
-import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/searchMembers.dart';
+import 'package:move_as_one/admin/adminItems/memberManagement/ui/AllMemberList.dart';
 import 'package:move_as_one/admin/commonUi/commonButtons.dart';
 import 'package:move_as_one/admin/commonUi/adminColors.dart';
 
@@ -29,7 +29,8 @@ class _MembersColumnState extends State<MembersColumn> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const SearchMembers()),
+                  MaterialPageRoute(
+                      builder: (context) => const WatchedMembers()),
                 );
                 //ADD LOGIC HERE
               },
@@ -40,7 +41,11 @@ class _MembersColumnState extends State<MembersColumn> {
           CommonButtons(
               buttonText: '6 Days Inactive',
               onTap: () {
-                //ADD LOGIC HERE
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const WatchedMembers()),
+                );
               },
               buttonColor: AdminColors().lightTeal),
           const SizedBox(
@@ -51,9 +56,9 @@ class _MembersColumnState extends State<MembersColumn> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const LowMotivatedMembers()),
+                  MaterialPageRoute(
+                      builder: (context) => const WatchedMembers()),
                 );
-                //ADD LOGIC HERE
               },
               buttonColor: AdminColors().lightTeal),
           const SizedBox(
@@ -64,9 +69,9 @@ class _MembersColumnState extends State<MembersColumn> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const WatchedMembers()),
+                  MaterialPageRoute(
+                      builder: (context) => const WatchedMembers()),
                 );
-                //ADD LOGIC HERE
               },
               buttonColor: AdminColors().lightTeal),
           const SizedBox(
@@ -92,7 +97,7 @@ class _MembersColumnState extends State<MembersColumn> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const AllMembers()),
+                      builder: (context) => const AllMemberList()),
                 );
                 //ADD LOGIC HERE
               },

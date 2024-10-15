@@ -29,7 +29,7 @@ class _WeekdaysContainerState extends State<WeekdaysContainer> {
         itemBuilder: (context, index) {
           var workout = widget.workoutDocuments[index];
           var docId = workout['docId'];
-          var warmupPhoto = workout['warmupPhoto'];
+          var warmupPhoto = workout['displayImage'];
           var selectedWeekdays = workout['selectedWeekdays'];
           var bodyArea = workout['bodyArea'];
 

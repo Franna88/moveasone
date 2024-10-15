@@ -44,13 +44,13 @@ List<String> equipmentList = [
   'Indoor Rower',
 ];
 
-List<String> restingPeriodList = [
+/*List<String> restingPeriodList = [
   '1 min',
   '1 min 15 Sec',
   '1 min 30 Sec',
   '2 min',
   '2 min 15 Sec',
-];
+];*/
 
 class WorkoutCreator extends StatefulWidget {
   final String documentId;
@@ -151,9 +151,7 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
       String downloadUrl = await storageRef.getDownloadURL();
 
       setState(() {
-        if (imageType == 'warmupPhoto') {
-          warmupPhotoUrl = downloadUrl;
-        }
+        warmupPhotoUrl = downloadUrl;
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -302,7 +300,7 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
                                 ),
                             ],
                           ),
-                          MyCreatorHeaders(text: 'Resting Period'),
+                          /* MyCreatorHeaders(text: 'Resting Period'),
                           Wrap(
                             children: [
                               for (var i = 0; i < restingPeriodList.length; i++)
@@ -323,7 +321,7 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
                                   },
                                 ),
                             ],
-                          ),
+                          ),*/
                           const SizedBox(height: 25),
                           MyCreatorHeaders(text: 'Select Display image'),
                           CommonButtons(

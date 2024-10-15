@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
+import 'package:move_as_one/admin/adminItems/workoutCreator/creatorFullView/ui/RestTimer.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -40,6 +41,7 @@ List<String> warmUpEquipmentList = [
   'Dumbells',
   'Kettlebell',
   'Resistance Bands',
+  'Gym machine'
 ];
 
 class WarmUpCreator extends StatefulWidget {
@@ -65,6 +67,8 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
   final TextEditingController _repetition = TextEditingController();
   final TextEditingController _warmupDescription = TextEditingController();
   double selectedTime = 1.0;
+  int selectedMinutes = 0;
+  int selectedSeconds = 0;
 
   String selectedTopic = '';
   String selectedDifficulty = '';
@@ -86,6 +90,8 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
       _warmupName.text = widget.warmupData!['name'] ?? '';
       _warmupDescription.text = widget.warmupData!['description'] ?? '';
       //selectedTime = widget.warmupData!['time'] ?? 1.0;
+      selectedMinutes = widget.warmupData!['selectedMinutes'] ?? 0;
+      selectedSeconds = widget.warmupData!['selectedSeconds'] ?? 0;
       selectedTopic = widget.warmupData!['topic'] ?? '';
       selectedDifficulty = widget.warmupData!['difficulty'] ?? '';
       selectedEquipment = widget.warmupData!['equipment'] ?? '';
@@ -119,7 +125,9 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
       'equipment': selectedEquipment,
       'image': imageUrl,
       'videoUrl': videoUrl,
-      'audioUrl': audioUrl
+      'audioUrl': audioUrl,
+      'selectedMinutes': selectedMinutes,
+      'selectedSeconds': selectedSeconds,
     };
 
     DocumentReference docRef =
@@ -149,7 +157,6 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
             ),
           );
         });
-        ;
       });
     } else {
       //Add
@@ -211,6 +218,42 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
     setState(() {
       isLoading = true;
     });
+    Uint8List webImage = Uint8List(8);
+    final ImagePicker picker = ImagePicker();
+    final XFile? video = await picker.pickVideo(source: ImageSource.gallery);
+
+    if (video == null) {
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    } else {
+      var f = await video.readAsBytes();
+      setState(() {
+        webImage = f;
+      });
+    }
+    var uuid = Uuid();
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child('workout_videos')
+        .child("${uuid.v1()}.mp4");
+    await ref.putData(webImage);
+    imageUrl = await ref.getDownloadURL().whenComplete(() {
+      isLoading = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('video uploaded successfully')),
+      );
+    });
+    final String downloadUrl = imageUrl.toString();
+    setState(() {
+      videoUrl = downloadUrl;
+      audioUrl = "";
+    });
+
+    /* setState(() {
+      isLoading = true;
+    });
 
     final ImagePicker picker = ImagePicker();
     final XFile? video = await picker.pickVideo(source: ImageSource.gallery);
@@ -254,7 +297,7 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
       setState(() {
         isLoading = false;
       });
-    }
+    }*/
   }
 
   PlatformFile? pickedFile;
@@ -471,6 +514,14 @@ class _WarmUpCreatorState extends State<WarmUpCreator> {
                           ),
                           const SizedBox(
                             height: 25,
+                          ),
+                          RestTimer(
+                            onTimeSelected: (int minutes, int seconds) {
+                              setState(() {
+                                selectedMinutes = minutes;
+                                selectedSeconds = seconds;
+                              });
+                            },
                           ),
                           CommonButtons(
                             buttonText: 'Select Image',

@@ -57,6 +57,9 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
     for (var i = 0; i < (widget.entireExercise['warmUps']).length; i++) {
       var warmUpData = widget.entireExercise['warmUps'][i];
 
+      int totalRestTimeInSeconds = (warmUpData['selectedMinutes'] ?? 0) * 60 +
+          (warmUpData['selectedSeconds'] ?? 0);
+
       for (var r = 0; r < (int.parse(warmUpData['repetition'])); r++) {
         exerciseBuild = {
           "type": "warmUp",
@@ -80,6 +83,7 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
           "repCounter": r + 1,
           "name": warmUpData['name'],
           "description": warmUpData['description'],
+          'timer': totalRestTimeInSeconds,
         };
 
         setState(() {
@@ -90,6 +94,10 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
     }
     for (var i = 0; i < (widget.entireExercise['workouts']).length; i++) {
       var workout = widget.entireExercise['workouts'][i];
+
+      int totalRestTimeInSeconds =
+          ((workout['selectedMinutes'] ?? 0) as int) * 60 +
+              ((workout['selectedSeconds'] ?? 0) as int);
 
       for (var r = 0; r < (int.parse(workout['repetition'])); r++) {
         exerciseBuild = {
@@ -114,6 +122,7 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
           "repCounter": r + 1,
           "name": workout['name'],
           "description": workout['description'],
+          'timer': totalRestTimeInSeconds,
         };
 
         setState(() {
@@ -123,8 +132,12 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
       }
     }
 
-    for (var i = 0; i < (widget.entireExercise['workouts']).length; i++) {
-      var coolDown = widget.entireExercise['workouts'][i];
+    for (var i = 0; i < (widget.entireExercise['coolDowns']).length; i++) {
+      var coolDown = widget.entireExercise['coolDowns'][i];
+
+      int totalRestTimeInSeconds =
+          ((coolDown['selectedMinutes'] ?? 0) as int) * 60 +
+              ((coolDown['selectedSeconds'] ?? 0) as int);
 
       for (var r = 0; r < (int.parse(coolDown['repetition'])); r++) {
         exerciseBuild = {
@@ -149,6 +162,7 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
           "repCounter": r + 1,
           "name": coolDown['name'],
           "description": coolDown['description'],
+          'timer': totalRestTimeInSeconds,
         };
 
         setState(() {
@@ -204,12 +218,15 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
             child: Rest(
               changePageIndex: changePageIndex,
               imageUrl: exerciseBuildList[exerciseIndex]['image'],
+              time: exerciseBuildList[exerciseIndex]['timer'] ?? 0,
             ),
           ),
         ),
         Visibility(
             visible: exerciseIndex == exerciseBuildList.length - 1,
-            child: DoneScreen()),
+            child: DoneScreen(
+              entireExercise: widget.entireExercise,
+            )),
       ],
     );
   }

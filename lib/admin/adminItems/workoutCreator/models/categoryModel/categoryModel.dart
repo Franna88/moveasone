@@ -33,13 +33,13 @@ List workoutCategories = [
     },
   ),
   CategoryModel(
-    categoryName: 'Strength',
+    categoryName: 'Gym Workout',
     workoutImage: 'images/placeHolder2.jpg',
     onTap: () {
       //ADD PAGE INDEX
     },
   ),
-  CategoryModel(
+  /*CategoryModel(
     categoryName: 'Special Challenge',
     workoutImage: 'images/placeholder3.jpg',
     onTap: () {
@@ -52,5 +52,5 @@ List workoutCategories = [
     onTap: () {
       //ADD PAGE INDEX
     },
-  ),
+  ),*/
 ];

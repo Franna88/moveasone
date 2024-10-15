@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:move_as_one/admin/adminItems/AddMotivation/MotivationAdd.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/ui/columnHeader.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/questionsScreens/checkInQuestions.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/workoutCategory/workoutCategoryMain.dart';
@@ -57,6 +58,18 @@ class _WorkoutsColumnState extends State<WorkoutsColumn> {
                       builder: (context) => const CheckInQuestions()),
                 );
                 //ADD LOGIC HERE
+              },
+              buttonColor: AdminColors().lightTeal),
+          ColumnHeader(header: 'Motivation'),
+          CommonButtons(
+              buttonText: 'Add Motivation',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => /*VideoBrowsPage()*/
+                          MotivationAdd()),
+                );
               },
               buttonColor: AdminColors().lightTeal),
         ],

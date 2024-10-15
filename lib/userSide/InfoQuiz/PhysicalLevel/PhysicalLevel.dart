@@ -79,7 +79,7 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
               ),
             ),
             SizedBox(height: MyUtility(context).height * 0.05),
-            CustomButton(
+            /*CustomButton(
               text: 'Rookie',
               isSelected: selectedIndex == 0,
               onPressed: (bool isSelected) {
@@ -90,7 +90,7 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
                   _storeActivityLevel('Rookie');
                 }
               },
-            ),
+            ),*/
             CustomButton(
               text: 'Beginner',
               isSelected: selectedIndex == 1,
@@ -127,7 +127,7 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
                 }
               },
             ),
-            CustomButton(
+            /*CustomButton(
               text: 'Ultimate',
               isSelected: selectedIndex == 4,
               onPressed: (bool isSelected) {
@@ -138,7 +138,7 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
                   _storeActivityLevel('Ultimate');
                 }
               },
-            ),
+            ),*/
           ],
         ),
       ),

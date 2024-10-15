@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:move_as_one/Services/UserState.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/writeAMessage.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/ui/columnHeader.dart';
 import 'package:move_as_one/admin/commonUi/commonButtons.dart';
 import 'package:move_as_one/admin/commonUi/adminColors.dart';
+import 'package:move_as_one/userSide/userProfile/MyCommuity/Other/AllMessagesDisplay.dart';
 
 class MessagesColumn extends StatefulWidget {
   const MessagesColumn({super.key});
@@ -36,7 +36,7 @@ class _MessagesColumnState extends State<MessagesColumn> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => WriteAMessage(),
+                  builder: (context) => AllMessagesDisplay(),
                 ),
               );
             },

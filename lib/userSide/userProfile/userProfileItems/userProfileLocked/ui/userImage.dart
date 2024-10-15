@@ -7,9 +7,9 @@ class UserImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-              backgroundColor: Colors.grey,
-              radius: 33,
-              backgroundImage: AssetImage(userImage),
-            );
+      backgroundColor: Colors.grey,
+      radius: 33,
+      backgroundImage: NetworkImage(userImage),
+    );
   }
 }

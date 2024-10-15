@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:move_as_one/userSide/UserProfile/LastWorkout/LastWorkout.dart';
+
 import 'package:move_as_one/userSide/UserProfile/MemberOptions/MemberOption.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/settingsPrivacy/settingsItems/settingsMain.dart';
+import 'package:move_as_one/userSide/userProfile/LastWorkout/LastWorkout.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/editProfile/editProfileMain.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/myProgress/myProgressMain.dart';
 
@@ -21,6 +22,7 @@ class _UserProfileState extends State<UserProfile> {
   String bio = '';
   String website = '';
   String profilePicUrl = '';
+  String userId = '';
 
   @override
   void initState() {
@@ -34,6 +36,7 @@ class _UserProfileState extends State<UserProfile> {
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
     if (doc.exists) {
       setState(() {
+        userId = uid;
         name = doc.get('name');
         bio = doc.get('bio');
         website = doc.get('website');
@@ -102,14 +105,23 @@ class _UserProfileState extends State<UserProfile> {
                       SizedBox(
                         width: MyUtility(context).width * 0.05,
                       ),
-                      ClipOval(
-                        child: Image.network(
-                          profilePicUrl,
-                          width: 75,
-                          height: 75,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                      profilePicUrl.isNotEmpty
+                          ? ClipOval(
+                              child: Image.network(
+                                profilePicUrl,
+                                width: 75,
+                                height: 75,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Container(
+                              width: 75,
+                              height: 75,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey[300],
+                              ),
+                            ),
                       SizedBox(width: 10),
                       Column(
                         children: [
@@ -312,7 +324,9 @@ class _UserProfileState extends State<UserProfile> {
                 SizedBox(
                   height: MyUtility(context).height * 0.05,
                 ),
-                LastWorkout(),
+                LastWorkout(
+                  userId: userId,
+                ),
                 SizedBox(
                   height: MyUtility(context).height * 0.01,
                 ),

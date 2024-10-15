@@ -73,6 +73,7 @@ class WorkoutsFullLenght extends StatelessWidget {
                       ),
                     ),
                   ),
+                  // motivation button can also be found here
                   WorkoutsColumn(),
                   MembersColumn(),
                   MessagesColumn(),

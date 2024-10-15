@@ -21,7 +21,7 @@ class _UservideoviewState extends State<Uservideoview> {
     return MainContainer(
       children: [
         HeaderWidget1(
-          header: 'NEW SHORT',
+          header: 'NEW Video',
           onPress: () {
             Navigator.push(
               context,

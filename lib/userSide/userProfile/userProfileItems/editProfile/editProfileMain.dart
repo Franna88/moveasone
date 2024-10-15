@@ -9,6 +9,7 @@ import 'package:move_as_one/commonUi/headerWidget.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
 import 'package:move_as_one/commonUi/mySwitchButton.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
+import 'package:move_as_one/userSide/userProfile/UserProfile.dart';
 import 'package:move_as_one/userSide/userProfile/commonUi/goalsColors.dart';
 import 'package:move_as_one/userSide/userProfile/commonUi/goalsWidget.dart';
 import 'package:move_as_one/userSide/userProfile/commonUi/mainContentContainer.dart';
@@ -56,24 +57,47 @@ class _EditProfileMainState extends State<EditProfileMain> {
         _weightController.text = doc.get('weight');
         _profilePicUrl = doc.get('profilePic');
       });
+      print('User details fetched successfully.');
+    } else {
+      print('No user details found.');
     }
   }
 
   Future<void> saveUserDetails() async {
+    print('saveUserDetails called.');
+
     final uid = FirebaseAuth.instance.currentUser!.uid;
-    await FirebaseFirestore.instance.collection('users').doc(uid).update({
-      'name': _nameController.text,
-      'bio': _bioController.text,
-      'website': _websiteController.text,
-      'gender': _genderController.text,
-      'age': _ageController.text,
-      'height': _heightController.text,
-      'weight': _weightController.text,
-      'profilePic': _profilePicUrl,
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Profile updated successfully!')),
-    );
+
+    // Capture the data from the text controllers
+    final name = _nameController.text;
+    final bio = _bioController.text;
+    final website = _websiteController.text;
+    final gender = _genderController.text;
+    final age = _ageController.text;
+    final height = _heightController.text;
+    final weight = _weightController.text;
+
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'name': name,
+        'bio': bio,
+        'website': website,
+        'gender': gender,
+        'age': age,
+        'height': height,
+        'weight': weight,
+        'profilePic': _profilePicUrl,
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Profile updated successfully!')),
+      );
+      print('User details updated successfully.');
+    } catch (e) {
+      print('Failed to update user details: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update profile: $e')),
+      );
+    }
   }
 
   Future<void> pickImage() async {
@@ -81,7 +105,10 @@ class _EditProfileMainState extends State<EditProfileMain> {
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       File imageFile = File(pickedFile.path);
+      print('Image picked successfully.');
       await uploadImage(imageFile);
+    } else {
+      print('No image picked.');
     }
   }
 
@@ -103,14 +130,16 @@ class _EditProfileMainState extends State<EditProfileMain> {
         _profilePicUrl = downloadUrl;
       });
 
-      // image is stored to firebase on upload
       await FirebaseFirestore.instance.collection('users').doc(uid).update({
         'profilePic': _profilePicUrl,
       });
+
+      print('Image uploaded and Firestore updated successfully.');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to upload image: $e')),
       );
+      print('Failed to upload image: $e');
     } finally {
       setState(() {
         _isLoading = false;
@@ -136,6 +165,7 @@ class _EditProfileMainState extends State<EditProfileMain> {
                   onpress: pickImage,
                   isLoading: _isLoading,
                 ),
+
                 ProfileEditTextField(
                   controller: _nameController,
                   labelText: 'Name',
@@ -476,11 +506,16 @@ class _EditProfileMainState extends State<EditProfileMain> {
                   height: 50,
                 ),
                 SaveButton(
-                    buttonText: 'Save',
-                    onTap: () {
-                      saveUserDetails;
-                      Navigator.pop(context);
-                    })
+                  buttonText: 'Save',
+                  onTap: () async {
+                    await saveUserDetails();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const UserProfile()),
+                    );
+                  },
+                )
               ],
             ),
           ),

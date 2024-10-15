@@ -19,10 +19,15 @@ class ProfileHeader extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.centerLeft,
-            child: Icon(
-              Icons.keyboard_arrow_left,
-              color: Colors.black,
-              size: 30,
+            child: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Icon(
+                Icons.keyboard_arrow_left,
+                color: Colors.black,
+                size: 30,
+              ),
             ),
           ),
           Container(

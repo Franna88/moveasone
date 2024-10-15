@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideoList/ui/myVideosGridView.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideoList/ui/newVideosGridView.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideosMain.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/newVideosMain.dart';
 import 'package:move_as_one/userSide/Home/GetStarted.dart';
-import 'package:move_as_one/userSide/UserProfile/MyCommuity/MyCommnity.dart';
-import 'package:move_as_one/userSide/UserProfile/Sendhi5Back/Sendhi5Back.dart';
 import 'package:move_as_one/userSide/UserProfile/UserProfile.dart';
 import 'package:move_as_one/userSide/UserVideo/UserVideoAdd.dart';
-import 'package:move_as_one/userSide/UserVideo/UserVideoView.dart';
-import 'package:move_as_one/userSide/fromRochelle/videoCategory/videoCategoryItems/videoBrowsPage.dart';
+import 'package:move_as_one/userSide/generalNotifications.dart/generalNotifications.dart';
+import 'package:move_as_one/userSide/userProfile/MyCommuity/MyCommnity.dart';
+import 'package:move_as_one/userSide/userProfile/MyCommuity/Other/AllMessagesDisplay.dart';
 import 'package:move_as_one/userSide/workouts/workoutItems/MyWorkouts/myWorkouts.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -19,7 +14,7 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-  int _selectedIndex = 2;
+  int _selectedIndex = 0;
 
   late List<Widget> _pages;
 
@@ -29,9 +24,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
     _pages = [
       GetStarted(),
-      VideoBrowsPage(),
-      MyWorkouts(),
       UserAddVideo(),
+      /*MyWorkouts()*/ AllMessagesDisplay(),
+      MyCommunity(),
       UserProfile(),
     ];
   }

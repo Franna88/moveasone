@@ -28,14 +28,14 @@ class _SigninState extends State<Signin> {
             height: MyUtility(context).height,
             decoration: BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage('images/welcomeBack.png'),
-                  alignment: Alignment(-0.4, 1),
-                  fit: BoxFit.fitHeight),
+                  image: AssetImage('images/whatsappmao.jpg'),
+                  alignment: Alignment(-1.0, 1),
+                  fit: BoxFit.cover),
             ),
             child: Column(
               children: [
                 SizedBox(
-                  height: MyUtility(context).height * 0.1,
+                  height: MyUtility(context).height * 0.09,
                 ),
                 SizedBox(
                   width: MyUtility(context).width / 1.2,
@@ -162,8 +162,9 @@ class _SigninState extends State<Signin> {
                       Text(
                         "Don't have an account?",
                         style: TextStyle(
-                          color: Color(
-                              0xFF707070), // Color from the provided hex code
+                          color: /*Color(
+                              0xFF707070)*/
+                              Colors.white, // Color from the provided hex code
                           fontSize: 18.0,
                         ),
                       ),
@@ -177,8 +178,9 @@ class _SigninState extends State<Signin> {
                         },
                         child: Text(
                           'Sign up',
-                          style:
-                              TextStyle(color: Color(0xFF006261), fontSize: 18),
+                          style: TextStyle(
+                              color: /*Color(0xFF006261)*/ Colors.black,
+                              fontSize: 18),
                         ),
                       ),
                     ],
