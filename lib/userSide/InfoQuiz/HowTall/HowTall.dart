@@ -59,7 +59,7 @@ class _HowTallState extends State<HowTall> {
         height: MyUtility(context).height,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/quiz2.jpg'),
+            image: AssetImage('images/memberoptions3.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -211,8 +211,8 @@ class _HowTallState extends State<HowTall> {
                 },
                 style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(Color(0xFF006261)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      WidgetStateProperty.all<Color>(Color(0xFF006261)),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
                     ),

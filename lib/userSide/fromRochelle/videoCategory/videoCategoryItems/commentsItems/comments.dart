@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/userSide/fromRochelle/videoCategory/videoCategoryItems/commentsItems/ui/addCommentRow.dart';
 import 'package:move_as_one/userSide/fromRochelle/videoCategory/videoCategoryItems/commentsItems/ui/listViewComment.dart';
 
 class Comments extends StatefulWidget {

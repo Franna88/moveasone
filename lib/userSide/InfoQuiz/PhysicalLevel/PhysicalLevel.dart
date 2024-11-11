@@ -55,7 +55,7 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
         height: MyUtility(context).height,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/quiz2.jpg'),
+            image: AssetImage('images/memberoptions6.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -70,11 +70,7 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
               width: MyUtility(context).width / 1.6,
               child: Text(
                 "Your regular physical activity level?",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w300,
-                ),
+                style: TextStyle(color: Colors.black, fontSize: 24),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -116,14 +112,14 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
               },
             ),
             CustomButton(
-              text: 'Advance',
+              text: 'Advanced',
               isSelected: selectedIndex == 3,
               onPressed: (bool isSelected) {
                 setState(() {
                   selectedIndex = isSelected ? 3 : -1;
                 });
                 if (isSelected) {
-                  _storeActivityLevel('Advance');
+                  _storeActivityLevel('Advanced');
                 }
               },
             ),

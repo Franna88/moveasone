@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/overlayItems/coolDownOverlay.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/ui/commonOverlayHeader.dart';
 import 'package:move_as_one/commonUi/navVideoButton.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';

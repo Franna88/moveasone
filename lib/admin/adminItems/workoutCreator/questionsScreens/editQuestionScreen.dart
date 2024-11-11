@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/questionsScreens/ui/answersEditTextfield.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/questionsScreens/ui/bottomButtonContainer.dart';
-import 'package:move_as_one/admin/adminItems/workoutCreator/questionsScreens/ui/greyContainer.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/commonUi/questionConHeader.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/questionsScreens/ui/questionMainContainer.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/questionsScreens/ui/questionsMainTextfield.dart';
-import 'package:move_as_one/commonUi/uiColors.dart';
 
 class EditQuestionScreen extends StatelessWidget {
   const EditQuestionScreen({super.key});

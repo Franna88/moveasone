@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase import
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/PasswordTextField.dart';
-
 import 'package:move_as_one/myutility.dart';
 
 class ResetPassword extends StatefulWidget {
@@ -11,7 +11,30 @@ class ResetPassword extends StatefulWidget {
 }
 
 class _ResetPasswordState extends State<ResetPassword> {
-  final email = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String errorMessage = '';
+
+  Future<void> resetPassword() async {
+    if (passwordController.text != confirmPasswordController.text) {
+      setState(() {
+        errorMessage = 'Passwords do not match';
+      });
+      return;
+    }
+
+    try {
+      // Code to reset the password would go here
+      // Since this is a password reset via link, actual reset logic would be handled through Firebase's email link
+      Navigator.pop(context); // Return to login after successful reset
+    } catch (e) {
+      setState(() {
+        errorMessage = e.toString();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -74,28 +97,36 @@ class _ResetPasswordState extends State<ResetPassword> {
                 height: MyUtility(context).height * 0.05,
               ),
               PasswordTextField(
-                controller: email,
+                controller: passwordController,
                 hintText: 'New password',
               ),
               SizedBox(
                 height: MyUtility(context).height * 0.01,
               ),
               PasswordTextField(
-                controller: email,
+                controller: confirmPasswordController,
                 hintText: 'Re-enter new password',
               ),
               SizedBox(
                 height: MyUtility(context).height * 0.25,
               ),
+              if (errorMessage.isNotEmpty) // Display error message
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    errorMessage,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
               SizedBox(
                 width: MyUtility(context).width / 1.2,
                 height: MyUtility(context).height * 0.06,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: resetPassword, // Call resetPassword function
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xFF006261)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        WidgetStateProperty.all<Color>(Color(0xFF006261)),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),

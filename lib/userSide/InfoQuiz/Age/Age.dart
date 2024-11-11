@@ -17,8 +17,9 @@ class Age extends StatefulWidget {
 }
 
 class _AgeState extends State<Age> {
-  int selectedAge = -1;
-  final scrollController = FixedExtentScrollController();
+  int selectedAge = 15; // Set the default selected age to 15
+  final scrollController =
+      FixedExtentScrollController(initialItem: 14); // Set initialItem to 14
   final List<int> ages = List.generate(100, (index) => index + 1);
 
   void _navigateToHowTall(int age) {
@@ -42,7 +43,7 @@ class _AgeState extends State<Age> {
         height: MyUtility(context).height,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/quiz2.jpg'),
+            image: AssetImage('images/startImage.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -132,8 +133,8 @@ class _AgeState extends State<Age> {
                 },
                 style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(Color(0xFF006261)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      WidgetStateProperty.all<Color>(Color(0xFF006261)),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
                     ),

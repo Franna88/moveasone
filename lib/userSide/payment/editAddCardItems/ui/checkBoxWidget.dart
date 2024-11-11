@@ -21,8 +21,8 @@ class _CheckBoxWidgetState extends State<CheckBoxWidget> {
         child: CheckboxListTile(
           
           controlAffinity: ListTileControlAffinity.leading,
-          fillColor: MaterialStateProperty.resolveWith((states) {
-            if (!states.contains(MaterialState.selected)) {
+          fillColor: WidgetStateProperty.resolveWith((states) {
+            if (!states.contains(WidgetState.selected)) {
               return Colors.white;
             }
             return null;

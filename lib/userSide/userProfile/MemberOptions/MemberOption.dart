@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/userSide/UserProfile/LastWorkout/LastWorkoutComponents/LastWorkoutImage.dart';
+import 'package:move_as_one/BottomNavBar/BottomNavBar.dart';
 import 'package:move_as_one/userSide/UserProfile/MemberOptions/MemberOptionComponents/MemberOptionsButton.dart';
 import 'package:move_as_one/myutility.dart';
-import 'package:move_as_one/userSide/userProfile/MyCommuity/MyCommnity.dart';
 
 class MemberOptions extends StatefulWidget {
   const MemberOptions({super.key});
@@ -62,7 +61,8 @@ class _MemberOptionsState extends State<MemberOptions> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const MyCommunity()),
+                        builder: (context) =>
+                            const BottomNavBar(initialIndex: 3)),
                   );
                 }),
             MemberOptionsButton(
@@ -72,17 +72,17 @@ class _MemberOptionsState extends State<MemberOptions> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const MyCommunity()),
+                        builder: (context) => BottomNavBar(initialIndex: 3)),
                   );
                 }),
             MemberOptionsButton(
                 images: 'images/memberoptions5.png',
                 memberoptions: "Request Meal Plan",
                 onPressed: () {}),
-            MemberOptionsButton(
+            /* MemberOptionsButton(
                 images: 'images/memberoptions6.png',
                 memberoptions: "Settings",
-                onPressed: () {}),
+                onPressed: () {}),*/
             SizedBox(
               height: MyUtility(context).height * 0.1,
             )

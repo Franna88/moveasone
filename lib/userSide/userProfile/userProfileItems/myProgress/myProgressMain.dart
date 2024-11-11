@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/commonUi/headerWidget.dart';
+import 'package:move_as_one/commonUi/headerWidget1.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
-import 'package:move_as_one/commonUi/CircularPercentageProgressBar.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/myProgress/ui/activitiesDropDown.dart';
 import 'package:move_as_one/userSide/userProfile/commonUi/goalsColors.dart';
-import 'package:move_as_one/userSide/userProfile/commonUi/goalsProgressBar.dart';
 import 'package:move_as_one/userSide/userProfile/commonUi/goalsWidget.dart';
 import 'package:move_as_one/userSide/userProfile/commonUi/mainContentContainer.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/myProgress/ui/overallProgressWidget.dart';
@@ -20,7 +18,13 @@ class MyProgressMain extends StatelessWidget {
     var widthDevice = MediaQuery.of(context).size.width;
     return MainContainer(
       children: [
-        HeaderWidget(header: 'MY PROGRESS'),
+        HeaderWidget1(
+          header: 'MY PROGRESS',
+          onPress: () {
+            Navigator.pop(context);
+          },
+          showBackIcon: true,
+        ),
         Container(
           height: heightDevice * 0.88,
           width: widthDevice,
@@ -73,7 +77,10 @@ class MyProgressMain extends StatelessWidget {
                     child: Text(
                       textAlign: TextAlign.left,
                       'Goals',
-                      style: TextStyle(fontSize: 20,fontFamily: 'BeVietnam',),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'BeVietnam',
+                      ),
                     ),
                   ),
                 ),
@@ -141,7 +148,6 @@ class MyProgressMain extends StatelessWidget {
                 const SizedBox(
                   height: 25,
                 ),
-                
               ],
             ),
           ),

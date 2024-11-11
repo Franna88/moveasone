@@ -61,7 +61,7 @@ class _RachelleState extends State<Rachelle> {
                     fontFamily: 'belight',
                   ),
                 ),
-                Text(
+                /*Text(
                   'See more',
                   style: TextStyle(
                     color: Color(0xFFAA5F3A),
@@ -69,7 +69,7 @@ class _RachelleState extends State<Rachelle> {
                     fontFamily: 'Be Vietnam',
                     fontWeight: FontWeight.w100,
                   ),
-                )
+                )*/
               ],
             ),
           ),

@@ -28,19 +28,14 @@ class _WeightState extends State<Weight> {
   late int selectedWeightIndex; // Initialize with a default value
   late bool isKgSelected; // Indicates whether kg or lbs is selected
 
-  // Define your array of weights in kg
-  final List<int> weightsKg = List.generate(
-      251, (index) => index); // Adjusted the size to allow up to 150 kg
-  // Define the conversion factor from kg to lbs
+  final List<int> weightsKg = List.generate(251, (index) => index); // 0-250 kg
   final double kgToLbs = 2.20462;
 
   @override
   void initState() {
     super.initState();
-    // Set the initial selectedWeightIndex to the index closest to the center of the list
-    selectedWeightIndex = (weightsKg.length ~/ 2);
-    // Initially, kg is selected
-    isKgSelected = true;
+    selectedWeightIndex = 0; // Start at 0 kg
+    isKgSelected = true; // Initially set to kg
   }
 
   void _storeWeight(dynamic weight, String unit) async {
@@ -78,7 +73,7 @@ class _WeightState extends State<Weight> {
         height: MyUtility(context).height,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/quiz2.jpg'),
+            image: AssetImage('images/memberoptions6.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -168,12 +163,10 @@ class _WeightState extends State<Weight> {
               style: TextStyle(color: Colors.black, fontSize: 48),
             ),
             SizedBox(height: MyUtility(context).height * 0.01),
-            // Horizontal FlatList for weight selection
             NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (notification is ScrollUpdateNotification) {
-                  final index = (notification.metrics.pixels / 11)
-                      .round(); // Assuming each weight item is 60 pixels wide
+                  final index = (notification.metrics.pixels / 11).round();
                   setState(() {
                     selectedWeightIndex = index.clamp(0, weightsKg.length - 1);
                   });
@@ -181,15 +174,13 @@ class _WeightState extends State<Weight> {
                 return true;
               },
               child: SingleChildScrollView(
-                physics:
-                    AlwaysScrollableScrollPhysics(), // Ensure that the scroll view is always scrollable
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: List.generate(weightsKg.length, (index) {
                     final weightKg = weightsKg[index];
-                    double height = 40; // Default height
+                    double height = 40;
                     if ((index + 1) % 5 == 0) {
-                      height = 60; // Make every third bar longer
+                      height = 60;
                     }
                     return Column(
                       children: [
@@ -200,8 +191,8 @@ class _WeightState extends State<Weight> {
                             });
                           },
                           child: Container(
-                            width: 3, // Adjust width as needed
-                            height: height, // Adjust height dynamically
+                            width: 3,
+                            height: height,
                             margin: EdgeInsets.symmetric(horizontal: 5),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
@@ -233,8 +224,8 @@ class _WeightState extends State<Weight> {
                 },
                 style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(Color(0xFF006261)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      WidgetStateProperty.all<Color>(Color(0xFF006261)),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
                     ),

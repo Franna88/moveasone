@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/userSide/InfoQuiz/Gender/Gender.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/CustomButton.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/PageIndicator.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/ProgressBar.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/EnterCode/EnterCode.dart';
 
@@ -11,7 +11,27 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  final email = TextEditingController();
+  final email = TextEditingController(); // Controller for email input
+  final FirebaseAuth _auth = FirebaseAuth.instance; // FirebaseAuth instance
+  String errorMessage = ''; // Error message to display if something goes wrong
+
+  // Function to send reset email using Firebase
+  Future<void> resetPassword() async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email.text.trim());
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                const EnterCode()), // Navigate to EnterCode page on success
+      );
+    } catch (e) {
+      setState(() {
+        errorMessage = e.toString(); // Update error message if the reset fails
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -113,6 +133,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     ),
                   ),
                 ),
+                if (errorMessage
+                    .isNotEmpty) // Display error message if there's an issue
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      errorMessage,
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
                 SizedBox(
                   height: MyUtility(context).height * 0.3,
                 ),
@@ -120,25 +149,19 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   width: MyUtility(context).width / 1.2,
                   height: MyUtility(context).height * 0.06,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const EnterCode()),
-                              );
-                    },
+                    onPressed: resetPassword, // Call the resetPassword function
                     style: ButtonStyle(
                       backgroundColor:
-                          MaterialStateProperty.all<Color>(Color(0xFF006261)),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          WidgetStateProperty.all<Color>(Color(0xFF006261)),
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
                         ),
                       ),
                     ),
                     child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 20.0),
                       child: Text(
                         'Submit',
                         style: TextStyle(

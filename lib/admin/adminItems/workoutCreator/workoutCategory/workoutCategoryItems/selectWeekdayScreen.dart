@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/creatorFullView/workoutCreator.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/workoutCategory/ui/weekdaySelectListView.dart';

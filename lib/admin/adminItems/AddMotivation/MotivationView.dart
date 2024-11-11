@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/admin/adminItems/AddMotivation/MotivationAdd.dart';
 import 'package:move_as_one/admin/adminItems/AddMotivation/MotivationGridView.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideoList/ui/myVideosGridView.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/newVideosMain.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/workoutsFullLenght.dart';
 import 'package:move_as_one/commonUi/headerWidget1.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
 import 'package:move_as_one/myutility.dart';
-import 'package:move_as_one/userSide/UserVideo/UserVideoAdd.dart';
-import 'package:move_as_one/userSide/UserVideo/UserViewGridView.dart';
 
 class MotivationView extends StatefulWidget {
   const MotivationView({super.key});

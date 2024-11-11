@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/commonUi/glassEffect.dart';
 
 class ContentGlassContainer extends StatelessWidget {
   final String workoutName;

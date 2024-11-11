@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/commonUi/uiColors.dart';
 
 class ProfileProtected extends StatelessWidget {
   const ProfileProtected({super.key});

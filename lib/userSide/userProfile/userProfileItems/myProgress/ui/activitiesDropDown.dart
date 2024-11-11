@@ -17,10 +17,12 @@ class _ActivitiesDropDownState extends State<ActivitiesDropDown> {
         children: <Widget>[
           Text(
             'Activities',
-            style: TextStyle(fontSize: 20,fontFamily: 'BeVietnam',),
+            style: TextStyle(fontSize: 20, fontFamily: 'BeVietnam'),
           ),
           DropdownButton<String>(
-            elevation: 0,
+            dropdownColor: Colors
+                .grey[100], // Set dropdown background color to a lighter shade
+            elevation: 1,
             icon: Icon(
               Icons.keyboard_arrow_down,
               color: Colors.black,
@@ -36,9 +38,17 @@ class _ActivitiesDropDownState extends State<ActivitiesDropDown> {
                 .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(
-                  value,
-                  style: TextStyle(fontWeight: FontWeight.w400,fontFamily: 'BeVietnam',),
+                child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: Text(
+                    value,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'BeVietnam',
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               );
             }).toList(),

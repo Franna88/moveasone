@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/userSide/Home/AdditionalResources/AdditionalResourcesComponents/AdditionalContainer.dart';
-import 'package:move_as_one/userSide/Home/YourWorkouts/YourWorkoutComponents/ReuseableContainer.dart';
 import 'package:move_as_one/myutility.dart';
 
 class AdditionalResources extends StatefulWidget {

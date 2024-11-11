@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/userSide/LoginSighnUp/EnterCode/EnterCodeComponents/ContainerVerificationCode.dart';
+import 'package:move_as_one/Services/UserState.dart';
 import 'package:move_as_one/myutility.dart';
-import 'package:move_as_one/userSide/LoginSighnUp/ResetPassword/ResetPassword.dart';
 
 class EnterCode extends StatefulWidget {
   const EnterCode({super.key});
@@ -12,6 +11,7 @@ class EnterCode extends StatefulWidget {
 
 class _EnterCodeState extends State<EnterCode> {
   final verificationCodeController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -59,42 +59,18 @@ class _EnterCodeState extends State<EnterCode> {
               SizedBox(
                 width: MyUtility(context).width / 1.2,
                 child: Text(
-                  "Enter the code we just sent",
+                  "Check your email for further instructions to reset your password.",
                   style: TextStyle(
                     color: Color(0xFF006261),
                     fontSize: 14,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w600,
-                    height: 0.10,
                   ),
                   textAlign: TextAlign.center,
                 ),
               ),
               SizedBox(
                 height: MyUtility(context).height * 0.05,
-              ),
-              ContainerVerificationCode(),
-              SizedBox(
-                height: MyUtility(context).height * 0.02,
-              ),
-              SizedBox(
-                width: MyUtility(context).width / 1.2,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Resend code',
-                      style: TextStyle(
-                        color: Color(0xFF006261),
-                        fontSize: 15,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w500,
-                        height: 0.09,
-                      ),
-                    ),
-                  ),
-                ),
               ),
               SizedBox(
                 height: MyUtility(context).height * 0.22,
@@ -105,15 +81,15 @@ class _EnterCodeState extends State<EnterCode> {
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const ResetPassword()),
-                              );
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const UserState()),
+                    );
                   },
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xFF006261)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        WidgetStateProperty.all<Color>(Color(0xFF006261)),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),

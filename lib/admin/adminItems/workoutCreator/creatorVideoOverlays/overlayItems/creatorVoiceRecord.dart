@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/overlayItems/creatorWarmupComplete.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/ui/commonOverlayHeader.dart';
-import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/ui/contentGlassContainer.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/ui/myVoiceTimer.dart';
 import 'package:move_as_one/commonUi/navVideoButton.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';

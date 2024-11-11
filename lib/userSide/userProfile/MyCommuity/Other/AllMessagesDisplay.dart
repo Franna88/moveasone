@@ -55,7 +55,10 @@ class _AllMessagesDisplayState extends State<AllMessagesDisplay> {
   Widget build(BuildContext context) {
     return MainContainer(
       children: [
-        HeaderWidget(header: 'MESSAGES'),
+        HeaderWidget(
+          header: 'MESSAGES',
+          showBackButton: false,
+        ),
         _friendsList.isEmpty
             ? Center(child: Text('No messages'))
             : ListView.builder(

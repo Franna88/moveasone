@@ -1,13 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:move_as_one/userSide/UserProfile/LastWorkout/LastWorkout.dart';
 import 'package:move_as_one/userSide/UserProfile/Sendhi5Back/Sendihi5BackComponents/Hi5LastWorkout.dart';
-import 'package:move_as_one/userSide/UserProfile/Sendhi5Back/Sendihi5BackComponents/VideoImages.dart';
 import 'package:move_as_one/userSide/UserProfile/Sendhi5Back/Sendihi5BackComponents/Videos.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/Const/conts.dart' as consts;
 import 'package:move_as_one/userSide/userProfile/userProfileItems/userProfileLocked/userProfileLocked.dart';
-import 'package:move_as_one/userSide/workoutPopups/popUpItems/awardEmojiPopUp.dart';
 
 class Sendhi5Back extends StatefulWidget {
   final String userId;

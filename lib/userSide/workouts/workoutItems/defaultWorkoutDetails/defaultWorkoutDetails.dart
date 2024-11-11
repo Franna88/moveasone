@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/workoutsFullLenght.dart';
+import 'package:move_as_one/BottomNavBar/BottomNavBar.dart';
+import 'package:move_as_one/Services/UserState.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/creatorFullView/warmUpCreator.dart';
-import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/overlayItems/resultsScreenOne.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/userSide/workouts/workoutItems/defaultWorkoutDetails/ui/deatilContainer.dart';
@@ -215,7 +215,19 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
 */
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: true, // Bring back the leading icon
+        centerTitle: true, // Center the title
         title: Text('Workout Details'),
+        leading: IconButton(
+          icon: Icon(Icons.keyboard_arrow_left), // Use the back arrow icon
+          onPressed: () {
+            // Navigate to BottomNavBar with initialIndex: 0 when tapped
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => UserState()),
+            );
+          },
+        ),
       ),
       body: MainContainer(
         children: [
@@ -225,7 +237,8 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        const /*ResultsScreenOne()*/ WorkoutsFullLenght()),
+                        const /*ResultsScreenOne()*/ BottomNavBar(
+                            initialIndex: 1)),
               );
             },
             child: DetailContainer(
@@ -287,8 +300,9 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
               toggleDropdown(1);
             },
             isOpen: currentOpenDropdown == 1,
-            iconData:
-                isDroped ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+            iconData: currentOpenDropdown == 1
+                ? Icons.keyboard_arrow_up
+                : Icons.keyboard_arrow_down,
           ),
           ExerciseDropDown(
             addSectionPress: () {
@@ -308,31 +322,35 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
             dropdownContent: DropDownContent(widgets: workoutWidgets),
             onToggle: () => toggleDropdown(2),
             isOpen: currentOpenDropdown == 2,
-            iconData:
-                isDroped ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+            iconData: currentOpenDropdown == 2
+                ? Icons.keyboard_arrow_up
+                : Icons.keyboard_arrow_down,
           ),
-          ExerciseDropDown(
-            addSectionPress: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => WarmUpCreator(
-                          docId: widget.docId,
-                          type: 'coolDowns',
-                          exerciseList: coolDowns,
-                        )),
-              );
-            },
-            isButtonVisible: widget.userType != "user",
-            addSectionText: 'Add Cool down',
-            buttonTitle: 'Cool Down',
-            dropdownContent: DropDownContent(widgets: cooldownWidgets),
-            onToggle: () => toggleDropdown(3),
-            isOpen: currentOpenDropdown == 3,
-            iconData:
-                isDroped ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 30),
+            child: ExerciseDropDown(
+              addSectionPress: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => WarmUpCreator(
+                            docId: widget.docId,
+                            type: 'coolDowns',
+                            exerciseList: coolDowns,
+                          )),
+                );
+              },
+              isButtonVisible: widget.userType != "user",
+              addSectionText: 'Add Cool down',
+              buttonTitle: 'Cool Down',
+              dropdownContent: DropDownContent(widgets: cooldownWidgets),
+              onToggle: () => toggleDropdown(3),
+              isOpen: currentOpenDropdown == 3,
+              iconData: currentOpenDropdown == 3
+                  ? Icons.keyboard_arrow_up
+                  : Icons.keyboard_arrow_down,
+            ),
           )
-          /* */
         ],
       ),
     );

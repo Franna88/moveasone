@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/commonUi/headerWidget.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
-import 'package:move_as_one/commonUi/CircularPercentageProgressBar.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/myProgress/ui/activitiesDropDown.dart';
 import 'package:move_as_one/userSide/userProfile/commonUi/goalsColors.dart';
-import 'package:move_as_one/userSide/userProfile/commonUi/goalsProgressBar.dart';
 import 'package:move_as_one/userSide/userProfile/commonUi/goalsWidget.dart';
 import 'package:move_as_one/userSide/userProfile/commonUi/mainContentContainer.dart';
-import 'package:move_as_one/userSide/userProfile/userProfileItems/myProgress/ui/overallProgressWidget.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/myProgress/ui/selectedDayListView.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/myProgress/ui/userGoalContainers.dart';
 

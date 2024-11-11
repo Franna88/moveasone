@@ -40,7 +40,7 @@ class _GenderState extends State<Gender> {
               Color.fromARGB(200, 255, 255, 255),
               BlendMode.colorBurn,
             ),
-            image: AssetImage('images/quiz2.jpg'),
+            image: AssetImage('images/startImage.png'),
             fit: BoxFit.cover,
           ),
         ),

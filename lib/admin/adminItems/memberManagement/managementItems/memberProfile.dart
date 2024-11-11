@@ -10,13 +10,9 @@ import 'package:move_as_one/admin/adminItems/memberManagement/ui/statusBarActivi
 import 'package:move_as_one/admin/adminItems/memberManagement/ui/statusIndicator.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/ui/workoutStatusWidget.dart';
 import 'package:move_as_one/myutility.dart';
-import 'package:move_as_one/userSide/UserProfile/LastWorkout/LastWorkout.dart';
 import 'package:move_as_one/userSide/settingsPrivacy/settingsItems/settingsMain.dart';
-import 'package:move_as_one/userSide/userProfile/LastWorkout/LastWorkout.dart';
 import 'package:move_as_one/userSide/userProfile/LastWorkout/LastWorkoutComponents/LastworkoutsDisplay.dart';
-import 'package:move_as_one/userSide/userProfile/commonUi/mainContentContainer.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/editProfile/editProfileMain.dart';
-import 'package:move_as_one/userSide/userProfile/userProfileItems/myProgress/myProgressMain.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/ui/statusPaymentBar.dart';
 
 class MemberProfile extends StatelessWidget {

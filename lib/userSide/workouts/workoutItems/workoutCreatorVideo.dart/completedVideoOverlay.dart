@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:move_as_one/MyHome.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/commonUi/navVideoButton.dart';
-import 'package:move_as_one/userSide/workouts/workoutItems/MyWorkouts/myWorkouts.dart';
 
 class CompletedVideoOverlay extends StatelessWidget {
   const CompletedVideoOverlay({super.key});

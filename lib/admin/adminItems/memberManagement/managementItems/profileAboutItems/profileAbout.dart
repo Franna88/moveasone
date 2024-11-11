@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/profileAboutItems/profileAboutPages/aboutPage.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/profileAboutItems/profileAboutPages/messagesPage.dart';
-import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/profileAboutItems/ui/messageBuild.dart';
 import 'package:move_as_one/commonUi/trainerRatingContainer.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 

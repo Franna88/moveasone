@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideoList/ui/newVideosGridView.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideosMain.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/workoutsFullLenght.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/ui/uploadButton.dart';
 import 'package:move_as_one/commonUi/headerWidget1.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/UserVideo/UserAddGridView.dart';
-import 'package:move_as_one/userSide/UserVideo/UserVideoView.dart';
 
 class UserAddVideo extends StatefulWidget {
-  const UserAddVideo({super.key});
+  final VoidCallback onNavigateToMyVideos;
+
+  const UserAddVideo({super.key, required this.onNavigateToMyVideos});
 
   @override
   State<UserAddVideo> createState() => _UserAddVideoState();
@@ -25,10 +23,7 @@ class _UserAddVideoState extends State<UserAddVideo> {
         HeaderWidget1(
           header: 'NEW Video',
           onPress: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => WorkoutsFullLenght()),
-            );
+            // Action for HeaderWidget1
           },
         ),
         SizedBox(
@@ -38,13 +33,8 @@ class _UserAddVideoState extends State<UserAddVideo> {
               Column(
                 children: [
                   TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Uservideoview()),
-                      );
-                    },
+                    onPressed:
+                        widget.onNavigateToMyVideos, // Navigate to My Videos
                     style: TextButton.styleFrom(
                       foregroundColor: Color(0xFF1E1E1E),
                       textStyle: TextStyle(
@@ -105,12 +95,7 @@ class _UserAddVideoState extends State<UserAddVideo> {
           buttonText: 'Upload to App',
           onTap: () {
             Useraddgridview.of(context)?.uploadImage();
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      WorkoutsFullLenght()), // Replace DesiredPage with the page you want to navigate to
-            );
+            // Action for upload button
           },
         ),
       ],

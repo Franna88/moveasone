@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:image_network/image_network.dart';
 
 import '../../../commonUi/navVideoButton.dart';
 import '../../../commonUi/uiColors.dart';

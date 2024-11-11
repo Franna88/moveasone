@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:ui'; // Import this for ImageFilter
+import 'dart:ui';
 
-import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Login/Signin.dart';
 
@@ -119,8 +118,8 @@ class _HomePageState extends State<HomePage> {
                   },
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xFF006261)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        WidgetStateProperty.all<Color>(Color(0xFF006261)),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),

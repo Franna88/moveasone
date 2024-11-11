@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/myProgress/models/selectedDayModel.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/myProgress/ui/selectDayContainer.dart';
 

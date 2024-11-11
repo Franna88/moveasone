@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/commonUi/greyDivider.dart';
 import 'package:move_as_one/commonUi/headerWidget.dart';
-import 'package:move_as_one/commonUi/mainContainer.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/userSide/payment/paymentItems/ui/addCardButton.dart';
 import 'package:move_as_one/userSide/payment/commonUi/blackButton.dart';

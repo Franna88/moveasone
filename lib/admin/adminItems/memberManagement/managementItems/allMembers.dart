@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/models/allMembersModel.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/ui/allMembersListView.dart';
-import 'package:move_as_one/admin/adminItems/memberManagement/ui/fullMemberWidget.dart';
 import 'package:move_as_one/commonUi/headerWidget.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
 

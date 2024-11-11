@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/memberProfile.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/models/allMembersModel.dart';
-import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/profileAboutItems/profileAbout.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/ui/fullMemberWidget.dart';
 import 'package:move_as_one/commonUi/myDivider.dart';
-import 'package:move_as_one/userSide/userProfile/UserProfile.dart';
 
 class AllMembersListView extends StatelessWidget {
   const AllMembersListView({super.key});

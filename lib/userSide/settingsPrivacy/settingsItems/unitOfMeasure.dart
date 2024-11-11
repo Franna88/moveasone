@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/commonUi/headerWidget.dart';
+import 'package:move_as_one/commonUi/headerWidget1.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
 
 import 'package:move_as_one/userSide/settingsPrivacy/ui/settingOptionsWidget.dart';
@@ -19,17 +19,23 @@ class _UnitOfMeasureState extends State<UnitOfMeasure> {
   @override
   Widget build(BuildContext context) {
     return MainContainer(children: [
-      HeaderWidget(header: 'UNIT OF MEASURE'),
+      HeaderWidget1(
+        header: 'UNIT OF MEASURE',
+        onPress: () {
+          Navigator.pop(context);
+        },
+        showBackIcon: true,
+      ),
       SettingOptionsWidget(
         settingText: 'Metric',
         settingWidget: Transform.scale(
           scale: 1.2,
           child: Radio(
             activeColor: UiColors().teal,
-            fillColor: MaterialStateProperty.resolveWith(
+            fillColor: WidgetStateProperty.resolveWith(
               (states) {
                 // active
-                if (states.contains(MaterialState.selected)) {
+                if (states.contains(WidgetState.selected)) {
                   return UiColors().teal;
                 }
                 // inactive
@@ -53,10 +59,10 @@ class _UnitOfMeasureState extends State<UnitOfMeasure> {
         settingWidget: Transform.scale(
           scale: 1.2,
           child: Radio(
-            fillColor: MaterialStateProperty.resolveWith(
+            fillColor: WidgetStateProperty.resolveWith(
               (states) {
                 // active
-                if (states.contains(MaterialState.selected)) {
+                if (states.contains(WidgetState.selected)) {
                   return UiColors().teal;
                 }
                 // inactive

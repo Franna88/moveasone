@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/models/weekDaySelect/weekDaySelectModel.dart';
-import 'package:move_as_one/admin/adminItems/workoutCreator/workoutCategory/workoutCategoryItems/categoryResultsScreen.dart';
 import 'package:move_as_one/commonUi/myDivider.dart';
 import 'package:move_as_one/commonUi/NewSwitchBUtton.dart';
 

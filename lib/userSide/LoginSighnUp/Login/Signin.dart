@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/MyHome.dart';
 import 'package:move_as_one/Services/auth_services.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/Goal.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/ForgotPassword/ForgotPassword.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Login/LoginComponents/SvgIconButton.dart';
 import 'package:move_as_one/myutility.dart';
-import 'package:move_as_one/userSide/LoginSighnUp/Signup/Signup.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/CustomTextField.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/PasswordTextField.dart';
 
@@ -90,8 +88,10 @@ class _SigninState extends State<Signin> {
                       },
                       child: Text(
                         'Forgot Password',
-                        style:
-                            TextStyle(color: Color(0xFF006261), fontSize: 18),
+                        style: TextStyle(
+                            color: /*Color(0xFF006261)*/ Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18),
                       ),
                     ),
                   ),
@@ -118,10 +118,10 @@ class _SigninState extends State<Signin> {
                         child: ElevatedButton(
                           onPressed: () {},
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
+                            backgroundColor: WidgetStateProperty.all<Color>(
                                 Color(0xFF006261)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
                               ),

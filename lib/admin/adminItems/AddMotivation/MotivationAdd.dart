@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/admin/adminItems/AddMotivation/MotivationAddGrid.dart';
 import 'package:move_as_one/admin/adminItems/AddMotivation/MotivationView.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideoList/ui/newVideosGridView.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideosMain.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/workoutsFullLenght.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/ui/uploadButton.dart';
 import 'package:move_as_one/commonUi/headerWidget1.dart';
@@ -10,7 +8,6 @@ import 'package:move_as_one/commonUi/mainContainer.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/UserVideo/UserAddGridView.dart';
-import 'package:move_as_one/userSide/UserVideo/UserVideoView.dart';
 
 class MotivationAdd extends StatefulWidget {
   const MotivationAdd({super.key});

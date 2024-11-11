@@ -77,11 +77,20 @@ class _DiscoverState extends State<Discover> {
             return Column(
               children: filteredUsers.map((user) {
                 final userId = user.id;
-                final userName = user['name'];
-                final userPicture = user['profilePic'] ?? '';
+
+                // Cast user data to Map<String, dynamic>
+                final userData = user.data() as Map<String, dynamic>;
+
+                final userName = userData['name'] ??
+                    'No Name'; // Default if 'name' is missing
+                final userPicture = userData.containsKey('profilePic')
+                    ? userData['profilePic'] ?? ''
+                    : ''; // Provide default value if profilePic is missing
 
                 return NotFriends(
-                  picture: userPicture.isNotEmpty ? userPicture : '',
+                  picture: userPicture.isNotEmpty
+                      ? userPicture
+                      : '', // Provide default picture if needed
                   name: userName,
                   userId: userId,
                   onPressed: () {},

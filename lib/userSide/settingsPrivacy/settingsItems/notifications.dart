@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/commonUi/CategoryButton.dart';
 import 'package:move_as_one/commonUi/mySwitchButton.dart';
-import 'package:move_as_one/userSide/settingsPrivacy/ui/customSwitch.dart';
 import 'package:move_as_one/commonUi/headerWidget.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
 import 'package:move_as_one/userSide/settingsPrivacy/ui/settingOptionsWidget.dart';

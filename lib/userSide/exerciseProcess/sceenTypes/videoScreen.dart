@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/overlayItems/resultsScreenThree.dart';
-import 'package:move_as_one/commonUi/circularCountdown.dart';
-import 'package:move_as_one/commonUi/pauseButtonCon.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:video_player/video_player.dart';
 

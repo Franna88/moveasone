@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/myVideoList/ui/myVideosGridView.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/myVideos/newVideosMain.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/workoutsFullLenght.dart';
 import 'package:move_as_one/commonUi/headerWidget1.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
 import 'package:move_as_one/myutility.dart';
-import 'package:move_as_one/userSide/UserVideo/UserVideoAdd.dart';
 import 'package:move_as_one/userSide/UserVideo/UserViewGridView.dart';
 
 class Uservideoview extends StatefulWidget {
-  const Uservideoview({super.key});
+  final VoidCallback onNavigateToNewVideos;
+
+  const Uservideoview({super.key, required this.onNavigateToNewVideos});
 
   @override
   State<Uservideoview> createState() => _UservideoviewState();
@@ -63,12 +62,8 @@ class _UservideoviewState extends State<Uservideoview> {
               Column(
                 children: [
                   TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => UserAddVideo()),
-                      );
-                    },
+                    onPressed:
+                        widget.onNavigateToNewVideos, // Navigate to New Videos
                     style: TextButton.styleFrom(
                       foregroundColor: Color(0xFF1E1E1E),
                       textStyle: TextStyle(

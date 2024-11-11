@@ -36,7 +36,7 @@ class CustomTextField extends StatelessWidget {
             fontSize: 16,
             fontFamily: 'belight',
             fontWeight: FontWeight.bold,
-            height: 0.09,
+            // Remove or set to a more standard height
           ),
           decoration: InputDecoration(
             filled: true,

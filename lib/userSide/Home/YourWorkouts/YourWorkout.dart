@@ -59,7 +59,7 @@ class _YourWorkoutsState extends State<YourWorkouts> {
           .get();
 
       List<Map<String, dynamic>> workouts = querySnapshot.docs.map((doc) {
-        var data = doc.data() as Map<String, dynamic>;
+        var data = doc.data();
         print("Fetched workout data: $data"); // Debug print
         return {
           'displayImage': data['displayImage'] as String? ?? '',

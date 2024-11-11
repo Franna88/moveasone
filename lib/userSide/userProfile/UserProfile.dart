@@ -63,9 +63,9 @@ class _UserProfileState extends State<UserProfile> {
                     horizontal: 11,
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Align(
+                      /*Align(
                         alignment: Alignment.centerLeft,
                         child: GestureDetector(
                           onTap: () {
@@ -77,7 +77,7 @@ class _UserProfileState extends State<UserProfile> {
                             size: 30,
                           ),
                         ),
-                      ),
+                      ),*/
                       GestureDetector(
                         onTap: () {
                           Navigator.push(

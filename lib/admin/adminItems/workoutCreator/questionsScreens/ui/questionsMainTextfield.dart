@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/commonUi/uiColors.dart';
-import 'package:move_as_one/userSide/userProfile/commonUi/mainContentContainer.dart';
 
 class QuestionsMainTextfield extends StatelessWidget {
   Function() onChanged;

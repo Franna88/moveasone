@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/userSide/settingsPrivacy/languageModel/languageModel.dart';
 import 'package:move_as_one/userSide/settingsPrivacy/ui/settingOptionsWidget.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 
@@ -35,7 +34,8 @@ class _LanguageListViewState extends State<LanguageListView> {
   Widget build(BuildContext context) {
     var heightDevice = MediaQuery.of(context).size.height;
     var widthDevice = MediaQuery.of(context).size.width;
-    return Container(height: heightDevice * 0.75,
+    return Container(
+      height: heightDevice * 0.75,
       child: ListView.builder(
         itemCount: languageItems.length,
         itemBuilder: (context, index) {
@@ -45,10 +45,10 @@ class _LanguageListViewState extends State<LanguageListView> {
               scale: 1.2,
               child: Radio(
                 activeColor: UiColors().purp,
-                fillColor: MaterialStateProperty.resolveWith(
+                fillColor: WidgetStateProperty.resolveWith(
                   (states) {
                     // active
-                    if (states.contains(MaterialState.selected)) {
+                    if (states.contains(WidgetState.selected)) {
                       return UiColors().purp;
                     }
                     // inactive

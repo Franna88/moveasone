@@ -1,9 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:move_as_one/Services/auth_services.dart';
-import 'package:move_as_one/userSide/InfoQuiz/Goal/Goal.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Login/LoginComponents/SvgIconButton.dart';
+import 'package:move_as_one/userSide/LoginSighnUp/Login/Signin.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/CustomTextField.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/PasswordTextField.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/PrivacyPolicyCheckbox.dart';
@@ -158,10 +157,10 @@ class _SignupState extends State<Signup> {
                         child: ElevatedButton(
                           onPressed: void_signup,
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
+                            backgroundColor: WidgetStateProperty.all<Color>(
                                 Color(0xFF006261)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
                               ),
@@ -199,7 +198,7 @@ class _SignupState extends State<Signup> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Don't have an account?",
+                        "Already have an account",
                         style: TextStyle(
                           color: Color(
                               0xFF707070), // Color from the provided hex code
@@ -211,11 +210,11 @@ class _SignupState extends State<Signup> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const Goal()),
+                                builder: (context) => const Signin()),
                           );
                         },
                         child: Text(
-                          'Sign up',
+                          'Sign in',
                           style:
                               TextStyle(color: Color(0xFF006261), fontSize: 18),
                         ),

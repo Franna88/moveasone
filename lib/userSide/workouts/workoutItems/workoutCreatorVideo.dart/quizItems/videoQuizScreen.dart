@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/userSide/workouts/workoutItems/workoutCreatorVideo.dart/quizItems/ui/quizButton.dart';
 import 'package:move_as_one/userSide/workouts/workoutItems/workoutCreatorVideo.dart/quizItems/ui/videoQuizProgressBar.dart';
 
 class VideoQuizScreen extends StatefulWidget {

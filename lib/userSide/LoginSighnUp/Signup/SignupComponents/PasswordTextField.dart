@@ -47,7 +47,6 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
                 fontSize: 16,
                 fontFamily: 'belight',
                 fontWeight: FontWeight.bold,
-                height: 0.09,
               ),
               decoration: InputDecoration(
                 filled: true,

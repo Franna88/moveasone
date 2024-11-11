@@ -50,38 +50,43 @@ class _VideoGridViewState extends State<VideoGridView>
       animation: _animationController,
       child: Container(
         color: Colors.white,
-        height: heightDevice * 0.79,
-        child: GridView.builder(
-          itemCount: workoutDocuments.length,
-          gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-          itemBuilder: (context, index) {
-            var workout = workoutDocuments[index];
-            return Padding(
-              padding: const EdgeInsets.all(1.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DefaultWorkoutDetails(
-                        docId: workout.id,
-                        userType: '',
+        height: heightDevice * 0.79, // Restrict height as needed
+        child: LayoutBuilder(
+          // Use LayoutBuilder to handle flexible layout
+          builder: (context, constraints) {
+            return GridView.builder(
+              itemCount: workoutDocuments.length,
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+              itemBuilder: (context, index) {
+                var workout = workoutDocuments[index];
+                return Padding(
+                  padding: const EdgeInsets.all(1.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DefaultWorkoutDetails(
+                            docId: workout.id,
+                            userType: '',
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      height: heightDevice * 0.10,
+                      width: widthDevice * 0.10,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(workout['displayImage']),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  );
-                },
-                child: Container(
-                  height: heightDevice * 0.10,
-                  width: widthDevice * 0.10,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(workout['displayImage']),
-                      fit: BoxFit.cover,
-                    ),
                   ),
-                ),
-              ),
+                );
+              },
             );
           },
         ),

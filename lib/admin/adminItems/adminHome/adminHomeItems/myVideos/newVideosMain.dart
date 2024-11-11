@@ -22,6 +22,7 @@ class _NewVideosMainState extends State<NewVideosMain> {
       children: [
         HeaderWidget1(
           header: 'NEW SHORT',
+          showBackIcon: true,
           onPress: () {
             Navigator.push(
               context,

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:move_as_one/BottomNavBar/BottomNavBar.dart';
 import 'package:move_as_one/commonUi/headerWidget.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
 import 'package:move_as_one/userSide/workouts/workoutItems/MyWorkouts/ui/weekdaysContainer.dart';
@@ -62,7 +61,7 @@ class _MyWorkoutsState extends State<MyWorkouts> {
           .get();
 
       List<Map<String, dynamic>> workouts = querySnapshot.docs.map((doc) {
-        var data = doc.data() as Map<String, dynamic>;
+        var data = doc.data();
         print('Fetched workout data: $data'); // Debug print
         return {
           'docId': doc.id,
@@ -93,28 +92,33 @@ class _MyWorkoutsState extends State<MyWorkouts> {
 
   @override
   Widget build(BuildContext context) {
-    return MainContainer(
-      children: [
-        HeaderWidget(header: 'MY WORKOUTS'),
-        const SizedBox(
-          height: 25,
-        ),
-        Visibility(
-          visible: pageIndex == 0,
-          child: WeekdaysContainer(
-            changePageIndex: changePageIndex,
-            workoutDocuments: workoutDocuments,
+    return SafeArea(
+      child: MainContainer(
+        children: [
+          HeaderWidget(
+            header: 'MY WORKOUTS',
           ),
-        ),
-        Visibility(
-          visible: pageIndex == 1,
-          child: DefaultWorkoutDetails(
-            docId:
-                workoutDocuments.isNotEmpty ? workoutDocuments[0]['docId'] : '',
-            userType: 'user',
+          const SizedBox(
+            height: 25,
           ),
-        ),
-      ],
+          Visibility(
+            visible: pageIndex == 0,
+            child: WeekdaysContainer(
+              changePageIndex: changePageIndex,
+              workoutDocuments: workoutDocuments,
+            ),
+          ),
+          Visibility(
+            visible: pageIndex == 1,
+            child: DefaultWorkoutDetails(
+              docId: workoutDocuments.isNotEmpty
+                  ? workoutDocuments[0]['docId']
+                  : '',
+              userType: 'user',
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

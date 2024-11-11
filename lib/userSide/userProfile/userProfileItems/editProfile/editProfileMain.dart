@@ -5,11 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:move_as_one/commonUi/headerWidget.dart';
+import 'package:move_as_one/BottomNavBar/BottomNavBar.dart';
+import 'package:move_as_one/commonUi/headerWidget1.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
 import 'package:move_as_one/commonUi/mySwitchButton.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
-import 'package:move_as_one/userSide/userProfile/UserProfile.dart';
 import 'package:move_as_one/userSide/userProfile/commonUi/goalsColors.dart';
 import 'package:move_as_one/userSide/userProfile/commonUi/goalsWidget.dart';
 import 'package:move_as_one/userSide/userProfile/commonUi/mainContentContainer.dart';
@@ -153,7 +153,13 @@ class _EditProfileMainState extends State<EditProfileMain> {
     var widthDevice = MediaQuery.of(context).size.width;
     return MainContainer(
       children: [
-        HeaderWidget(header: 'EDIT PROFILE'),
+        HeaderWidget1(
+          header: 'EDIT PROFILE',
+          onPress: () {
+            Navigator.pop(context);
+          },
+          showBackIcon: true,
+        ),
         Container(
           height: heightDevice * 0.88,
           width: widthDevice,
@@ -511,8 +517,7 @@ class _EditProfileMainState extends State<EditProfileMain> {
                     await saveUserDetails();
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const UserProfile()),
+                      MaterialPageRoute(builder: (context) => BottomNavBar()),
                     );
                   },
                 )

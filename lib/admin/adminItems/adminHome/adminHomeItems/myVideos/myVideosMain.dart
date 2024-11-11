@@ -14,6 +14,7 @@ class MyVideosMain extends StatelessWidget {
     return MainContainer(
       children: [
         HeaderWidget1(
+          showBackIcon: true,
           header: 'NEW SHORT',
           onPress: () {
             Navigator.push(

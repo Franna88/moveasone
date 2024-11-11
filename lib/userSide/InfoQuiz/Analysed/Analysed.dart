@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:move_as_one/myutility.dart';
-import 'package:move_as_one/userSide/Home/GetStarted.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Login/Signin.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/Signup.dart';
 

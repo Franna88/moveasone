@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/admin/adminItems/memberManagement/ui/statusBarActivity.dart';
-import 'package:move_as_one/commonUi/CircularPercentageProgressBar.dart';
 
 class StatusIndicator extends StatelessWidget {
   final Widget barType;

@@ -14,7 +14,6 @@ import 'package:move_as_one/admin/adminItems/workoutCreator/commonUi/myTagButton
 import 'package:move_as_one/admin/adminItems/workoutCreator/commonUi/questionConHeader.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/creatorFullView/ui/myTimerSlider.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/overlayItems/creatorVoiceRecord.dart';
-import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/overlayItems/creatorWorkoutCompleted.dart';
 import 'package:move_as_one/admin/commonUi/adminColors.dart';
 import 'package:move_as_one/admin/commonUi/commonButtons.dart';
 import 'package:move_as_one/commonUi/myDivider.dart';

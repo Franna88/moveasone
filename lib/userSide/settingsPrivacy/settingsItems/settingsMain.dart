@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:move_as_one/HomePage.dart';
 import 'package:move_as_one/Services/UserState.dart';
 import 'package:move_as_one/userSide/settingsPrivacy/settingsItems/language.dart';
 import 'package:move_as_one/userSide/settingsPrivacy/settingsItems/notifications.dart';

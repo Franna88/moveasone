@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/models/dificultyModel/difficultyModel.dart';
 import 'package:move_as_one/commonUi/NewSwitchBUtton.dart';
 import 'package:move_as_one/commonUi/myDivider.dart';
-import 'package:move_as_one/commonUi/mySwitchButton.dart';
-import 'package:move_as_one/userSide/userProfile/userProfileItems/editProfile/ui/NewSwitchbutton.dart';
 
 class DifficultyList extends StatefulWidget {
   final ValueChanged<String> onDifficultySelected;

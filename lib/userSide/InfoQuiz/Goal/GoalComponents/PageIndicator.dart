@@ -18,7 +18,9 @@ class PageIndicator extends StatelessWidget {
               Icons.keyboard_arrow_left,
               size: 28,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
           Row(
             children: [

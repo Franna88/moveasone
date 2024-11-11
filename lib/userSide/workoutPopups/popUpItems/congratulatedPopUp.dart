@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/userSide/workoutPopups/ui/animatedEmoji.dart';
 import 'package:move_as_one/userSide/workoutPopups/ui/clapEmoji.dart';
 import 'package:move_as_one/userSide/workoutPopups/ui/replyEmoji.dart';
 import 'package:move_as_one/userSide/workoutPopups/ui/senderName.dart';

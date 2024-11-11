@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:move_as_one/BottomNavBar/BottomNavBar.dart';
 import 'package:move_as_one/HomePage.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/workoutsFullLenght.dart';
-import 'package:move_as_one/userSide/Home/GetStarted.dart';
 
 class UserState extends StatefulWidget {
   const UserState({super.key});
@@ -44,10 +43,10 @@ class _UserStateState extends State<UserState> {
 
             checkAdminType(user!.uid);
 
-            if (userType == "user") {
-              return Material(child: BottomNavBar());
-            } else {
+            if (userType == "Admin") {
               return Material(child: WorkoutsFullLenght());
+            } else {
+              return Material(child: BottomNavBar());
             }
 
 // user logged in

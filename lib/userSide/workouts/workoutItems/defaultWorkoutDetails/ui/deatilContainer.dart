@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:image_network/image_network.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 //import 'package:image_network/image_network.dart';
 
