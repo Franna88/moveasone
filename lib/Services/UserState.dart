@@ -14,56 +14,84 @@ class UserState extends StatefulWidget {
 
 class _UserStateState extends State<UserState> {
   String userType = "";
+  bool isLoading = true; // To indicate loading state
 
-  checkAdminType(String uid) async {
-    DocumentSnapshot userDoc =
-        await FirebaseFirestore.instance.collection('users').doc(uid).get();
-    Map<String, dynamic>? data = userDoc.data() as Map<String, dynamic>?;
-    if (data?['status'] == null) {
-      return false;
+  @override
+  void initState() {
+    super.initState();
+    _checkUserType();
+  }
+
+  void _checkUserType() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      Map<String, dynamic>? data = userDoc.data() as Map<String, dynamic>?;
+
+      if (data != null && data['status'] != null) {
+        setState(() {
+          userType = data['status'];
+        });
+      }
     }
-
     setState(() {
-      userType = data?['status'];
+      isLoading = false;
     });
-    //FirebaseAuth.instance.signOut();
+  }
+
+  Future<bool> _onWillPop() async {
+    // Define default navigation logic for the back button
+    if (userType == "user") {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => BottomNavBar()),
+        (Route<dynamic> route) => false,
+      );
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => WorkoutsFullLenght()),
+        (Route<dynamic> route) => false,
+      );
+    }
+    return false; // Prevents default pop behavior
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (ctx, userSnapshot) {
-          if (userSnapshot.data == null) {
-            return Material(
-              child: HomePage(),
-            );
-          } else if (userSnapshot.hasData) {
-            User? user = FirebaseAuth.instance.currentUser;
-
-            checkAdminType(user!.uid);
-
-            if (userType == "Admin") {
-              return Material(child: WorkoutsFullLenght());
-            } else {
-              return Material(child: BottomNavBar());
-            }
-
-// user logged in
-          } else if (userSnapshot.hasError) {
-            print('error on snapshot');
-          } else if (userSnapshot.connectionState == ConnectionState.waiting) {
+          if (userSnapshot.connectionState == ConnectionState.waiting ||
+              isLoading) {
             return const Scaffold(
               body: Center(
                 child: CircularProgressIndicator(),
               ),
             );
+          } else if (userSnapshot.hasData) {
+            if (userType == "user") {
+              return Material(child: BottomNavBar());
+            } else if (userType == "admin") {
+              return Material(child: WorkoutsFullLenght());
+            } else {
+              return const Scaffold(
+                body: Center(child: Text("User type not recognized")),
+              );
+            }
+          } else if (userSnapshot.hasError) {
+            print('Error in userSnapshot: ${userSnapshot.error}');
+            return const Scaffold(
+              body: Center(child: Text("An error occurred. Please try again.")),
+            );
           }
 
-          User? user = FirebaseAuth.instance.currentUser;
-// user logged in
-
           return HomePage();
-        });
+        },
+      ),
+    );
   }
 }
