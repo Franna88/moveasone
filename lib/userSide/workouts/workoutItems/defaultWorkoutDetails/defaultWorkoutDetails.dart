@@ -118,14 +118,36 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
               info: workouts[i]['description']?.toString() ?? '',
               docId: widget.docId,
               list: workouts,
-              userType: 'Admin',
+              userType: widget.userType, // Use widget.userType here
               warmupData: workouts[i],
               entireExercise: entireExercise,
               type: "workouts",
-              restTime: restTime, // Fetch rest time
+              restTime: restTime,
+            ),
+          );
+        } // For Workouts
+        for (var i = 0; i < workouts.length; i++) {
+          int minutes = workouts[i]['selectedMinutes'] ?? 0;
+          int seconds = workouts[i]['selectedSeconds'] ?? 0;
+          String restTime = '$minutes min $seconds sec';
+
+          workoutWidgets.add(
+            ExerciseVideoWidget(
+              imageUrl: workouts[i]['image'] ?? 'images/upperBody.png',
+              header: workouts[i]['name']?.toString() ?? 'Workout',
+              info: workouts[i]['description']?.toString() ?? '',
+              docId: widget.docId,
+              list: workouts,
+              userType: widget.userType, // Use widget.userType here
+              warmupData: workouts[i],
+              entireExercise: entireExercise,
+              type: "workouts",
+              restTime: restTime,
             ),
           );
         }
+
+// For Cooldowns
         for (var i = 0; i < coolDowns.length; i++) {
           int minutes = coolDowns[i]['selectedMinutes'] ?? 0;
           int seconds = coolDowns[i]['selectedSeconds'] ?? 0;
@@ -138,11 +160,11 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
               info: coolDowns[i]['description']?.toString() ?? '',
               docId: widget.docId,
               list: coolDowns,
-              userType: 'Admin',
+              userType: widget.userType, // Use widget.userType here
               warmupData: coolDowns[i],
               entireExercise: entireExercise,
               type: "coolDowns",
-              restTime: restTime, // Fetch rest time
+              restTime: restTime,
             ),
           );
         }
@@ -280,15 +302,26 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
           ),
           ExerciseDropDown(
             addSectionPress: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => WarmUpCreator(
-                          docId: widget.docId,
-                          type: 'warmUps',
-                          exerciseList: warmUps,
-                        )),
-              );
+              // Check the userType before navigating
+              if (widget.userType != 'user') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => WarmUpCreator(
+                            docId: widget.docId,
+                            type: 'warmUps',
+                            exerciseList: warmUps,
+                          )),
+                );
+              } else {
+                // Provide feedback to the user
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                        'You do not have permission to access this feature.'),
+                  ),
+                );
+              }
             },
             isButtonVisible: widget.userType != "user",
             addSectionText: 'Add Warmup',
@@ -306,15 +339,26 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
           ),
           ExerciseDropDown(
             addSectionPress: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => WarmUpCreator(
-                          docId: widget.docId,
-                          type: 'workouts',
-                          exerciseList: workouts,
-                        )),
-              );
+              // Check the userType before navigating
+              if (widget.userType != 'user') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => WarmUpCreator(
+                            docId: widget.docId,
+                            type: 'workouts',
+                            exerciseList: workouts,
+                          )),
+                );
+              } else {
+                // Provide feedback to the user
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                        'You do not have permission to access this feature.'),
+                  ),
+                );
+              }
             },
             isButtonVisible: widget.userType != "user",
             addSectionText: 'Add Workout',
@@ -330,15 +374,26 @@ class _DefaultWorkoutDetailsState extends State<DefaultWorkoutDetails> {
             padding: const EdgeInsets.only(bottom: 30),
             child: ExerciseDropDown(
               addSectionPress: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => WarmUpCreator(
-                            docId: widget.docId,
-                            type: 'coolDowns',
-                            exerciseList: coolDowns,
-                          )),
-                );
+                // Check the userType before navigating
+                if (widget.userType != 'user') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => WarmUpCreator(
+                              docId: widget.docId,
+                              type: 'coolDowns',
+                              exerciseList: coolDowns,
+                            )),
+                  );
+                } else {
+                  // Provide feedback to the user
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          'You do not have permission to access this feature.'),
+                    ),
+                  );
+                }
               },
               isButtonVisible: widget.userType != "user",
               addSectionText: 'Add Cool down',
