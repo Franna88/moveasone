@@ -28,13 +28,19 @@ class _MotivationaddgridState extends State<Motivationaddgrid>
   File? _selectedImage;
   double imageUploadProgress = 0.0;
 
+  // Modern color scheme
+  final Color primaryColor = const Color(0xFF6A3EA1); // Purple
+  final Color secondaryColor = const Color(0xFF60BFC5); // Teal
+  final Color accentColor = const Color(0xFFFF7F5C); // Coral/Orange
+  final Color backgroundColor = const Color(0xFFF7F5FA); // Light purple tint
+
   @override
   void initState() {
     super.initState();
 
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 300),
       lowerBound: 0,
       upperBound: 1,
     );
@@ -49,6 +55,10 @@ class _MotivationaddgridState extends State<Motivationaddgrid>
     super.dispose();
   }
 
+  void uploadImage() {
+    _uploadImage();
+  }
+
   Future<void> _uploadImage() async {
     final pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -60,34 +70,105 @@ class _MotivationaddgridState extends State<Motivationaddgrid>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Enter video name'),
+            title: Text(
+              'New Motivation Video',
+              style:
+                  TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+            ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: _nameController,
-                  decoration: InputDecoration(hintText: 'Video name'),
+                  decoration: InputDecoration(
+                    hintText: 'Enter video title',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide:
+                          BorderSide(color: primaryColor.withOpacity(0.3)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: primaryColor, width: 2),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Cover Image (Optional)',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[700],
+                  ),
                 ),
                 SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: _pickImage,
-                  child: Text('Upload Image'),
-                ),
-                if (_selectedImage != null)
-                  Image.file(
-                    _selectedImage!,
-                    height: 100,
-                    width: 100,
-                    fit: BoxFit.cover,
+                InkWell(
+                  onTap: _pickImage,
+                  child: Container(
+                    width: double.infinity,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade300),
+                    ),
+                    child: _selectedImage != null
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.file(
+                              _selectedImage!,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.add_photo_alternate_outlined,
+                                size: 40,
+                                color: secondaryColor,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Tap to add cover image',
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                            ],
+                          ),
                   ),
+                ),
               ],
             ),
             actions: [
               TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'CANCEL',
+                  style: TextStyle(color: Colors.grey[700]),
+                ),
+              ),
+              ElevatedButton(
                 onPressed: () => Navigator.pop(context, _nameController.text),
-                child: Text('OK'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text('SAVE'),
               ),
             ],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            backgroundColor: Colors.white,
+            elevation: 5,
           );
         },
       );
@@ -190,8 +271,30 @@ class _MotivationaddgridState extends State<Motivationaddgrid>
             'imageUrl': imageUrl ?? '',
           });
         });
+
+        // Clear selected image
+        setState(() {
+          _selectedImage = null;
+        });
+
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Video added successfully!'),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       } catch (e) {
         print('Error uploading image: $e');
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error uploading: $e'),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       } finally {
         setState(() {
           isLoading = false;
@@ -221,84 +324,277 @@ class _MotivationaddgridState extends State<Motivationaddgrid>
       children: [
         AnimatedBuilder(
           animation: _animationController,
-          child: SizedBox(
-            height: heightDevice * 0.72,
-            child: GridView.builder(
-              itemCount: newVideos.length + 1,
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-              itemBuilder: (context, index) {
-                if (index == newVideos.length) {
-                  return Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: IconButton(
-                      icon: Icon(Icons.add),
-                      onPressed: _uploadImage,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: newVideos.isEmpty
+                ? _buildEmptyState()
+                : GridView.builder(
+                    itemCount: newVideos.length + 1,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.8,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
                     ),
-                  );
-                } else {
-                  return Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: heightDevice * 0.12,
-                          width: widthDevice * 0.25,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                    newVideos[index]['imageUrl']!.isNotEmpty
-                                        ? newVideos[index]['imageUrl']!
-                                        : newVideos[index]['thumbnailUrl']!),
-                                fit: BoxFit.cover),
-                          ),
-                        ),
-                        Text(newVideos[index]['videoName']!,
-                            style: TextStyle(fontSize: 12),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1),
-                      ],
-                    ),
-                  );
-                }
-              },
-            ),
+                    itemBuilder: (context, index) {
+                      if (index == newVideos.length) {
+                        return _buildAddVideoCard();
+                      } else {
+                        return _buildVideoCard(index);
+                      }
+                    },
+                  ),
           ),
-          builder: (context, child) => Padding(
-            padding:
-                EdgeInsets.only(top: 100 - _animationController.value * 100),
+          builder: (context, child) => FadeTransition(
+            opacity: _animationController,
             child: child,
           ),
         ),
-        if (isLoading)
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+        if (isLoading) _buildLoadingOverlay(),
+      ],
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: secondaryColor.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.videocam_outlined,
+              size: 64,
+              color: secondaryColor,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'No Videos Added Yet',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: primaryColor,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Add your first motivation video to inspire others!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: 32),
+          ElevatedButton.icon(
+            onPressed: _uploadImage,
+            icon: Icon(Icons.add),
+            label: Text('ADD VIDEO'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryColor,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAddVideoCard() {
+    return InkWell(
+      onTap: _uploadImage,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: secondaryColor.withOpacity(0.3),
+            width: 2,
+            style: BorderStyle.solid,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: secondaryColor.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.add_rounded,
+                size: 32,
+                color: secondaryColor,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Add New Video',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: primaryColor,
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVideoCard(int index) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Thumbnail with play icon overlay
+          Expanded(
+            child: Stack(
+              fit: StackFit.expand,
               children: [
-                CircularProgressIndicator(value: progress),
-                SizedBox(height: 20),
-                Text(
-                  'Uploading... ${(progress * 100).toStringAsFixed(0)}%',
-                  style: TextStyle(fontSize: 16),
-                ),
-                if (imageUploadProgress > 0.0 && imageUploadProgress < 1.0)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Column(
-                      children: [
-                        CircularProgressIndicator(value: imageUploadProgress),
-                        SizedBox(height: 10),
-                        Text(
-                          'Uploading Image... ${(imageUploadProgress * 100).toStringAsFixed(0)}%',
-                          style: TextStyle(fontSize: 16),
+                // Thumbnail
+                ClipRRect(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                  child: Image.network(
+                    newVideos[index]['imageUrl']!.isNotEmpty
+                        ? newVideos[index]['imageUrl']!
+                        : newVideos[index]['thumbnailUrl']!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[200],
+                        child: Icon(
+                          Icons.broken_image,
+                          color: Colors.grey[400],
+                          size: 40,
                         ),
-                      ],
+                      );
+                    },
+                  ),
+                ),
+                // Play icon overlay
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: primaryColor.withOpacity(0.8),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.play_arrow,
+                      color: Colors.white,
+                      size: 24,
                     ),
                   ),
+                ),
               ],
             ),
           ),
-      ],
+          // Video title
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  newVideos[index]['videoName']!,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey[800],
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Motivation Video',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadingOverlay() {
+    return Container(
+      color: Colors.black.withOpacity(0.7),
+      child: Center(
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(
+                  value: progress,
+                  valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                  strokeWidth: 4,
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Uploading... ${(progress * 100).toStringAsFixed(0)}%',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (imageUploadProgress > 0.0 && imageUploadProgress < 1.0) ...[
+                  SizedBox(height: 24),
+                  LinearProgressIndicator(
+                    value: imageUploadProgress,
+                    valueColor: AlwaysStoppedAnimation<Color>(secondaryColor),
+                    backgroundColor: Colors.grey[200],
+                    minHeight: 8,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Uploading Cover Image... ${(imageUploadProgress * 100).toStringAsFixed(0)}%',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

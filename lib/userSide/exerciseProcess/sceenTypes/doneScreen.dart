@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:move_as_one/BottomNavBar/BottomNavBar.dart';
+import 'package:move_as_one/Services/motivation_service.dart';
 
 import '../../../commonUi/navVideoButton.dart';
 import '../../../commonUi/uiColors.dart';
@@ -35,6 +36,9 @@ class _DoneScreenState extends State<DoneScreen> {
         ])
       });
       print('Workout updated successfully');
+
+      // Update motivation score after workout
+      await MotivationService.updateUserMotivation(uid);
     } catch (e) {
       print('Error updating workout: $e');
     }

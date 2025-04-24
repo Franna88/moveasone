@@ -84,5 +84,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
 }
-
 apply plugin: 'com.google.gms.google-services' // Apply the Google Services plugin
+

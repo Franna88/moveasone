@@ -63,7 +63,9 @@ class FullMemberWidget extends StatelessWidget {
                         color: Colors.black,
                         fontWeight: FontWeight.w400),
                   ),
-                  const SizedBox(height: 5,),
+                  const SizedBox(
+                    height: 5,
+                  ),
                   Row(
                     children: [
                       Text(
@@ -73,17 +75,25 @@ class FullMemberWidget extends StatelessWidget {
                           fontSize: 11,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w400,
-                         
                         ),
                       ),
-                      SizedBox(width: widthDevice * 0.09,),
-                      WatchButton()
+                      SizedBox(
+                        width: widthDevice * 0.09,
+                      ),
+                      WatchButton(
+                        userId: '',
+                        isWatched: false,
+                      )
                     ],
                   ),
                 ],
               ),
               Spacer(),
-              Icon(Icons.keyboard_arrow_right, size: 30, color: Colors.grey,)
+              Icon(
+                Icons.keyboard_arrow_right,
+                size: 30,
+                color: Colors.grey,
+              )
             ],
           ),
         ],

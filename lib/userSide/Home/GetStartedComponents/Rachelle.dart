@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:move_as_one/WorkoutCreatorVideo/FullScreenVideoPlayer.dart';
-import 'package:move_as_one/commonUi/ReusebaleImage.dart';
 import 'package:move_as_one/myutility.dart';
 
 class Rachelle extends StatefulWidget {
@@ -11,14 +10,38 @@ class Rachelle extends StatefulWidget {
   State<Rachelle> createState() => _RachelleState();
 }
 
-class _RachelleState extends State<Rachelle> {
+class _RachelleState extends State<Rachelle>
+    with SingleTickerProviderStateMixin {
   int _selectedIndex = -1;
   List<Map<String, String>> videos = [];
+  late PageController _pageController;
+  late AnimationController _animationController;
+
+  // Modern color scheme - coordinated with main app colors
+  final Color primaryColor = const Color(0xFF025959);
+  final Color secondaryColor = const Color(0xFF01B3B3);
+  final Color accentColor = const Color(0xFF94FBAB);
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(
+      initialPage: 0,
+      viewportFraction: 0.55, // Show partial next/previous items
+    );
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
     _fetchVideos();
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _animationController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchVideos() async {
@@ -42,68 +65,251 @@ class _RachelleState extends State<Rachelle> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MyUtility(context).height * 0.22,
+      height: MyUtility(context).height * 0.32,
       child: Column(
         children: [
-          SizedBox(
-            height: MyUtility(context).height * 0.04,
-          ),
-          SizedBox(
-            width: MyUtility(context).width / 1.15,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Rachelle',
-                  style: TextStyle(
-                    color: Color(0xFF1E1E1E),
-                    fontSize: 20,
-                    fontFamily: 'belight',
-                  ),
+          // Modern header with subtle animation
+          AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) {
+              return Transform.translate(
+                offset: Offset(0, 15 * (1 - _animationController.value)),
+                child: Opacity(
+                  opacity: _animationController.value,
+                  child: child,
                 ),
-                /*Text(
-                  'See more',
-                  style: TextStyle(
-                    color: Color(0xFFAA5F3A),
-                    fontSize: 15,
-                    fontFamily: 'Be Vietnam',
-                    fontWeight: FontWeight.w100,
-                  ),
-                )*/
-              ],
-            ),
-          ),
-          SizedBox(
-            height: MyUtility(context).height * 0.01,
-          ),
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: videos.length,
-              itemBuilder: (context, index) {
-                return VideoButton(
-                  isSelected: _selectedIndex == index,
-                  videoUrl: videos[index]['videoUrl']!,
-                  thumbnailUrl: videos[index]['thumbnailUrl']!,
-                  description: videos[index]['description']!,
-                  onTap: () {
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FullScreenVideoPlayer(
-                          videoUrl: videos[index]['videoUrl']!,
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        height: 24,
+                        width: 4,
+                        decoration: BoxDecoration(
+                          color: accentColor,
+                          borderRadius: BorderRadius.circular(2),
                         ),
                       ),
-                    );
-                  },
-                );
-              },
+                      SizedBox(width: 8),
+                      Text(
+                        'Rachelle',
+                        style: TextStyle(
+                          color: primaryColor,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Interactive see all button
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: secondaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'All shorts',
+                          style: TextStyle(
+                            color: secondaryColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: secondaryColor,
+                          size: 12,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
+
+          // Modern video carousel with depth effect
+          Expanded(
+            child: videos.isEmpty
+                ? Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(secondaryColor),
+                    ),
+                  )
+                : PageView.builder(
+                    controller: _pageController,
+                    itemCount: videos.length,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _selectedIndex = index;
+                      });
+                    },
+                    itemBuilder: (context, index) {
+                      final bool isActive = _selectedIndex == index;
+                      return AnimatedBuilder(
+                        animation: _animationController,
+                        builder: (context, child) {
+                          return Transform.translate(
+                            offset: Offset(
+                                0, 30 * (1 - _animationController.value)),
+                            child: Opacity(
+                              opacity: _animationController.value,
+                              child: AnimatedScale(
+                                scale: isActive ? 1.0 : 0.85,
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.easeOutCubic,
+                                child: child,
+                              ),
+                            ),
+                          );
+                        },
+                        child: _buildVideoCard(
+                          videos[index]['thumbnailUrl'] ?? '',
+                          videos[index]['description'] ?? '',
+                          videos[index]['videoUrl'] ?? '',
+                          isActive,
+                        ),
+                      );
+                    },
+                  ),
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildVideoCard(
+      String thumbnailUrl, String description, String videoUrl, bool isActive) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FullScreenVideoPlayer(
+              videoUrl: videoUrl,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: primaryColor.withOpacity(isActive ? 0.2 : 0.1),
+              blurRadius: 20,
+              offset: Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            // Thumbnail with gradient overlay
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(thumbnailUrl),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.6),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            // Play button overlay
+            Center(
+              child: Container(
+                height: 60,
+                width: 60,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withOpacity(0.2),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.5),
+                    width: 2,
+                  ),
+                ),
+                child: Icon(
+                  Icons.play_arrow,
+                  color: Colors.white,
+                  size: 32,
+                ),
+              ),
+            ),
+
+            // Video title
+            Positioned(
+              bottom: 16,
+              left: 16,
+              right: 16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    description,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.5),
+                          offset: Offset(0, 2),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.swipe_up,
+                        color: Colors.white.withOpacity(0.7),
+                        size: 14,
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        'Swipe to watch',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.7),
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

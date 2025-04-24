@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'dart:io';
 
 import 'package:move_as_one/userSide/UserProfile/MemberOptions/MemberOption.dart';
 import 'package:move_as_one/myutility.dart';
@@ -18,11 +19,18 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  String name = '';
-  String bio = '';
-  String website = '';
-  String profilePicUrl = '';
-  String userId = '';
+  Directory? dir;
+  File? savedFile;
+  bool loading = false;
+  String errorMessage = '';
+  String firstName = '';
+  String lastName = '';
+  String email = '';
+  String profileImageUrl = '';
+  String photoUrl = '';
+  bool hasImage = false;
+  int motivationScore = 0;
+  int daysSinceLastWorkout = 0;
 
   @override
   void initState() {
@@ -31,17 +39,61 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<void> getUserDetails() async {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-    final doc =
-        await FirebaseFirestore.instance.collection('users').doc(uid).get();
-    if (doc.exists) {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (userDoc.exists) {
+          Map<String, dynamic> userData =
+              userDoc.data() as Map<String, dynamic>;
+          setState(() {
+            firstName = userData['firstName'] ?? '';
+            lastName = userData['lastName'] ?? '';
+            email = userData['email'] ?? '';
+            profileImageUrl = userData['profileImage'] ?? '';
+            motivationScore =
+                userData['motivationScore'] ?? 75; // Default value if not set
+
+            // Calculate days since last workout
+            if (userData['lastWorkoutDate'] != null) {
+              DateTime lastWorkout =
+                  (userData['lastWorkoutDate'] as Timestamp).toDate();
+              daysSinceLastWorkout =
+                  DateTime.now().difference(lastWorkout).inDays;
+            } else {
+              daysSinceLastWorkout = 7; // Default value if not set
+            }
+          });
+        }
+      }
+    } catch (e) {
       setState(() {
-        userId = uid;
-        name = doc.get('name');
-        bio = doc.get('bio');
-        website = doc.get('website');
-        profilePicUrl = doc.get('profilePic');
+        errorMessage = e.toString();
       });
+    }
+  }
+
+  Color getMotivationColor() {
+    if (motivationScore >= 80) {
+      return Color(0xFF4CAF50); // Green for high motivation
+    } else if (motivationScore >= 50) {
+      return Color(0xFFFFA726); // Orange for medium motivation
+    } else {
+      return Color(0xFFE57373); // Red for low motivation
+    }
+  }
+
+  String getMotivationStatus() {
+    if (motivationScore >= 80) {
+      return "HIGH FIVE'S - KEEP IT UP!";
+    } else if (motivationScore >= 50) {
+      return "DOING GOOD - STAY FOCUSED!";
+    } else {
+      return "LET'S GET MOVING AGAIN!";
     }
   }
 
@@ -105,10 +157,10 @@ class _UserProfileState extends State<UserProfile> {
                       SizedBox(
                         width: MyUtility(context).width * 0.05,
                       ),
-                      profilePicUrl.isNotEmpty
+                      profileImageUrl.isNotEmpty
                           ? ClipOval(
                               child: Image.network(
-                                profilePicUrl,
+                                profileImageUrl,
                                 width: 75,
                                 height: 75,
                                 fit: BoxFit.cover,
@@ -149,7 +201,7 @@ class _UserProfileState extends State<UserProfile> {
                       Column(
                         children: [
                           Text(
-                            'HIGH FIVE’S',
+                            "HIGH FIVE'S",
                             style: TextStyle(
                               color: Color(0xFF6F6F6F),
                               fontSize: 12,
@@ -200,7 +252,7 @@ class _UserProfileState extends State<UserProfile> {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: name,
+                            text: firstName,
                             style: TextStyle(
                               color: Color(0xFF1E1E1E),
                               fontSize: 18,
@@ -236,7 +288,7 @@ class _UserProfileState extends State<UserProfile> {
                   child: SizedBox(
                     width: 311,
                     child: Text(
-                      bio,
+                      lastName,
                       style: TextStyle(
                         color: Color(0xFF1E1E1E),
                         fontSize: 17,
@@ -250,7 +302,7 @@ class _UserProfileState extends State<UserProfile> {
                   padding: const EdgeInsets.only(left: 20),
                   child: SizedBox(
                     child: Text(
-                      website,
+                      email,
                       style: TextStyle(
                         color: Color(0xFF006261),
                         fontSize: 14,
@@ -325,12 +377,99 @@ class _UserProfileState extends State<UserProfile> {
                   height: MyUtility(context).height * 0.05,
                 ),
                 LastWorkout(
-                  userId: userId,
+                  userId: FirebaseAuth.instance.currentUser!.uid,
                 ),
                 SizedBox(
                   height: MyUtility(context).height * 0.01,
                 ),
-                MemberOptions()
+                MemberOptions(),
+                // Motivation Score Container
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, top: 15, right: 20),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Motivation Score',
+                              style: TextStyle(
+                                color: Color(0xFF1E1E1E),
+                                fontSize: 16,
+                                fontFamily: 'Be Vietnam',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: getMotivationColor(),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '$motivationScore%',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontFamily: 'Be Vietnam',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              getMotivationStatus(),
+                              style: TextStyle(
+                                color: getMotivationColor(),
+                                fontSize: 14,
+                                fontFamily: 'Be Vietnam',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            Text(
+                              daysSinceLastWorkout == 0
+                                  ? 'Worked out today'
+                                  : daysSinceLastWorkout == 1
+                                      ? 'Last workout: yesterday'
+                                      : 'Last workout: $daysSinceLastWorkout days ago',
+                              style: TextStyle(
+                                color: Color(0xFF6F6F6F),
+                                fontSize: 12,
+                                fontFamily: 'Be Vietnam',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: MyUtility(context).height * 0.05,
+                ),
               ],
             ),
           ),
