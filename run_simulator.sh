@@ -1,3 +1,27 @@
+#!/bin/bash
+
+# Exit on any error
+set -e
+
+echo "==== Flutter iOS Simulator Runner ===="
+
+# Create a symbolic link in /tmp without spaces
+LINK_PATH="/tmp/moveasone"
+CURRENT_DIR="$(pwd)"
+
+echo "Creating a symbolic link without spaces..."
+# Remove existing link if present
+rm -f "$LINK_PATH"
+# Create new symbolic link
+ln -sf "$CURRENT_DIR" "$LINK_PATH"
+
+# Change to the linked directory
+cd "$LINK_PATH"
+echo "Working in: $(pwd)"
+
+# Fix the Podfile for better iOS build compatibility 
+echo "Updating Podfile..."
+cat > ios/Podfile << 'EOF'
 # Uncomment this line to define a global platform for your project
 platform :ios, '13.0'
 
@@ -48,3 +72,31 @@ post_install do |installer|
     end
   end
 end
+EOF
+
+# Clean everything to start fresh
+echo "Cleaning project..."
+flutter clean
+
+# Get dependencies
+echo "Installing pub dependencies..."
+flutter pub get
+
+# Install Pods
+echo "Installing iOS pods..."
+cd ios
+rm -rf Pods Podfile.lock
+pod install
+cd ..
+
+# List available simulators
+echo "Available simulators:"
+xcrun simctl list devices | grep -i iphone
+
+# Run on simulator
+echo "Running on iPhone 15 simulator..."
+flutter run -d "iPhone 15"
+
+# Note to user
+echo "If 'iPhone 15' is not available, please choose another device from the list above"
+echo "and run: flutter run -d \"DEVICE_NAME\"" 
