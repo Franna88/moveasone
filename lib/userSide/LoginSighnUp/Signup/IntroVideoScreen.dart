@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Login/Signin.dart'; // Adjust the import based on your file structure
-import 'package:auto_orientation/auto_orientation.dart';
+//import 'package:auto_orientation/auto_orientation.dart';
 import 'package:flutter/services.dart';
 
 class IntroVideoScreen extends StatefulWidget {
@@ -18,7 +18,7 @@ class _IntroVideoScreenState extends State<IntroVideoScreen> {
   @override
   void initState() {
     super.initState();
-    AutoOrientation.landscapeAutoMode(); // Force landscape orientation
+    //AutoOrientation.landscapeAutoMode(); // Force landscape orientation
     SystemChrome.setEnabledSystemUIMode(
         SystemUiMode.immersiveSticky); // Enable fullscreen mode
 
@@ -30,8 +30,8 @@ class _IntroVideoScreenState extends State<IntroVideoScreen> {
 
     _controller.addListener(() {
       if (_controller.value.position == _controller.value.duration) {
-        AutoOrientation
-            .portraitAutoMode(); // Switch back to portrait orientation
+        // AutoOrientation
+        //     .portraitAutoMode(); // Switch back to portrait orientation
         SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
             overlays: SystemUiOverlay.values); // Disable fullscreen mode
         Navigator.pushReplacement(
@@ -61,7 +61,7 @@ class _IntroVideoScreenState extends State<IntroVideoScreen> {
   void dispose() {
     _controller.dispose();
     _timer?.cancel();
-    AutoOrientation.portraitAutoMode(); // Ensure portrait orientation on exit
+    //AutoOrientation.portraitAutoMode(); // Ensure portrait orientation on exit
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: SystemUiOverlay.values); // Disable fullscreen mode
     super.dispose();
@@ -71,8 +71,8 @@ class _IntroVideoScreenState extends State<IntroVideoScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        AutoOrientation
-            .portraitAutoMode(); // Ensure portrait orientation on exit
+        // AutoOrientation
+        //     .portraitAutoMode(); // Ensure portrait orientation on exit
         SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
             overlays: SystemUiOverlay.values); // Disable fullscreen mode
         return true;
