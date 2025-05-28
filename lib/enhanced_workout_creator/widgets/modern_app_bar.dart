@@ -8,6 +8,12 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color backgroundColor;
   final Color textColor;
 
+  // New color palette
+  static const primaryColor = Color(0xFF6699CC); // Cornflower Blue
+  static const secondaryColor = Color(0xFF94D8E0); // Pale Turquoise
+  static const accentColor = Color(0xFFEDCBA4); // Toffee
+  static const bgColor = Color(0xFFFFF8F0); // Light Sand/Cream
+
   const ModernAppBar({
     Key? key,
     required this.title,
@@ -15,7 +21,7 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.showBackButton = true,
     this.backgroundColor = Colors.white,
-    this.textColor = Colors.black,
+    this.textColor = primaryColor,
   }) : super(key: key);
 
   @override
@@ -25,15 +31,15 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
         color: backgroundColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: primaryColor.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -49,8 +55,8 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
                       color: textColor,
                       letterSpacing: 0.5,
                     ),

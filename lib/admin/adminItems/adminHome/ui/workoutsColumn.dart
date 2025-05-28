@@ -10,11 +10,11 @@ class WorkoutsColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Enhanced color scheme
-    final primaryColor = const Color(0xFF6A3EA1); // Purple
-    final secondaryColor = const Color(0xFF60BFC5); // Teal
-    final accentColor = const Color(0xFFFF7F5C); // Coral/Orange
-    final backgroundColor = const Color(0xFFF7F5FA); // Light purple tint
-    final highlightColor = const Color(0xFFFFA41B); // Golden/amber
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+    final accentColor = const Color(0xFFEDCBA4); // Toffee
+    final backgroundColor = const Color(0xFFFFF8F0); // Light Sand/Cream
+    final highlightColor = const Color(0xFFF5DEB3); // Sand
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,8 +33,8 @@ class WorkoutsColumn extends StatelessWidget {
               title: 'New Workout',
               icon: Icons.add_circle_outline,
               gradientColors: [
+                primaryColor,
                 secondaryColor,
-                Color(0xFF4DB6BD), // Deeper teal
               ],
               onTap: () {
                 Navigator.push(
@@ -52,8 +52,8 @@ class WorkoutsColumn extends StatelessWidget {
               title: 'All Workouts',
               icon: Icons.fitness_center,
               gradientColors: [
-                secondaryColor.withOpacity(0.9),
                 secondaryColor,
+                primaryColor.withOpacity(0.9),
               ],
               onTap: () {
                 Navigator.push(
@@ -71,8 +71,8 @@ class WorkoutsColumn extends StatelessWidget {
               title: 'Check In Questions',
               icon: Icons.help_outline,
               gradientColors: [
-                secondaryColor.withOpacity(0.8),
-                secondaryColor.withOpacity(0.9),
+                accentColor,
+                highlightColor,
               ],
               onTap: () {
                 Navigator.push(
@@ -94,9 +94,10 @@ class WorkoutsColumn extends StatelessWidget {
           child: Text(
             'Motivation',
             style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
               color: primaryColor,
+              letterSpacing: 0.5,
             ),
           ),
         ),
@@ -105,8 +106,8 @@ class WorkoutsColumn extends StatelessWidget {
           title: 'Add Motivation',
           icon: Icons.favorite_border,
           gradientColors: [
-            accentColor,
-            accentColor.withOpacity(0.8),
+            secondaryColor,
+            primaryColor,
           ],
           onTap: () {
             Navigator.push(
@@ -130,28 +131,22 @@ class WorkoutsColumn extends StatelessWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: gradientColors[0].withOpacity(0.3),
-            offset: const Offset(0, 6),
-            blurRadius: 10,
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: Colors.white.withOpacity(0.5),
-            offset: const Offset(0, -2),
-            blurRadius: 5,
+            color: gradientColors[0].withOpacity(0.2),
+            offset: const Offset(0, 8),
+            blurRadius: 15,
             spreadRadius: 0,
           ),
         ],
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(24),
           child: Ink(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -159,49 +154,34 @@ class WorkoutsColumn extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(24),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Icon with slight shadow for 3D effect
+                // Icon with container
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withOpacity(0.25),
                     shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        offset: const Offset(0, 2),
-                        blurRadius: 4,
-                        spreadRadius: 0,
-                      ),
-                    ],
                   ),
                   child: Icon(
                     icon,
                     color: Colors.white,
-                    size: 28,
+                    size: 32,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
 
-                // Title text with shadow
+                // Title text
                 Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: 18,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.5,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black.withOpacity(0.3),
-                        offset: const Offset(0, 1),
-                        blurRadius: 2,
-                      ),
-                    ],
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -222,28 +202,22 @@ class WorkoutsColumn extends StatelessWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: gradientColors[0].withOpacity(0.3),
-            offset: const Offset(0, 6),
-            blurRadius: 10,
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: Colors.white.withOpacity(0.5),
-            offset: const Offset(0, -2),
-            blurRadius: 5,
+            color: gradientColors[0].withOpacity(0.2),
+            offset: const Offset(0, 8),
+            blurRadius: 15,
             spreadRadius: 0,
           ),
         ],
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(24),
           child: Ink(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -251,50 +225,35 @@ class WorkoutsColumn extends StatelessWidget {
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
               ),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(24),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
               child: Row(
                 children: [
-                  // Icon with 3D effect
+                  // Icon with container
                   Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withOpacity(0.25),
                       shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          offset: const Offset(0, 2),
-                          blurRadius: 4,
-                          spreadRadius: 0,
-                        ),
-                      ],
                     ),
                     child: Icon(
                       icon,
                       color: Colors.white,
-                      size: 24,
+                      size: 26,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 20),
 
-                  // Title with shadow
+                  // Title
                   Text(
                     title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: 18,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black.withOpacity(0.3),
-                          offset: const Offset(0, 1),
-                          blurRadius: 2,
-                        ),
-                      ],
                     ),
                   ),
 
@@ -304,10 +263,10 @@ class WorkoutsColumn extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withOpacity(0.25),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.arrow_forward_ios,
                       color: Colors.white,
                       size: 16,

@@ -9,6 +9,8 @@ import 'package:move_as_one/admin/adminItems/adminHome/ui/UpdateHeader.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/ui/messagesColumn.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/ui/workoutsColumn.dart';
 import 'dart:math';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:move_as_one/Services/UserState.dart';
 
 class WorkoutsFullLenght extends StatefulWidget {
   const WorkoutsFullLenght({super.key});
@@ -22,21 +24,22 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
   late AnimationController _animationController;
 
   // Enhanced color palette inspired by spiral logo - more vibrant and striking
-  final primaryColor = const Color(0xFF025959); // Deep Teal - primary brand
-  final secondaryColor = const Color(0xFF01B3B3); // Bright Teal - accent
-  final accentColor = const Color(0xFF94FBAB); // Mint/Lime - energizing accent
-  final subtleColor = const Color(0xFFE5F9E0); // Pale Mint - background hint
+  final primaryColor =
+      const Color(0xFF6699CC); // Cornflower Blue - primary brand
+  final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise - accent
+  final accentColor = const Color(0xFFEDCBA4); // Toffee - energizing accent
+  final subtleColor = const Color(0xFFF5DEB3); // Peach/Sand - background hint
   final backgroundColor =
-      const Color(0xFFF8FFFA); // Off-white with hint of mint
-  final darkColor = const Color(0xFF01373A); // Deep Ocean - for depth
+      const Color(0xFFFFF8F0); // Light Sand/Cream - off-white
+  final darkColor = const Color(0xFF5980B5); // Deeper Cornflower - for depth
 
-  // Card theme colors - vibrant wellness spectrum
-  final breatheCardColor = const Color(0xFF94FBAB); // Energizing Mint
-  final flowCardColor = const Color(0xFF03C4A1); // Teal Flow
-  final powerCardColor = const Color(0xFF025959); // Deep Power
-  final balanceCardColor = const Color(0xFF01B3B3); // Bright Balance
-  final restoreCardColor = const Color(0xFF02A697); // Restoring Teal
-  final focusCardColor = const Color(0xFF038C7F); // Focused Teal
+  // Card theme colors - softer wellness spectrum
+  final breatheCardColor = const Color(0xFF94D8E0); // Pale Turquoise
+  final flowCardColor = const Color(0xFF6699CC); // Cornflower Blue
+  final powerCardColor = const Color(0xFF5980B5); // Deeper Cornflower
+  final balanceCardColor = const Color(0xFFEDCBA4); // Toffee
+  final restoreCardColor = const Color(0xFFF5DEB3); // Sand
+  final focusCardColor = const Color(0xFFEFC8A0); // Peach
 
   final double cardBorderRadius = 24.0;
   final double contentPadding = 20.0;
@@ -57,9 +60,95 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
     super.dispose();
   }
 
+  // Handle logout
+  Future<void> _handleLogout() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const UserState()),
+        (route) => false,
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error logging out: $e')),
+      );
+    }
+  }
+
+  // Show logout confirmation
+  void _showLogoutConfirmation() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Confirm Logout',
+            style: TextStyle(
+              color: primaryColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to log out?',
+            style: TextStyle(fontSize: 16),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _handleLogout();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              child: Text('Logout'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          'Admin Dashboard',
+          style: TextStyle(
+            color: darkColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        actions: [
+          // Logout button in AppBar
+          IconButton(
+            icon: Icon(
+              Icons.logout,
+              color: primaryColor,
+            ),
+            onPressed: _showLogoutConfirmation,
+            tooltip: 'Logout',
+          ),
+        ],
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -67,7 +156,7 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
             end: Alignment.bottomCenter,
             colors: [
               backgroundColor,
-              subtleColor.withOpacity(0.3),
+              subtleColor.withOpacity(0.2),
             ],
           ),
         ),
@@ -79,7 +168,7 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
                 top: -120,
                 right: -100,
                 child: _buildBackgroundSpiral(
-                    250, accentColor.withOpacity(0.05), 4),
+                    250, secondaryColor.withOpacity(0.05), 4),
               ),
               Positioned(
                 bottom: -150,
@@ -122,87 +211,29 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
                             ),
                           ),
 
-                          // Gradient overlay with more punch
+                          // Logo overlay with more visual impact
+                          Center(
+                            child: Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              child: Image.asset(
+                                'images/MAO_logo_new.jpeg',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+
+                          // Gradient overlay for better text visibility
                           Container(
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  darkColor.withOpacity(0.4),
-                                  secondaryColor.withOpacity(0.6),
+                                  darkColor.withOpacity(0.2),
+                                  secondaryColor.withOpacity(0.3),
                                 ],
-                                stops: [0.2, 1.0],
-                              ),
-                            ),
-                          ),
-
-                          // Logo overlay with more visual impact
-                          Center(
-                            child: Container(
-                              width: 120,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.85),
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: accentColor.withOpacity(0.4),
-                                    blurRadius: 30,
-                                    spreadRadius: 5,
-                                  ),
-                                  BoxShadow(
-                                    color: Colors.white,
-                                    blurRadius: 20,
-                                    spreadRadius: 1,
-                                  ),
-                                ],
-                              ),
-                              child: Stack(
-                                children: [
-                                  // Glow effect
-                                  Container(
-                                    width: 120,
-                                    height: 120,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.transparent,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: accentColor.withOpacity(0.3),
-                                          blurRadius: 20,
-                                          spreadRadius: 10,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  // Spiral
-                                  Center(
-                                    child: CustomPaint(
-                                      painter: SpiralPainter(
-                                        color: primaryColor,
-                                        strokeWidth: 3.0,
-                                      ),
-                                      size: Size(90, 90),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                          // "MOVE AS ONE" text in circular arc
-                          Center(
-                            child: Container(
-                              width: 250,
-                              height: 250,
-                              child: CustomPaint(
-                                painter: CircularTextPainter(
-                                  text: "MOVE   AS   ONE",
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                stops: [0.3, 1.0],
                               ),
                             ),
                           ),
@@ -232,7 +263,7 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
                                     shape: BoxShape.circle,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: accentColor.withOpacity(0.3),
+                                        color: secondaryColor.withOpacity(0.3),
                                         blurRadius: 12,
                                         offset: Offset(0, 4),
                                       ),
@@ -241,6 +272,40 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
                                   child: Icon(
                                     Icons.edit,
                                     color: primaryColor,
+                                    size: 22,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // Add logout button in header
+                          Positioned(
+                            top: 16,
+                            left: 16,
+                            child: Material(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(30),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(30),
+                                onTap: _showLogoutConfirmation,
+                                child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.95),
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: secondaryColor.withOpacity(0.3),
+                                        blurRadius: 12,
+                                        offset: Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.logout,
+                                    color: Colors.red,
                                     size: 22,
                                   ),
                                 ),
@@ -317,7 +382,7 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
                         children: [
                           // Breathe tile (Meditation)
                           _buildDashboardCard(
-                            title: 'BREATHE',
+                            title: 'MEDITATION',
                             description: 'Meditation & Mindfulness',
                             icon: Icons.self_improvement,
                             iconColor: Colors.white,
@@ -331,7 +396,7 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
 
                           // Flow tile (Workouts)
                           _buildDashboardCard(
-                            title: 'FLOW',
+                            title: 'TRAINING',
                             description: 'Dynamic Workouts',
                             icon: Icons.directions_run,
                             iconColor: Colors.white,
@@ -342,7 +407,7 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
 
                           // Power tile (Strength)
                           _buildDashboardCard(
-                            title: 'POWER',
+                            title: 'VIDS',
                             description: 'Strength & Conditioning',
                             icon: Icons.fitness_center,
                             iconColor: Colors.white,
@@ -356,7 +421,7 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
 
                           // Balance tile (Yoga)
                           _buildDashboardCard(
-                            title: 'BALANCE',
+                            title: 'MEMBERS',
                             description: 'Yoga & Flexibility',
                             icon: Icons.accessibility_new,
                             iconColor: Colors.white,
@@ -367,7 +432,7 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
 
                           // Restore tile (Recovery)
                           _buildDashboardCard(
-                            title: 'RESTORE',
+                            title: 'MESSAGES',
                             description: 'Recovery & Messaging',
                             icon: Icons.message_outlined,
                             iconColor: Colors.white,
@@ -397,6 +462,88 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
         ),
       ),
       floatingActionButton: _buildCustomFAB(),
+      endDrawer: _buildLogoutDrawer(),
+    );
+  }
+
+  // Add a drawer with logout option
+  Widget _buildLogoutDrawer() {
+    return Drawer(
+      child: Container(
+        color: backgroundColor,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: primaryColor,
+                image: DecorationImage(
+                  image: AssetImage('images/MAO_logo_new.jpeg'),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    primaryColor.withOpacity(0.7),
+                    BlendMode.darken,
+                  ),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'Admin Dashboard',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(1, 1),
+                          blurRadius: 3,
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    FirebaseAuth.instance.currentUser?.email ?? 'Admin User',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(1, 1),
+                          blurRadius: 3,
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.logout,
+                color: Colors.red,
+              ),
+              title: Text(
+                'Logout',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                _showLogoutConfirmation();
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -413,7 +560,7 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: accentColor.withOpacity(0.3),
+                  color: secondaryColor.withOpacity(0.3),
                   blurRadius: 20,
                   spreadRadius: 2,
                   offset: Offset(0, 8),

@@ -167,8 +167,12 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+    final backgroundColor = const Color(0xFFFFF8F0); // Light Sand/Cream
+
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: backgroundColor,
       appBar: ModernAppBar(
         title: _workout?.name ?? 'Workout Detail',
         actions: [
@@ -206,6 +210,10 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
   }
 
   Widget _buildWorkoutDetail() {
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+    final accentColor = const Color(0xFFEDCBA4); // Toffee
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -228,10 +236,14 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
   }
 
   Widget _buildWorkoutHeader() {
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+    final accentColor = const Color(0xFFEDCBA4); // Toffee
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -239,8 +251,8 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
           if (_workout!.imageUrl.isNotEmpty)
             ClipRRect(
               borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
               ),
               child: Image.network(
                 _workout!.imageUrl,
@@ -250,12 +262,18 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     height: 200,
-                    color: Colors.grey.shade200,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [primaryColor, secondaryColor],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
                     child: Center(
                       child: Icon(
                         Icons.fitness_center,
                         size: 60,
-                        color: Colors.grey.shade400,
+                        color: Colors.white.withOpacity(0.8),
                       ),
                     ),
                   );
@@ -263,15 +281,17 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
               ),
             ),
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   _workout!.name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
+                    color: primaryColor,
+                    letterSpacing: 0.5,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -280,11 +300,12 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey.shade700,
+                    height: 1.4,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 const Divider(),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -292,125 +313,176 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                       Icons.fitness_center,
                       'Level',
                       _workout!.difficulty,
+                      primaryColor,
                     ),
                     _buildInfoItem(
                       Icons.timer,
                       'Duration',
                       '${_workout!.estimatedDuration} min',
+                      primaryColor,
                     ),
                     _buildInfoItem(
                       Icons.format_list_numbered,
                       'Exercises',
                       '${_workout!.warmups.length + _workout!.exercises.length + _workout!.cooldowns.length}',
+                      primaryColor,
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                const Text(
+                const SizedBox(height: 20),
+                Text(
                   'Categories',
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
+                    color: primaryColor,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
                   children: _workout!.categories
                       .map(
-                        (category) => Chip(
-                          label: Text(
-                            category,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
+                        (category) => Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: secondaryColor.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: secondaryColor.withOpacity(0.3),
                             ),
                           ),
-                          backgroundColor: Theme.of(context).primaryColor,
+                          child: Text(
+                            category,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: primaryColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ),
                       )
                       .toList(),
                 ),
-                const SizedBox(height: 16),
-                const Text(
+                const SizedBox(height: 20),
+                Text(
                   'Body Areas',
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
+                    color: primaryColor,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
                   children: _workout!.bodyAreas
                       .map(
-                        (area) => Chip(
-                          label: Text(
-                            area,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
+                        (area) => Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: accentColor.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: accentColor.withOpacity(0.3),
                             ),
                           ),
-                          backgroundColor: Colors.teal,
+                          child: Text(
+                            area,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.brown.shade700,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ),
                       )
                       .toList(),
                 ),
                 if (_workout!.equipment.isNotEmpty) ...[
-                  const SizedBox(height: 16),
-                  const Text(
+                  const SizedBox(height: 20),
+                  Text(
                     'Equipment',
                     style: TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
+                      color: primaryColor,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: _workout!.equipment
                         .map(
-                          (equipment) => Chip(
-                            label: Text(
-                              equipment,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.white,
+                          (equipment) => Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: secondaryColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: secondaryColor.withOpacity(0.2),
                               ),
                             ),
-                            backgroundColor: Colors.amber.shade800,
+                            child: Text(
+                              equipment,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: primaryColor,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
                         )
                         .toList(),
                   ),
                 ],
-                const SizedBox(height: 16),
-                const Text(
+                const SizedBox(height: 20),
+                Text(
                   'Scheduled Days',
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
+                    color: primaryColor,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
                   children: _workout!.weekdays
                       .map(
-                        (day) => Chip(
-                          label: Text(
-                            day,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
+                        (day) => Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: primaryColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: primaryColor.withOpacity(0.3),
                             ),
                           ),
-                          backgroundColor: Colors.blue.shade600,
+                          child: Text(
+                            day,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: primaryColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ),
                       )
                       .toList(),
@@ -423,27 +495,29 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
     );
   }
 
-  Widget _buildInfoItem(IconData icon, String label, String value) {
+  Widget _buildInfoItem(
+      IconData icon, String label, String value, Color color) {
     return Column(
       children: [
         Icon(
           icon,
-          color: Theme.of(context).primaryColor,
+          color: color,
         ),
         const SizedBox(height: 8),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 12,
-            color: Colors.grey,
+            color: Colors.grey.shade600,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
+            color: color,
           ),
         ),
       ],
@@ -451,19 +525,25 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
   }
 
   Widget _buildSectionHeader(String title, String type) {
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 18,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
+            color: primaryColor,
+            letterSpacing: 0.5,
           ),
         ),
         IconButton(
-          icon: const Icon(Icons.add_circle),
-          color: Theme.of(context).primaryColor,
+          icon: Icon(
+            Icons.add_circle,
+            color: primaryColor,
+          ),
           onPressed: () => _addExercise(type),
           tooltip: 'Add $title',
         ),
@@ -473,13 +553,16 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
 
   List<Widget> _buildExerciseList(
       String type, List<WorkoutExercise> exercises) {
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+
     if (exercises.isEmpty) {
       return [
         Card(
           elevation: 0,
-          color: Colors.grey.shade200,
+          color: Colors.grey.shade100,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(24),
           ),
           child: Container(
             height: 150,
@@ -503,7 +586,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                       fontSize: 16,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 16),
                   ElevatedButton.icon(
                     onPressed: () => _addExercise(type),
                     icon: const Icon(Icons.add, size: 16),
@@ -512,9 +595,13 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                       style: TextStyle(fontSize: 14),
                     ),
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
-                      minimumSize: const Size(120, 36),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
                   ),
                 ],

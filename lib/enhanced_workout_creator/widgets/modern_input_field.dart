@@ -20,6 +20,12 @@ class ModernInputField extends StatelessWidget {
   final bool autofocus;
   final EdgeInsets contentPadding;
 
+  // New color palette
+  static const primaryColor = Color(0xFF6699CC); // Cornflower Blue
+  static const secondaryColor = Color(0xFF94D8E0); // Pale Turquoise
+  static const accentColor = Color(0xFFEDCBA4); // Toffee
+  static const backgroundColor = Color(0xFFFFF8F0); // Light Sand/Cream
+
   const ModernInputField({
     Key? key,
     required this.label,
@@ -52,7 +58,7 @@ class ModernInputField extends StatelessWidget {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: Colors.black87,
+            color: primaryColor,
           ),
         ),
         const SizedBox(height: 8),
@@ -70,51 +76,53 @@ class ModernInputField extends StatelessWidget {
           focusNode: focusNode,
           autofocus: autofocus,
           textAlignVertical: TextAlignVertical.center,
-          style: const TextStyle(fontSize: 14),
+          style: TextStyle(fontSize: 14, color: Colors.grey.shade800),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(fontSize: 14),
-            prefixIcon: prefixIcon != null ? Icon(prefixIcon, size: 20) : null,
+            hintStyle: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+            prefixIcon: prefixIcon != null
+                ? Icon(prefixIcon, size: 20, color: primaryColor)
+                : null,
             suffixIcon: suffixIcon,
             isDense: true,
             contentPadding: contentPadding,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide(
-                color: Colors.grey.withOpacity(0.3),
+                color: secondaryColor.withOpacity(0.3),
                 width: 1,
               ),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide(
-                color: Colors.grey.withOpacity(0.3),
+                color: secondaryColor.withOpacity(0.3),
                 width: 1,
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(
+                color: primaryColor,
                 width: 1.5,
               ),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
               borderSide: const BorderSide(
                 color: Colors.red,
                 width: 1,
               ),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
               borderSide: const BorderSide(
                 color: Colors.red,
                 width: 1.5,
               ),
             ),
             filled: true,
-            fillColor: Colors.grey.withOpacity(0.05),
+            fillColor: Colors.white,
           ),
         ),
         const SizedBox(height: 16),
@@ -131,6 +139,12 @@ class ModernDropdown<T> extends StatelessWidget {
   final Function(T?) onChanged;
   final String? Function(T?)? validator;
   final bool isMultiSelect;
+
+  // New color palette
+  static const primaryColor = Color(0xFF6699CC); // Cornflower Blue
+  static const secondaryColor = Color(0xFF94D8E0); // Pale Turquoise
+  static const accentColor = Color(0xFFEDCBA4); // Toffee
+  static const backgroundColor = Color(0xFFFFF8F0); // Light Sand/Cream
 
   const ModernDropdown({
     Key? key,
@@ -153,7 +167,7 @@ class ModernDropdown<T> extends StatelessWidget {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: Colors.black87,
+            color: primaryColor,
           ),
         ),
         const SizedBox(height: 8),
@@ -164,33 +178,34 @@ class ModernDropdown<T> extends StatelessWidget {
           validator: validator,
           decoration: InputDecoration(
             hintText: hint,
+            hintStyle: TextStyle(fontSize: 14, color: Colors.grey.shade500),
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide(
-                color: Colors.grey.withOpacity(0.3),
+                color: secondaryColor.withOpacity(0.3),
                 width: 1,
               ),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide(
-                color: Colors.grey.withOpacity(0.3),
+                color: secondaryColor.withOpacity(0.3),
                 width: 1,
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(
+                color: primaryColor,
                 width: 1.5,
               ),
             ),
             filled: true,
-            fillColor: Colors.grey.withOpacity(0.05),
+            fillColor: Colors.white,
           ),
-          icon: const Icon(Icons.arrow_drop_down_rounded),
+          icon: const Icon(Icons.arrow_drop_down_rounded, color: primaryColor),
           dropdownColor: Colors.white,
           isExpanded: true,
         ),

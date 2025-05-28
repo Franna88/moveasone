@@ -35,6 +35,13 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
   String _imageUrl = '';
   bool _isLoading = false;
 
+  // New color palette
+  final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+  final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+  final accentColor = const Color(0xFFEDCBA4); // Toffee
+  final highlightColor = const Color(0xFFF5DEB3); // Sand
+  final backgroundColor = const Color(0xFFFFF8F0); // Light Sand/Cream
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -137,9 +144,9 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Workout created successfully'),
-            backgroundColor: Colors.green,
+          SnackBar(
+            content: const Text('Workout created successfully'),
+            backgroundColor: Colors.green.shade600,
           ),
         );
 
@@ -170,12 +177,14 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: const ModernAppBar(
+      backgroundColor: backgroundColor,
+      appBar: ModernAppBar(
         title: 'Create Workout',
+        backgroundColor: Colors.white,
+        textColor: primaryColor,
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator(color: primaryColor))
           : Form(
               key: _formKey,
               child: SingleChildScrollView(
@@ -219,16 +228,23 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
       child: Container(
         height: 200,
         decoration: BoxDecoration(
-          color: Colors.grey.shade200,
-          borderRadius: BorderRadius.circular(16),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: Colors.grey.shade300,
+            color: secondaryColor.withOpacity(0.3),
             width: 1,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: primaryColor.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: _imageFile != null
             ? ClipRRect(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(24),
                 child: Image.file(
                   _imageFile!,
                   fit: BoxFit.cover,
@@ -241,14 +257,15 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                   Icon(
                     Icons.add_photo_alternate,
                     size: 60,
-                    color: Colors.grey.shade400,
+                    color: secondaryColor,
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'Add Workout Image',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey.shade600,
+                      color: primaryColor,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
@@ -259,20 +276,23 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
 
   Widget _buildBasicInfo() {
     return Card(
-      elevation: 0,
+      elevation: 2,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Basic Information',
               style: TextStyle(
                 fontSize: 18,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
+                color: primaryColor,
+                letterSpacing: 0.5,
               ),
             ),
             const SizedBox(height: 16),
@@ -323,12 +343,13 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
 
   Widget _buildCategoriesSection() {
     return Card(
-      elevation: 0,
+      elevation: 2,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: MultiSelectChip(
           options: WorkoutConstants.categories,
           selectedItems: _selectedCategories,
@@ -346,12 +367,13 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
 
   Widget _buildBodyAreasSection() {
     return Card(
-      elevation: 0,
+      elevation: 2,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: MultiSelectChip(
           options: WorkoutConstants.bodyAreas,
           selectedItems: _selectedBodyAreas,
@@ -369,12 +391,13 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
 
   Widget _buildDifficultySection() {
     return Card(
-      elevation: 0,
+      elevation: 2,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: SingleSelectChip(
           options: WorkoutConstants.difficulties,
           selectedItem: _selectedDifficulty,
@@ -392,12 +415,13 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
 
   Widget _buildWeekdaysSection() {
     return Card(
-      elevation: 0,
+      elevation: 2,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: MultiSelectChip(
           options: WorkoutConstants.weekdays,
           selectedItems: _selectedWeekdays,
@@ -415,12 +439,13 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
 
   Widget _buildEquipmentSection() {
     return Card(
-      elevation: 0,
+      elevation: 2,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: MultiSelectChip(
           options: WorkoutConstants.equipment,
           selectedItems: _selectedEquipment,

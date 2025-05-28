@@ -22,12 +22,12 @@ class _WorkshopSectionState extends State<WorkshopSection> {
   TimeOfDay? _selectedTime;
 
   // Enhanced color palette
-  final Color primaryColor = const Color(0xFF025959);
-  final Color secondaryColor = const Color(0xFF03A696);
-  final Color accentColor = const Color(0xFFE6F4F1);
-  final Color backgroundColor = const Color(0xFFFAFAFA);
-  final Color energyColor = const Color(0xFFF6E7CB);
-  final Color darkColor = const Color(0xFF01373A);
+  final Color primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+  final Color secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+  final Color accentColor = const Color(0xFFEDCBA4); // Toffee
+  final Color backgroundColor = const Color(0xFFFFF8F0); // Light Sand/Cream
+  final Color energyColor = const Color(0xFFF5DEB3); // Sand
+  final Color darkColor = const Color(0xFF5980B5); // Deeper Cornflower
 
   @override
   void dispose() {
@@ -170,14 +170,14 @@ class _WorkshopSectionState extends State<WorkshopSection> {
             ),
           ],
         ),
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               width: 40,
               height: 5,
-              margin: EdgeInsets.only(bottom: 20),
+              margin: EdgeInsets.only(bottom: 24),
               decoration: BoxDecoration(
                 color: secondaryColor.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(10),
@@ -189,9 +189,10 @@ class _WorkshopSectionState extends State<WorkshopSection> {
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: primaryColor,
+                letterSpacing: 0.5,
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 24),
             StreamBuilder<DocumentSnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('workshops')
@@ -219,10 +220,10 @@ class _WorkshopSectionState extends State<WorkshopSection> {
                       margin: EdgeInsets.only(bottom: 12),
                       padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: accentColor.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(20),
+                        color: secondaryColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: accentColor.withOpacity(0.5),
+                          color: secondaryColor.withOpacity(0.3),
                           width: 1,
                         ),
                       ),
@@ -232,7 +233,10 @@ class _WorkshopSectionState extends State<WorkshopSection> {
                             backgroundColor: primaryColor,
                             child: Text(
                               participant['name'][0].toUpperCase(),
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           SizedBox(width: 16),
@@ -282,29 +286,32 @@ class _WorkshopSectionState extends State<WorkshopSection> {
             ShaderMask(
               shaderCallback: (bounds) => LinearGradient(
                 colors: [primaryColor, secondaryColor],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ).createShader(bounds),
               child: Text(
-                'Workshop Management',
+                'WORKSHOP MANAGEMENT',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
+                  letterSpacing: 1.0,
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 20),
 
             // Create Workshop Form
             Container(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: darkColor.withOpacity(0.1),
-                    blurRadius: 20,
-                    offset: Offset(0, 10),
+                    color: darkColor.withOpacity(0.08),
+                    blurRadius: 15,
+                    offset: Offset(0, 8),
                   ),
                 ],
               ),
@@ -314,29 +321,30 @@ class _WorkshopSectionState extends State<WorkshopSection> {
                   Row(
                     children: [
                       Container(
-                        padding: EdgeInsets.all(8),
+                        padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: accentColor,
+                          color: secondaryColor.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Icon(
                           Icons.add_circle_outline,
                           color: primaryColor,
-                          size: 20,
+                          size: 22,
                         ),
                       ),
-                      SizedBox(width: 8),
+                      SizedBox(width: 12),
                       Text(
                         'Create New Workshop',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                           color: primaryColor,
+                          letterSpacing: 0.5,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 20),
                   _buildTextField(
                     controller: _titleController,
                     label: 'Workshop Title',
@@ -382,18 +390,19 @@ class _WorkshopSectionState extends State<WorkshopSection> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
                       foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(vertical: 12),
+                      padding: EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      elevation: 0,
+                      elevation: 2,
                     ),
                     child: Center(
                       child: Text(
-                        'Create Workshop',
+                        'CREATE WORKSHOP',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
                         ),
                       ),
                     ),
@@ -407,29 +416,30 @@ class _WorkshopSectionState extends State<WorkshopSection> {
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.all(8),
+                  padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: accentColor,
+                    color: secondaryColor.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     Icons.event_available,
                     color: primaryColor,
-                    size: 20,
+                    size: 22,
                   ),
                 ),
-                SizedBox(width: 8),
+                SizedBox(width: 12),
                 Text(
                   'Upcoming Workshops',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                     color: primaryColor,
+                    letterSpacing: 0.5,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 12),
+            SizedBox(height: 16),
             StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('workshops')
@@ -454,15 +464,15 @@ class _WorkshopSectionState extends State<WorkshopSection> {
                     final workshop =
                         workshops[index].data() as Map<String, dynamic>;
                     return Container(
-                      margin: EdgeInsets.only(bottom: 12),
+                      margin: EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                            color: darkColor.withOpacity(0.05),
-                            blurRadius: 10,
-                            offset: Offset(0, 5),
+                            color: darkColor.withOpacity(0.08),
+                            blurRadius: 15,
+                            offset: Offset(0, 8),
                           ),
                         ],
                       ),
@@ -471,11 +481,11 @@ class _WorkshopSectionState extends State<WorkshopSection> {
                         children: [
                           // Workshop Header
                           Container(
-                            padding: EdgeInsets.all(12),
+                            padding: EdgeInsets.all(16),
                             decoration: BoxDecoration(
                               color: primaryColor,
                               borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(15),
+                                top: Radius.circular(24),
                               ),
                             ),
                             child: Row(
@@ -493,19 +503,19 @@ class _WorkshopSectionState extends State<WorkshopSection> {
                                 ),
                                 Container(
                                   padding: EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
+                                    horizontal: 10,
+                                    vertical: 6,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white.withOpacity(0.25),
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
                                     '${workshop['participants'].length}/${workshop['maxParticipants']}',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
@@ -514,84 +524,92 @@ class _WorkshopSectionState extends State<WorkshopSection> {
                           ),
                           // Workshop Content
                           Padding(
-                            padding: EdgeInsets.all(12),
+                            padding: EdgeInsets.all(16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   workshop['description'],
                                   style: TextStyle(
-                                    color: Colors.grey[600],
-                                    fontSize: 13,
+                                    color: Colors.grey[700],
+                                    fontSize: 14,
+                                    height: 1.4,
                                   ),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                SizedBox(height: 8),
+                                SizedBox(height: 12),
                                 Row(
                                   children: [
-                                    Icon(
-                                      Icons.calendar_today,
-                                      size: 14,
-                                      color: Colors.grey,
+                                    Container(
+                                      padding: EdgeInsets.all(6),
+                                      decoration: BoxDecoration(
+                                        color: secondaryColor.withOpacity(0.15),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Icon(
+                                        Icons.calendar_today,
+                                        size: 14,
+                                        color: primaryColor,
+                                      ),
                                     ),
-                                    SizedBox(width: 4),
+                                    SizedBox(width: 8),
                                     Text(
                                       '${workshop['date']} at ${workshop['time']}',
                                       style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 13,
+                                        color: darkColor,
+                                        fontSize: 14,
                                       ),
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 12),
+                                SizedBox(height: 16),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    TextButton(
+                                    ElevatedButton.icon(
                                       onPressed: () {
                                         _startWorkshop(workshops[index].id,
                                             workshop['title']);
                                       },
-                                      style: TextButton.styleFrom(
-                                        foregroundColor: primaryColor,
+                                      icon: Icon(Icons.play_circle_outlined,
+                                          size: 18),
+                                      label: Text('START'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: primaryColor,
+                                        foregroundColor: Colors.white,
                                         padding: EdgeInsets.symmetric(
                                           horizontal: 16,
-                                          vertical: 6,
+                                          vertical: 10,
                                         ),
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(15),
-                                          side: BorderSide(
-                                            color: primaryColor,
-                                            width: 1,
-                                          ),
+                                              BorderRadius.circular(12),
                                         ),
+                                        elevation: 2,
                                       ),
-                                      child: Text('Start Workshop'),
                                     ),
-                                    SizedBox(width: 8),
-                                    TextButton(
+                                    SizedBox(width: 12),
+                                    ElevatedButton.icon(
                                       onPressed: () {
                                         _viewParticipants(workshops[index].id);
                                       },
-                                      style: TextButton.styleFrom(
-                                        foregroundColor: secondaryColor,
+                                      icon:
+                                          Icon(Icons.people_outline, size: 18),
+                                      label: Text('PARTICIPANTS'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: secondaryColor,
+                                        foregroundColor: Colors.white,
                                         padding: EdgeInsets.symmetric(
                                           horizontal: 16,
-                                          vertical: 6,
+                                          vertical: 10,
                                         ),
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(15),
-                                          side: BorderSide(
-                                            color: secondaryColor,
-                                            width: 1,
-                                          ),
+                                              BorderRadius.circular(12),
                                         ),
+                                        elevation: 2,
                                       ),
-                                      child: Text('View Participants'),
                                     ),
                                   ],
                                 ),
@@ -624,21 +642,29 @@ class _WorkshopSectionState extends State<WorkshopSection> {
       keyboardType: keyboardType,
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: TextStyle(
+          color: primaryColor.withOpacity(0.8),
+          fontWeight: FontWeight.w500,
+        ),
         prefixIcon: Icon(icon, color: primaryColor),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: accentColor),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: secondaryColor.withOpacity(0.3)),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: accentColor),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: secondaryColor.withOpacity(0.3)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: primaryColor),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: primaryColor, width: 1.5),
         ),
         filled: true,
-        fillColor: accentColor.withOpacity(0.3),
+        fillColor: secondaryColor.withOpacity(0.08),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
       ),
     );
   }
@@ -655,20 +681,28 @@ class _WorkshopSectionState extends State<WorkshopSection> {
         enabled: false,
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: TextStyle(
+            color: primaryColor.withOpacity(0.8),
+            fontWeight: FontWeight.w500,
+          ),
           prefixIcon: Icon(
             label == 'Date' ? Icons.calendar_today : Icons.access_time,
             color: primaryColor,
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: accentColor),
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: secondaryColor.withOpacity(0.3)),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: accentColor),
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: secondaryColor.withOpacity(0.3)),
           ),
           filled: true,
-          fillColor: accentColor.withOpacity(0.3),
+          fillColor: secondaryColor.withOpacity(0.08),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
         ),
       ),
     );

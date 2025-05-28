@@ -17,6 +17,12 @@ class PasswordTextField extends StatefulWidget {
 class _PasswordTextFieldState extends State<PasswordTextField> {
   bool _isObscure = true;
 
+  // New color palette
+  static const primaryColor = Color(0xFF6699CC); // Cornflower Blue
+  static const secondaryColor = Color(0xFF94D8E0); // Pale Turquoise
+  static const accentColor = Color(0xFFEDCBA4); // Toffee
+  static const backgroundColor = Color(0xFFFFF8F0); // Light Sand/Cream
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,18 +30,18 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       height: 50,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(16.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 1,
             blurRadius: 4,
             offset: Offset(0, 2),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(16.0),
         child: Stack(
           alignment: Alignment.centerRight,
           children: [
@@ -43,28 +49,48 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
               controller: widget.controller,
               obscureText: _isObscure,
               style: TextStyle(
-                color: Colors.black,
+                color: Colors.black87,
                 fontSize: 16,
-                fontFamily: 'belight',
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w500,
               ),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
-                border: InputBorder.none,
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                  borderSide: BorderSide(
+                    color: secondaryColor.withOpacity(0.3),
+                    width: 1,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                  borderSide: BorderSide(
+                    color: secondaryColor.withOpacity(0.3),
+                    width: 1,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                  borderSide: BorderSide(
+                    color: primaryColor,
+                    width: 1.5,
+                  ),
+                ),
                 hintText: widget.hintText,
                 hintStyle: TextStyle(
-                  fontSize: 18,
-                  fontFamily: 'raleway',
+                  fontSize: 16,
                   fontWeight: FontWeight.normal,
-                  color: Color(0xFF707070),
+                  color: Colors.grey.shade500,
                 ),
               ),
             ),
             IconButton(
               icon: Icon(
                 _isObscure ? Icons.visibility : Icons.visibility_off,
-                color: Color(0xFF006261),
+                color: primaryColor,
               ),
               onPressed: () {
                 setState(() {

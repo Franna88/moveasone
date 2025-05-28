@@ -147,8 +147,11 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final backgroundColor = const Color(0xFFFFF8F0); // Light Sand/Cream
+
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: backgroundColor,
       appBar: ModernAppBar(
         title: 'Workouts',
         showBackButton: false,
@@ -156,7 +159,7 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
           IconButton(
             icon: Icon(
               _showFilterBar ? Icons.filter_list_off : Icons.filter_list,
-              color: _showFilterBar ? Theme.of(context).primaryColor : null,
+              color: _showFilterBar ? primaryColor : null,
             ),
             onPressed: () {
               setState(() {
@@ -188,7 +191,7 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToCreateWorkout,
-        backgroundColor: const Color(0xFF6A3EA1), // Purple color from the image
+        backgroundColor: primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
@@ -203,17 +206,23 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
   }
 
   Widget _buildFilterBar() {
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Column(
         children: [
           // Sort options
           Row(
             children: [
-              const Text(
+              Text(
                 'Sort by:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: primaryColor,
+                ),
               ),
               const SizedBox(width: 12),
               _buildSortChip('Name', 'name'),
@@ -226,6 +235,7 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                 icon: Icon(
                   _sortAscending ? Icons.arrow_upward : Icons.arrow_downward,
                   size: 20,
+                  color: primaryColor,
                 ),
                 onPressed: () {
                   setState(() {
@@ -239,30 +249,36 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
 
           // Filter options
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                const Text(
+                Text(
                   'Filter:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: primaryColor,
+                  ),
                 ),
                 const SizedBox(width: 12),
 
                 // Category dropdown
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: secondaryColor.withOpacity(0.5)),
+                    borderRadius: BorderRadius.circular(12),
+                    color: secondaryColor.withOpacity(0.1),
                   ),
                   child: DropdownButton<String>(
                     value: _selectedCategory,
                     hint: const Text('Category'),
                     underline: const SizedBox(),
+                    icon: Icon(Icons.arrow_drop_down, color: primaryColor),
                     items: [
                       const DropdownMenuItem<String>(
                         value: null,
@@ -287,15 +303,18 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
 
                 // Difficulty dropdown
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: secondaryColor.withOpacity(0.5)),
+                    borderRadius: BorderRadius.circular(12),
+                    color: secondaryColor.withOpacity(0.1),
                   ),
                   child: DropdownButton<String>(
                     value: _selectedDifficulty,
                     hint: const Text('Difficulty'),
                     underline: const SizedBox(),
+                    icon: Icon(Icons.arrow_drop_down, color: primaryColor),
                     items: [
                       const DropdownMenuItem<String>(
                         value: null,
@@ -321,11 +340,18 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                 // Reset filters button
                 TextButton.icon(
                   onPressed: _resetFilters,
-                  icon: const Icon(Icons.refresh, size: 16),
-                  label: const Text('Reset'),
+                  icon: Icon(Icons.refresh, size: 16, color: primaryColor),
+                  label: Text(
+                    'Reset',
+                    style: TextStyle(color: primaryColor),
+                  ),
                   style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    minimumSize: const Size(0, 32),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    backgroundColor: primaryColor.withOpacity(0.1),
                   ),
                 ),
               ],
@@ -337,6 +363,9 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
   }
 
   Widget _buildSortChip(String label, String sortValue) {
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+
     final isSelected = _sortBy == sortValue;
     return InkWell(
       onTap: () {
@@ -349,21 +378,18 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color:
-              isSelected ? Theme.of(context).primaryColor : Colors.transparent,
+          color: isSelected ? primaryColor : secondaryColor.withOpacity(0.1),
           border: Border.all(
-            color: isSelected
-                ? Theme.of(context).primaryColor
-                : Colors.grey.shade300,
+            color: isSelected ? primaryColor : secondaryColor.withOpacity(0.5),
           ),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : Colors.black,
-            fontSize: 12,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            color: isSelected ? Colors.white : primaryColor,
+            fontSize: 13,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
           ),
         ),
       ),
@@ -492,143 +518,206 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
   }
 
   Widget _buildCompactWorkoutCard(Workout workout) {
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+    final accentColor = const Color(0xFFEDCBA4); // Toffee
+
     return Card(
       clipBehavior: Clip.antiAlias,
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: InkWell(
         onTap: () => _navigateToWorkoutDetail(workout),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Workout image
-            Expanded(
-              flex: 3,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                  image: workout.imageUrl.isNotEmpty
-                      ? DecorationImage(
-                          image: NetworkImage(workout.imageUrl),
-                          fit: BoxFit.cover,
-                        )
-                      : null,
+            // Card header with gradient
+            Container(
+              height: 80,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [primaryColor, secondaryColor],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-                child: workout.imageUrl.isEmpty
-                    ? Center(
-                        child: Icon(
-                          Icons.fitness_center,
-                          size: 40,
-                          color: Colors.grey.shade400,
-                        ),
-                      )
-                    : null,
               ),
-            ),
-            // Workout info
-            Expanded(
-              flex: 4,
-              child: Container(
-                width: double.infinity,
-                color: Colors.white,
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Workout name
-                    Text(
-                      workout.name,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+              child: Stack(
+                children: [
+                  // Background pattern for visual interest
+                  Positioned(
+                    right: -15,
+                    top: -15,
+                    child: Container(
+                      height: 80,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.1),
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
-                    // Workout description
-                    Text(
-                      workout.description,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade700,
+                  ),
+                  Positioned(
+                    left: -5,
+                    bottom: -20,
+                    child: Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.1),
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 8),
-                    // Difficulty and duration chips
-                    Row(
+                  ),
+
+                  // Workout icon and difficulty badge
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        // Workout type icon
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.25),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            workout.categories.contains('Cardio')
+                                ? Icons.directions_run
+                                : workout.categories.contains('Strength')
+                                    ? Icons.fitness_center
+                                    : Icons.self_improvement,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+
+                        // Difficulty badge
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).primaryColor.withOpacity(0.8),
-                            borderRadius: BorderRadius.circular(4),
+                            color: Colors.white.withOpacity(0.25),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
                             workout.difficulty,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.orange,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            '${workout.estimatedDuration} min',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const Spacer(),
-                    // Exercise count and action buttons
+                  ),
+                ],
+              ),
+            ),
+
+            // Workout details
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Workout name
+                    Text(
+                      workout.name,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: primaryColor,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+
+                    // Duration
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        Icon(
+                          Icons.access_time,
+                          size: 14,
+                          color: Colors.grey[600],
+                        ),
+                        const SizedBox(width: 4),
                         Text(
-                          '${workout.exercises.length} exercises',
+                          '${workout.estimatedDuration} min',
                           style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade700,
+                            fontSize: 13,
+                            color: Colors.grey[600],
                           ),
                         ),
-                        Row(
-                          children: [
-                            InkWell(
-                              onTap: () => _navigateToWorkoutDetail(workout),
-                              child: Icon(
-                                Icons.edit,
-                                size: 20,
-                                color: Colors.blue,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            InkWell(
-                              onTap: () => _showDeleteConfirmation(workout),
-                              child: Icon(
-                                Icons.delete,
-                                size: 20,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ],
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+
+                    // Categories
+                    Wrap(
+                      spacing: 4,
+                      runSpacing: 4,
+                      children: workout.categories
+                          .take(2)
+                          .map((category) => Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: secondaryColor.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  category,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: primaryColor,
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                    ),
+
+                    const Spacer(),
+
+                    // Actions row at bottom
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        // Edit icon
+                        IconButton(
+                          icon: Icon(
+                            Icons.edit_outlined,
+                            size: 20,
+                            color: primaryColor,
+                          ),
+                          onPressed: () => _navigateToWorkoutDetail(workout),
+                          splashRadius: 24,
+                          constraints: const BoxConstraints(),
+                          padding: const EdgeInsets.all(8),
+                        ),
+
+                        // Delete icon
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete_outline,
+                            size: 20,
+                            color: Colors.red[400],
+                          ),
+                          onPressed: () => _deleteWorkout(workout.id),
+                          splashRadius: 24,
+                          constraints: const BoxConstraints(),
+                          padding: const EdgeInsets.all(8),
                         ),
                       ],
                     ),
@@ -638,34 +727,6 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  void _showDeleteConfirmation(Workout workout) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Workout'),
-        content: Text(
-          'Are you sure you want to delete "${workout.name}"? This action cannot be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('CANCEL'),
-          ),
-          TextButton(
-            onPressed: () {
-              _deleteWorkout(workout.id);
-              Navigator.pop(context);
-            },
-            child: const Text(
-              'DELETE',
-              style: TextStyle(color: Colors.red),
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -20,6 +20,13 @@ class ModernButton extends StatelessWidget {
   final double borderRadius;
   final EdgeInsets padding;
 
+  // New color palette
+  static const primaryColor = Color(0xFF6699CC); // Cornflower Blue
+  static const secondaryColor = Color(0xFF94D8E0); // Pale Turquoise
+  static const accentColor = Color(0xFFEDCBA4); // Toffee
+  static const highlightColor = Color(0xFFF5DEB3); // Sand
+  static const backgroundColor = Color(0xFFFFF8F0); // Light Sand/Cream
+
   const ModernButton({
     Key? key,
     required this.text,
@@ -29,7 +36,7 @@ class ModernButton extends StatelessWidget {
     this.isLoading = false,
     this.isFullWidth = false,
     this.height = 50,
-    this.borderRadius = 12,
+    this.borderRadius = 16,
     this.padding = const EdgeInsets.symmetric(horizontal: 24),
   }) : super(key: key);
 
@@ -88,23 +95,23 @@ class ModernButton extends StatelessWidget {
   }
 
   ButtonStyle _getButtonStyle(BuildContext context) {
-    final theme = Theme.of(context);
-
     switch (type) {
       case ButtonType.primary:
         return ElevatedButton.styleFrom(
-          backgroundColor: theme.colorScheme.primary,
+          backgroundColor: primaryColor,
           foregroundColor: Colors.white,
-          elevation: 0,
+          elevation: 2,
+          shadowColor: primaryColor.withOpacity(0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
         );
       case ButtonType.secondary:
         return ElevatedButton.styleFrom(
-          backgroundColor: theme.colorScheme.secondary,
+          backgroundColor: secondaryColor,
           foregroundColor: Colors.white,
-          elevation: 0,
+          elevation: 2,
+          shadowColor: secondaryColor.withOpacity(0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
@@ -112,17 +119,17 @@ class ModernButton extends StatelessWidget {
       case ButtonType.outline:
         return ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
-          foregroundColor: theme.colorScheme.primary,
+          foregroundColor: primaryColor,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
-            side: BorderSide(color: theme.colorScheme.primary),
+            side: const BorderSide(color: primaryColor),
           ),
         );
       case ButtonType.text:
         return ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
-          foregroundColor: theme.colorScheme.primary,
+          foregroundColor: primaryColor,
           elevation: 0,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
@@ -133,7 +140,8 @@ class ModernButton extends StatelessWidget {
         return ElevatedButton.styleFrom(
           backgroundColor: Colors.red.shade600,
           foregroundColor: Colors.white,
-          elevation: 0,
+          elevation: 2,
+          shadowColor: Colors.red.withOpacity(0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
@@ -142,7 +150,8 @@ class ModernButton extends StatelessWidget {
         return ElevatedButton.styleFrom(
           backgroundColor: Colors.green.shade600,
           foregroundColor: Colors.white,
-          elevation: 0,
+          elevation: 2,
+          shadowColor: Colors.green.withOpacity(0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),

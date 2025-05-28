@@ -20,56 +20,63 @@ class EnhancedWorkoutCreatorStandalone extends StatelessWidget {
     return MaterialApp(
       title: 'Enhanced Workout Creator',
       theme: ThemeData(
-        primarySwatch: Colors.teal,
-        scaffoldBackgroundColor: Colors.grey.shade100,
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: const Color(0xFFFFF8F0), // Light Sand/Cream
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+          foregroundColor: const Color(0xFF6699CC), // Cornflower Blue
           elevation: 0,
         ),
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(
+                color:
+                    const Color(0xFF94D8E0).withOpacity(0.3)), // Pale Turquoise
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.teal, width: 2),
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(
+                color: const Color(0xFF6699CC), width: 2), // Cornflower Blue
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(color: Colors.red, width: 1),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(color: Colors.red, width: 2),
           ),
-          fillColor: Colors.grey.shade50,
+          fillColor: Colors.white,
           filled: true,
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             elevation: 0,
+            backgroundColor: const Color(0xFF6699CC), // Cornflower Blue
+            foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
             ),
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           ),
         ),
         cardTheme: CardTheme(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(24),
           ),
           elevation: 1,
         ),
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.teal,
-        ).copyWith(
-          secondary: Colors.deepOrange,
+        colorScheme: ColorScheme.light(
+          primary: const Color(0xFF6699CC), // Cornflower Blue
+          secondary: const Color(0xFF94D8E0), // Pale Turquoise
+          tertiary: const Color(0xFFEDCBA4), // Toffee
+          surface: Colors.white,
+          background: const Color(0xFFFFF8F0), // Light Sand/Cream
         ),
       ),
       home: const EnhancedWorkoutCreator(),
@@ -82,4 +89,4 @@ class EnhancedWorkoutCreatorStandalone extends StatelessWidget {
 void main() {
   runApp(const EnhancedWorkoutCreatorStandalone());
 }
-*/ 
+*/

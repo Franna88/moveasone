@@ -15,10 +15,10 @@ class _MotivationViewState extends State<MotivationView>
   late TabController _tabController;
 
   // Modern color scheme
-  final Color primaryColor = const Color(0xFF6A3EA1); // Purple
-  final Color secondaryColor = const Color(0xFF60BFC5); // Teal
-  final Color accentColor = const Color(0xFFFF7F5C); // Coral/Orange
-  final Color backgroundColor = const Color(0xFFF7F5FA); // Light purple tint
+  final Color primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+  final Color secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+  final Color accentColor = const Color(0xFFEDCBA4); // Toffee
+  final Color backgroundColor = const Color(0xFFFFF8F0); // Light Sand/Cream
 
   @override
   void initState() {
@@ -125,7 +125,7 @@ class _MotivationViewState extends State<MotivationView>
             MaterialPageRoute(builder: (context) => MotivationAdd()),
           );
         },
-        backgroundColor: accentColor,
+        backgroundColor: primaryColor,
         icon: Icon(Icons.add),
         label: Text(
           'ADD NEW',
@@ -134,6 +134,7 @@ class _MotivationViewState extends State<MotivationView>
             letterSpacing: 0.5,
           ),
         ),
+        elevation: 4,
       ),
     );
   }

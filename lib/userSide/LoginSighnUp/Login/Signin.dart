@@ -17,6 +17,14 @@ class Signin extends StatefulWidget {
 class _SigninState extends State<Signin> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  // New color palette
+  final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+  final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+  final accentColor = const Color(0xFFEDCBA4); // Toffee
+  final highlightColor = const Color(0xFFF5DEB3); // Sand
+  final backgroundColor = const Color(0xFFFFF8F0); // Light Sand/Cream
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -26,8 +34,8 @@ class _SigninState extends State<Signin> {
             height: MyUtility(context).height,
             decoration: BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage('images/whatsappmao.jpg'),
-                  alignment: Alignment(-1.0, 1),
+                  image: AssetImage('images/new_photos/home_main.jpeg'),
+                  alignment: Alignment.center,
                   fit: BoxFit.cover),
             ),
             child: Column(
@@ -42,7 +50,15 @@ class _SigninState extends State<Signin> {
                     style: TextStyle(
                       fontSize: 34,
                       fontFamily: 'belight',
-                      color: Color(0xFF1E1E1E),
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(1.0, 1.0),
+                          blurRadius: 3.0,
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -53,7 +69,15 @@ class _SigninState extends State<Signin> {
                     style: TextStyle(
                       fontSize: 44,
                       fontFamily: 'belight',
-                      color: Color(0xFF1E1E1E),
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(1.0, 1.0),
+                          blurRadius: 3.0,
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -89,9 +113,17 @@ class _SigninState extends State<Signin> {
                       child: Text(
                         'Forgot Password',
                         style: TextStyle(
-                            color: /*Color(0xFF006261)*/ Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 18),
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
+                          shadows: [
+                            Shadow(
+                              offset: Offset(1.0, 1.0),
+                              blurRadius: 3.0,
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -118,8 +150,8 @@ class _SigninState extends State<Signin> {
                         child: ElevatedButton(
                           onPressed: () {},
                           style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.all<Color>(
-                                Color(0xFF006261)),
+                            backgroundColor:
+                                WidgetStateProperty.all<Color>(primaryColor),
                             shape:
                                 WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
@@ -142,6 +174,7 @@ class _SigninState extends State<Signin> {
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
@@ -162,10 +195,16 @@ class _SigninState extends State<Signin> {
                       Text(
                         "Don't have an account?",
                         style: TextStyle(
-                          color: /*Color(
-                              0xFF707070)*/
-                              Colors.white, // Color from the provided hex code
+                          color: Colors.white,
                           fontSize: 18.0,
+                          fontWeight: FontWeight.w500,
+                          shadows: [
+                            Shadow(
+                              offset: Offset(1.0, 1.0),
+                              blurRadius: 3.0,
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                          ],
                         ),
                       ),
                       TextButton(
@@ -179,8 +218,17 @@ class _SigninState extends State<Signin> {
                         child: Text(
                           'Sign up',
                           style: TextStyle(
-                              color: /*Color(0xFF006261)*/ Colors.black,
-                              fontSize: 18),
+                            color: accentColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            shadows: [
+                              Shadow(
+                                offset: Offset(1.0, 1.0),
+                                blurRadius: 3.0,
+                                color: Colors.black.withOpacity(0.5),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],

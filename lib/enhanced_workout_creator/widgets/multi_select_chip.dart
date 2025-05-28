@@ -23,6 +23,11 @@ class MultiSelectChip extends StatefulWidget {
 class _MultiSelectChipState extends State<MultiSelectChip> {
   List<String> selectedItems = [];
 
+  // New color palette
+  static const primaryColor = Color(0xFF6699CC); // Cornflower Blue
+  static const secondaryColor = Color(0xFF94D8E0); // Pale Turquoise
+  static const accentColor = Color(0xFFEDCBA4); // Toffee
+
   @override
   void initState() {
     super.initState();
@@ -49,7 +54,7 @@ class _MultiSelectChipState extends State<MultiSelectChip> {
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Colors.black87,
+                color: primaryColor,
               ),
             ),
             if (widget.isRequired)
@@ -74,9 +79,7 @@ class _MultiSelectChipState extends State<MultiSelectChip> {
                 item,
                 style: TextStyle(
                   fontSize: 12,
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.primary
-                      : Colors.black87,
+                  color: isSelected ? primaryColor : Colors.black87,
                   fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
                 ),
               ),
@@ -92,24 +95,19 @@ class _MultiSelectChipState extends State<MultiSelectChip> {
                 });
               },
               backgroundColor: Colors.grey.withOpacity(0.1),
-              selectedColor:
-                  Theme.of(context).colorScheme.primary.withOpacity(0.2),
-              checkmarkColor: Theme.of(context).colorScheme.primary,
+              selectedColor: primaryColor.withOpacity(0.2),
+              checkmarkColor: primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
                 side: BorderSide(
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.primary
-                      : Colors.transparent,
+                  color: isSelected ? primaryColor : Colors.transparent,
                 ),
               ),
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               visualDensity: VisualDensity.compact,
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               labelStyle: TextStyle(
-                color: isSelected
-                    ? Theme.of(context).colorScheme.primary
-                    : Colors.black87,
+                color: isSelected ? primaryColor : Colors.black87,
                 fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
               ),
             );
@@ -144,6 +142,11 @@ class SingleSelectChip extends StatefulWidget {
 class _SingleSelectChipState extends State<SingleSelectChip> {
   String? selectedItem;
 
+  // New color palette
+  static const primaryColor = Color(0xFF6699CC); // Cornflower Blue
+  static const secondaryColor = Color(0xFF94D8E0); // Pale Turquoise
+  static const accentColor = Color(0xFFEDCBA4); // Toffee
+
   @override
   void initState() {
     super.initState();
@@ -170,7 +173,7 @@ class _SingleSelectChipState extends State<SingleSelectChip> {
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Colors.black87,
+                color: primaryColor,
               ),
             ),
             if (widget.isRequired)
@@ -195,9 +198,7 @@ class _SingleSelectChipState extends State<SingleSelectChip> {
                 item,
                 style: TextStyle(
                   fontSize: 12,
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.primary
-                      : Colors.black87,
+                  color: isSelected ? primaryColor : Colors.black87,
                   fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
                 ),
               ),
@@ -209,24 +210,19 @@ class _SingleSelectChipState extends State<SingleSelectChip> {
                 });
               },
               backgroundColor: Colors.grey.withOpacity(0.1),
-              selectedColor:
-                  Theme.of(context).colorScheme.primary.withOpacity(0.2),
-              checkmarkColor: Theme.of(context).colorScheme.primary,
+              selectedColor: primaryColor.withOpacity(0.2),
+              checkmarkColor: primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
                 side: BorderSide(
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.primary
-                      : Colors.transparent,
+                  color: isSelected ? primaryColor : Colors.transparent,
                 ),
               ),
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               visualDensity: VisualDensity.compact,
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               labelStyle: TextStyle(
-                color: isSelected
-                    ? Theme.of(context).colorScheme.primary
-                    : Colors.black87,
+                color: isSelected ? primaryColor : Colors.black87,
                 fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
               ),
             );

@@ -23,21 +23,26 @@ class _VideoCategoryState extends State<VideoCategory> {
 
   @override
   Widget build(BuildContext context) {
+    // New color palette
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+    final backgroundColor = const Color(0xFFFFF8F0); // Light Sand/Cream
+
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: Color(0xFFE7E2FA),
+              color: secondaryColor.withOpacity(0.2),
               width: 1.0,
             ),
           ),
         ),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: Row(
             children: List.generate(
               categories.length,
@@ -53,6 +58,10 @@ class _VideoCategoryState extends State<VideoCategory> {
   }
 
   Widget _buildCategoryChip(int index) {
+    // New color palette
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+
     final bool isSelected = index == _selectedIndex;
     final String category = categories[index];
 
@@ -69,16 +78,19 @@ class _VideoCategoryState extends State<VideoCategory> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: isSelected
-                ? const Color(0xFF9C69B8) // Purple color
-                : Colors.grey.shade300,
+            color: isSelected ? primaryColor : secondaryColor.withOpacity(0.1),
+            border: Border.all(
+              color:
+                  isSelected ? primaryColor : secondaryColor.withOpacity(0.3),
+              width: 1,
+            ),
           ),
           child: Text(
             category,
             style: TextStyle(
               fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: isSelected ? Colors.white : Colors.black87,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+              color: isSelected ? Colors.white : primaryColor,
             ),
           ),
         ),

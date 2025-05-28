@@ -255,24 +255,29 @@ class _VideoGridViewState extends State<VideoGridView>
 
   @override
   Widget build(BuildContext context) {
+    // New color palette
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+    final backgroundColor = const Color(0xFFFFF8F0); // Light Sand/Cream
+    final accentColor = const Color(0xFFEDCBA4); // Toffee
+
     return AnimatedBuilder(
       animation: _animationController,
       child: Container(
-        color:
-            const Color(0xFFE7E2FA), // Light purple background from screenshot
+        color: backgroundColor,
         child: _filteredWorkouts.isEmpty
             ? _buildEmptyState()
             : LayoutBuilder(
                 builder: (context, constraints) {
                   return GridView.builder(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(16),
                     itemCount: _filteredWorkouts.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 0.95,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
+                      childAspectRatio: 0.7,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
                     ),
                     itemBuilder: (context, index) {
                       var workout = _filteredWorkouts[index];
@@ -290,6 +295,8 @@ class _VideoGridViewState extends State<VideoGridView>
   }
 
   Widget _buildEmptyState() {
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -300,20 +307,20 @@ class _VideoGridViewState extends State<VideoGridView>
             color: Colors.grey.shade400,
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'No matching workouts',
             style: TextStyle(
               fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey,
+              fontWeight: FontWeight.w600,
+              color: primaryColor.withOpacity(0.7),
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Try different filter options',
             style: TextStyle(
               fontSize: 14,
-              color: Colors.grey,
+              color: Colors.grey.shade600,
             ),
           ),
         ],
@@ -322,6 +329,10 @@ class _VideoGridViewState extends State<VideoGridView>
   }
 
   Widget _buildWorkoutCard(DocumentSnapshot workout) {
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+    final accentColor = const Color(0xFFEDCBA4); // Toffee
+
     final imageUrl = _getValidImageUrl(workout);
     final workoutName = _getWorkoutName(workout);
     final difficulty = _getWorkoutDifficulty(workout);
@@ -330,9 +341,9 @@ class _VideoGridViewState extends State<VideoGridView>
 
     return Card(
       clipBehavior: Clip.antiAlias,
-      elevation: 0,
+      elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: InkWell(
         onTap: () {
@@ -348,51 +359,111 @@ class _VideoGridViewState extends State<VideoGridView>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Workout image
-            Expanded(
-              flex: 4,
-              child: Container(
-                width: double.infinity,
-                color: Colors.grey[300],
-                child: imageUrl == null
-                    ? Icon(
-                        Icons.fitness_center,
-                        size: 40,
-                        color: Colors.grey[500],
-                      )
-                    : Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(
-                            Icons.fitness_center,
-                            size: 40,
-                            color: Colors.grey[500],
-                          );
-                        },
+            // Workout image or gradient header
+            Container(
+              height: 90,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [primaryColor, secondaryColor],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Stack(
+                children: [
+                  // Background pattern for visual interest
+                  Positioned(
+                    right: -15,
+                    top: -15,
+                    child: Container(
+                      height: 80,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.1),
                       ),
+                    ),
+                  ),
+                  Positioned(
+                    left: -5,
+                    bottom: -20,
+                    child: Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.1),
+                      ),
+                    ),
+                  ),
+
+                  // Icon and difficulty
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Workout type icon
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.25),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            _getCategoryIcon(workout),
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+
+                        // Difficulty badge
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.25),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            difficulty,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
 
             // Workout info
             Expanded(
-              flex: 5,
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Workout name
                     Text(
                       workoutName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
+                        color: primaryColor,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 8),
 
                     // Workout description
                     Expanded(
@@ -401,55 +472,62 @@ class _VideoGridViewState extends State<VideoGridView>
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey[600],
+                          height: 1.4,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
 
-                    // Tags row
+                    // Duration
                     Row(
                       children: [
-                        // Difficulty tag
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF6A3EA1), // Purple
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            difficulty,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
-                          ),
+                        Icon(
+                          Icons.access_time,
+                          size: 14,
+                          color: Colors.grey[600],
                         ),
                         const SizedBox(width: 4),
-
-                        // Duration tag
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.orange,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            duration,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
+                        Text(
+                          duration,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey[600],
                           ),
                         ),
                       ],
                     ),
+                    const SizedBox(height: 8),
+
+                    // Categories
+                    Wrap(
+                      spacing: 4,
+                      runSpacing: 4,
+                      children: _getCategories(workout)
+                          .take(2)
+                          .map((category) => Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: secondaryColor.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  category,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: primaryColor,
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                    ),
 
                     const SizedBox(height: 8),
 
-                    // Exercise count and edit/delete
+                    // Actions row at bottom
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -464,8 +542,13 @@ class _VideoGridViewState extends State<VideoGridView>
                         // Edit/Delete icons
                         Row(
                           children: [
-                            InkWell(
-                              onTap: () {
+                            IconButton(
+                              icon: Icon(
+                                Icons.edit_outlined,
+                                size: 20,
+                                color: primaryColor,
+                              ),
+                              onPressed: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -475,22 +558,21 @@ class _VideoGridViewState extends State<VideoGridView>
                                   ),
                                 ).then((_) => fetchWorkouts());
                               },
-                              child: const Icon(
-                                Icons.edit,
-                                size: 20,
-                                color: Colors.blue,
-                              ),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
                             ),
-                            const SizedBox(width: 10),
-                            InkWell(
-                              onTap: () {
+                            const SizedBox(width: 16),
+                            IconButton(
+                              icon: Icon(
+                                Icons.delete_outline,
+                                size: 20,
+                                color: Colors.red[400],
+                              ),
+                              onPressed: () {
                                 _showDeleteConfirmation(workout);
                               },
-                              child: const Icon(
-                                Icons.delete,
-                                size: 20,
-                                color: Colors.red,
-                              ),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
                             ),
                           ],
                         ),
@@ -506,12 +588,47 @@ class _VideoGridViewState extends State<VideoGridView>
     );
   }
 
+  // Helper function to get category icon
+  IconData _getCategoryIcon(DocumentSnapshot workout) {
+    final categories = _getCategories(workout);
+
+    if (categories.contains('Cardio')) {
+      return Icons.directions_run;
+    } else if (categories.contains('Strength')) {
+      return Icons.fitness_center;
+    } else if (categories.contains('Yoga')) {
+      return Icons.self_improvement;
+    } else if (categories.contains('Flexibility')) {
+      return Icons.accessibility_new;
+    }
+
+    return Icons.fitness_center;
+  }
+
+  // Helper function to get categories
+  List<String> _getCategories(DocumentSnapshot workout) {
+    if (workout.data() is Map<String, dynamic>) {
+      final data = workout.data() as Map<String, dynamic>;
+
+      if (data.containsKey('categories') && data['categories'] is List) {
+        return List<String>.from(data['categories'].map((c) => c.toString()));
+      } else if (data.containsKey('selectedCategories') &&
+          data['selectedCategories'] is List) {
+        return List<String>.from(
+            data['selectedCategories'].map((c) => c.toString()));
+      }
+    }
+
+    return ['General'];
+  }
+
+  // Helper function to get workout description
   String _getDescription(DocumentSnapshot workout) {
     if (workout.data() is Map<String, dynamic>) {
       final data = workout.data() as Map<String, dynamic>;
-      return data['description'] ?? 'No description';
+      return data['description'] ?? 'No description available';
     }
-    return 'No description';
+    return 'No description available';
   }
 
   void _showDeleteConfirmation(DocumentSnapshot workout) {

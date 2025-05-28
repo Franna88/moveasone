@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'dart:io';
 
+import 'package:move_as_one/Services/UserState.dart';
 import 'package:move_as_one/userSide/UserProfile/MemberOptions/MemberOption.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/settingsPrivacy/settingsItems/settingsMain.dart';
@@ -31,6 +32,13 @@ class _UserProfileState extends State<UserProfile> {
   bool hasImage = false;
   int motivationScore = 0;
   int daysSinceLastWorkout = 0;
+
+  // New color palette
+  final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+  final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+  final accentColor = const Color(0xFFEDCBA4); // Toffee
+  final highlightColor = const Color(0xFFF5DEB3); // Sand
+  final backgroundColor = const Color(0xFFFFF8F0); // Light Sand/Cream
 
   @override
   void initState() {
@@ -75,6 +83,70 @@ class _UserProfileState extends State<UserProfile> {
         errorMessage = e.toString();
       });
     }
+  }
+
+  // Handle logout
+  Future<void> _handleLogout() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const UserState()),
+        (route) => false,
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error logging out: $e')),
+      );
+    }
+  }
+
+  // Show the confirmation dialog
+  void _showLogoutConfirmation() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Confirm Logout',
+            style: TextStyle(
+              color: primaryColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to log out?',
+            style: TextStyle(fontSize: 16),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _handleLogout();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              child: Text('Logout'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Color getMotivationColor() {
@@ -130,6 +202,7 @@ class _UserProfileState extends State<UserProfile> {
                           ),
                         ),
                       ),*/
+                      // Settings icon
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -142,7 +215,47 @@ class _UserProfileState extends State<UserProfile> {
                           Icons.settings_outlined,
                           size: 30,
                         ),
-                      )
+                      ),
+                      SizedBox(width: 10),
+                      // Popup menu for more options
+                      PopupMenuButton<String>(
+                        onSelected: (value) {
+                          if (value == 'logout') {
+                            _showLogoutConfirmation();
+                          }
+                        },
+                        icon: Icon(
+                          Icons.more_vert,
+                          color: primaryColor,
+                          size: 30,
+                        ),
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        itemBuilder: (BuildContext context) => [
+                          PopupMenuItem<String>(
+                            value: 'logout',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.logout,
+                                  color: Colors.red,
+                                  size: 22,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Logout',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),

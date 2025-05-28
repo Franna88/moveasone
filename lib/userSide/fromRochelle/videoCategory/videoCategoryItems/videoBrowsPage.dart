@@ -53,23 +53,35 @@ class _VideoBrowsPageState extends State<VideoBrowsPage> {
   Widget build(BuildContext context) {
     var widthDevice = MediaQuery.of(context).size.width;
 
+    // New color palette
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+    final backgroundColor = const Color(0xFFFFF8F0); // Light Sand/Cream
+    final accentColor = const Color(0xFFEDCBA4); // Toffee
+
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Workouts',
           style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            color: primaryColor,
+            letterSpacing: 0.5,
           ),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: primaryColor),
+          onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
             icon: Icon(
               _showFilterBar ? Icons.filter_list : Icons.filter_list_off,
-              color: _showFilterBar ? const Color(0xFF6A3EA1) : Colors.black,
+              color: _showFilterBar ? primaryColor : Colors.grey,
             ),
             onPressed: () {
               setState(() {
@@ -78,7 +90,7 @@ class _VideoBrowsPageState extends State<VideoBrowsPage> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.search, color: Colors.black),
+            icon: Icon(Icons.search, color: primaryColor),
             onPressed: () {
               // Implement search functionality
             },
@@ -109,8 +121,7 @@ class _VideoBrowsPageState extends State<VideoBrowsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToCreateWorkout,
-        backgroundColor:
-            const Color(0xFF6A3EA1), // Purple color to match enhanced creator
+        backgroundColor: primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
@@ -125,8 +136,12 @@ class _VideoBrowsPageState extends State<VideoBrowsPage> {
   }
 
   Widget _buildSortAndFilterBar() {
+    // New color palette
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -134,11 +149,12 @@ class _VideoBrowsPageState extends State<VideoBrowsPage> {
           // Sort options row
           Row(
             children: [
-              const Text(
+              Text(
                 'Sort by:',
                 style: TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
+                  color: primaryColor,
                 ),
               ),
               const SizedBox(width: 12),
@@ -152,7 +168,7 @@ class _VideoBrowsPageState extends State<VideoBrowsPage> {
                 icon: Icon(
                   _sortAscending ? Icons.arrow_upward : Icons.arrow_downward,
                   size: 20,
-                  color: Colors.black87,
+                  color: primaryColor,
                 ),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
@@ -161,16 +177,17 @@ class _VideoBrowsPageState extends State<VideoBrowsPage> {
             ],
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
 
           // Filter options row
           Row(
             children: [
-              const Text(
+              Text(
                 'Filter:',
                 style: TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
+                  color: primaryColor,
                 ),
               ),
               const SizedBox(width: 12),
@@ -178,17 +195,19 @@ class _VideoBrowsPageState extends State<VideoBrowsPage> {
               // Category dropdown
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: secondaryColor.withOpacity(0.5)),
+                    borderRadius: BorderRadius.circular(12),
+                    color: secondaryColor.withOpacity(0.1),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       value: _selectedCategory,
                       hint: const Text('All Categories'),
                       isExpanded: true,
-                      icon: const Icon(Icons.arrow_drop_down),
+                      icon: Icon(Icons.arrow_drop_down, color: primaryColor),
                       items: [
                         const DropdownMenuItem<String>(
                           value: null,
@@ -216,17 +235,19 @@ class _VideoBrowsPageState extends State<VideoBrowsPage> {
               // Difficulty dropdown
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: secondaryColor.withOpacity(0.5)),
+                    borderRadius: BorderRadius.circular(12),
+                    color: secondaryColor.withOpacity(0.1),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       value: _selectedDifficulty,
                       hint: const Text('All Difficulties'),
                       isExpanded: true,
-                      icon: const Icon(Icons.arrow_drop_down),
+                      icon: Icon(Icons.arrow_drop_down, color: primaryColor),
                       items: [
                         const DropdownMenuItem<String>(
                           value: null,
@@ -256,23 +277,30 @@ class _VideoBrowsPageState extends State<VideoBrowsPage> {
   }
 
   Widget _buildSortButton(String label, String value) {
+    // New color palette
+    final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+
     final bool isSelected = _sortBy == value;
 
     return InkWell(
       onTap: () => _selectSortOption(value),
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(16),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF6A3EA1) : Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
+          color: isSelected ? primaryColor : secondaryColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected ? primaryColor : secondaryColor.withOpacity(0.5),
+          ),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : Colors.black87,
-            fontSize: 14,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            color: isSelected ? Colors.white : primaryColor,
+            fontSize: 13,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
           ),
         ),
       ),
