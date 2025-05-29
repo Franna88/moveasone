@@ -109,7 +109,7 @@ class _MyHomeState extends State<MyHome> {
               decoration: BoxDecoration(
                 color: primaryColor,
                 image: DecorationImage(
-                  image: AssetImage('images/new_photos/home_main2.jpeg'),
+                  image: AssetImage('images/new_photos/home_main.jpeg'),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
                     primaryColor.withOpacity(0.7),

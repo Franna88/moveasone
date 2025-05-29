@@ -148,6 +148,8 @@ class _CommonButtonsState extends State<CommonButtons> {
 
     return Column(
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (widget.icon != null)
           Row(
@@ -156,21 +158,34 @@ class _CommonButtonsState extends State<CommonButtons> {
             children: [
               Icon(widget.icon, color: Colors.white, size: 20),
               const SizedBox(width: 8),
-              Text(widget.buttonText, style: textStyle),
+              Flexible(
+                child: Text(
+                  widget.buttonText,
+                  style: textStyle,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ],
           )
         else
-          Text(widget.buttonText, style: textStyle),
+          Text(
+            widget.buttonText,
+            style: textStyle,
+            overflow: TextOverflow.ellipsis,
+          ),
         if (widget.showMotivation && widget.motivationScore != null) ...[
           const SizedBox(height: 8),
-          LinearProgressIndicator(
-            value: widget.motivationScore! / 100,
-            backgroundColor: Colors.white.withOpacity(0.3),
-            valueColor: AlwaysStoppedAnimation<Color>(
-              getMotivationColor(widget.motivationScore!),
+          SizedBox(
+            width: double.infinity,
+            child: LinearProgressIndicator(
+              value: widget.motivationScore! / 100,
+              backgroundColor: Colors.white.withOpacity(0.3),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                getMotivationColor(widget.motivationScore!),
+              ),
+              minHeight: 6,
+              borderRadius: BorderRadius.circular(3),
             ),
-            minHeight: 6,
-            borderRadius: BorderRadius.circular(3),
           ),
           if (widget.motivationText != null) ...[
             const SizedBox(height: 4),
@@ -182,6 +197,8 @@ class _CommonButtonsState extends State<CommonButtons> {
                 fontFamily: 'BeVietnam',
                 fontWeight: FontWeight.w400,
               ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
           ],
         ],
