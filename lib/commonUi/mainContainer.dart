@@ -13,13 +13,24 @@ class MainContainer extends StatelessWidget {
         height: heightDevice,
         width: widthDevice,
         color: Colors.white,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 25),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: children,
-            ),
+        child: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: children,
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),

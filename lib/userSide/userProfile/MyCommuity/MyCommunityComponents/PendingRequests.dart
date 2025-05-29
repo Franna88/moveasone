@@ -215,8 +215,8 @@ class _PendingRequestsState extends State<PendingRequests> {
                   )
                 : Icon(Icons.person, color: Colors.grey, size: 50),
           ),
-          SizedBox(
-            width: MyUtility(context).width * 0.42,
+          SizedBox(width: 12),
+          Expanded(
             child: Text(
               widget.name,
               style: TextStyle(
@@ -230,6 +230,7 @@ class _PendingRequestsState extends State<PendingRequests> {
             ),
           ),
           if (friendRequestStatus == 'received') ...[
+            SizedBox(width: 8),
             GestureDetector(
               onTap: _acceptFriendRequest,
               child: Container(
@@ -241,6 +242,7 @@ class _PendingRequestsState extends State<PendingRequests> {
                 child: Icon(Icons.check, color: Colors.white),
               ),
             ),
+            SizedBox(width: 8),
             GestureDetector(
               onTap: _declineFriendRequest,
               child: Container(

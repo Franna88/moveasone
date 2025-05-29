@@ -66,12 +66,36 @@ class _FriendsListState extends State<FriendsList> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ClipOval(
-                child: Image.network(
-                  widget.picture,
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
-                ),
+                child: widget.picture.isNotEmpty &&
+                        widget.picture.startsWith('http')
+                    ? Image.network(
+                        widget.picture,
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'images/default_avatar.jpg',
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      )
+                    : widget.picture.isNotEmpty &&
+                            !widget.picture.startsWith('http')
+                        ? Image.asset(
+                            widget.picture,
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            'images/default_avatar.jpg',
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          ),
               ),
               SizedBox(
                 width: MyUtility(context).width * 0.42,

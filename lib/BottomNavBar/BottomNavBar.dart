@@ -6,6 +6,7 @@ import 'package:move_as_one/userSide/UserVideo/UserVideoAdd.dart';
 import 'package:move_as_one/userSide/UserVideo/UserVideoView.dart';
 import 'package:move_as_one/userSide/userProfile/MyCommuity/MyCommnity.dart';
 import 'package:move_as_one/userSide/userProfile/MyCommuity/Other/AllMessagesDisplay.dart';
+import 'dart:ui';
 
 class BottomNavBar extends StatefulWidget {
   final int initialIndex; // New parameter to set the starting index
@@ -17,10 +18,22 @@ class BottomNavBar extends StatefulWidget {
   _BottomNavBarState createState() => _BottomNavBarState();
 }
 
-class _BottomNavBarState extends State<BottomNavBar> {
+class _BottomNavBarState extends State<BottomNavBar>
+    with SingleTickerProviderStateMixin {
   late int _selectedIndex; // Index for BottomNavigationBar items
-
   late List<Widget> _pages; // List of all pages
+  late AnimationController _animationController;
+
+  // Modern wellness color scheme
+  final Color primaryColor =
+      const Color(0xFF025959); // Deep Teal - primary brand
+  final Color secondaryColor = const Color(0xFF01B3B3); // Bright Teal - accent
+  final Color accentColor =
+      const Color(0xFF94FBAB); // Mint/Lime - energizing accent
+  final Color subtleColor =
+      const Color(0xFFE5F9E0); // Pale Mint - background hint
+  final Color backgroundColor =
+      const Color(0xFFF8FFFA); // Off-white with hint of mint
 
   @override
   void initState() {
@@ -28,6 +41,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
     _selectedIndex = widget.initialIndex < 5
         ? widget.initialIndex
         : 0; // Set the initial index and validate
+
+    // Animation controller for smooth transitions
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _animationController.forward();
 
     // List of all pages including hidden ones
     _pages = [
@@ -42,6 +62,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
         _onDirectItemTapped(1); // Navigate back to UserAddVideo (index 1)
       }),
     ];
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   // Method for handling direct navigation to hidden pages (UserVideoView)
@@ -61,29 +87,49 @@ class _BottomNavBarState extends State<BottomNavBar> {
       // Only allow navigation for visible items (0-4)
       setState(() {
         _selectedIndex = index;
+        // Trigger animation effect when changing tabs
+        _animationController.reset();
+        _animationController.forward();
       });
     } else {
       print("Invalid BottomNavigationBar index: $index");
     }
   }
 
-  // Helper method to build icons for BottomNavigationBar
+  // Helper method to build icons for BottomNavigationBar with wellness theme
   Widget _buildIcon(String assetPath, int index) {
-    return Container(
+    final bool isSelected = _selectedIndex == index;
+
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
       width: 50,
       height: 50,
+      decoration: BoxDecoration(
+        color: isSelected ? Colors.white.withOpacity(0.3) : Colors.transparent,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: isSelected
+            ? [
+                BoxShadow(
+                  color: Colors.white.withOpacity(0.4),
+                  blurRadius: 15,
+                  spreadRadius: 1,
+                )
+              ]
+            : null,
+      ),
       child: Center(
         child: _isSvg(assetPath)
             ? SvgPicture.asset(
                 assetPath,
-                color: _selectedIndex == index ? Colors.white : Colors.grey,
-                width: 35,
-                height: 35,
+                color:
+                    isSelected ? Colors.white : Colors.white.withOpacity(0.7),
+                width: isSelected ? 28 : 24,
+                height: isSelected ? 28 : 24,
               )
             : Image.asset(
                 assetPath,
-                width: 40,
-                height: 40,
+                width: isSelected ? 32 : 28,
+                height: isSelected ? 32 : 28,
               ),
       ),
     );
@@ -98,44 +144,149 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        canvasColor: Color(0xFF006261), // Original canvas background color
+        canvasColor: primaryColor,
       ),
       home: Scaffold(
-        body: _pages[_selectedIndex], // Display the selected page
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Color(0xFF006261), // Restore background color
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: _buildIcon('images/Exercise.svg', 0),
-              label: '', // Empty label
+        body: AnimatedSwitcher(
+          duration: Duration(milliseconds: 300),
+          child: _pages[
+              _selectedIndex], // Display the selected page with animation
+        ),
+        extendBody: true,
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+          child: Container(
+            height: 80,
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 20,
+                  offset: Offset(0, 4),
+                ),
+              ],
             ),
-            BottomNavigationBarItem(
-              icon: _buildIcon('images/Video.svg', 1),
-              label: '', // Empty label
-            ),
-            BottomNavigationBarItem(
-              icon: _buildIcon('images/Plus-Circle.svg', 2),
-              label: '', // Empty label
-            ),
-            BottomNavigationBarItem(
-              icon: _buildIcon('images/Search.svg', 3),
-              label: '', // Empty label
-            ),
-            BottomNavigationBarItem(
-              icon: CircleAvatar(
-                backgroundColor: Colors.grey,
-                radius: 18,
-                backgroundImage: AssetImage('images/Avatar1.jpg'),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.3),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: BottomNavigationBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    type: BottomNavigationBarType.fixed,
+                    showSelectedLabels: false,
+                    showUnselectedLabels: false,
+                    items: <BottomNavigationBarItem>[
+                      BottomNavigationBarItem(
+                        icon: _buildIcon('images/Exercise.svg', 0),
+                        label: '',
+                        tooltip: 'Workouts',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: _buildIcon('images/Video.svg', 1),
+                        label: '',
+                        tooltip: 'Videos',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Container(
+                          height: 60,
+                          width: 60,
+                          child: Center(
+                            child: Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.white.withOpacity(0.4),
+                                    accentColor.withOpacity(0.8)
+                                  ],
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.white.withOpacity(0.4),
+                                    blurRadius: 15,
+                                    spreadRadius: 2,
+                                  ),
+                                ],
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.6),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: SvgPicture.asset(
+                                'images/Plus-Circle.svg',
+                                color: Colors.white,
+                                width: 30,
+                                height: 30,
+                              ),
+                            ),
+                          ),
+                        ),
+                        label: '',
+                        tooltip: 'Add',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: _buildIcon('images/Search.svg', 3),
+                        label: '',
+                        tooltip: 'Community',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: _selectedIndex == 4
+                                  ? Colors.white
+                                  : Colors.transparent,
+                              width: 2,
+                            ),
+                            boxShadow: _selectedIndex == 4
+                                ? [
+                                    BoxShadow(
+                                      color: Colors.white.withOpacity(0.4),
+                                      blurRadius: 15,
+                                      spreadRadius: 1,
+                                    )
+                                  ]
+                                : null,
+                          ),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.grey,
+                            radius: _selectedIndex == 4 ? 20 : 18,
+                            backgroundImage: AssetImage('images/Avatar1.jpg'),
+                          ),
+                        ),
+                        label: '',
+                        tooltip: 'Profile',
+                      ),
+                    ],
+                    currentIndex: _selectedIndex < 5
+                        ? _selectedIndex
+                        : 0, // Ensure the index is valid
+                    selectedItemColor: Colors.white, // Selected icon color
+                    unselectedItemColor:
+                        Colors.white.withOpacity(0.7), // Unselected icon color
+                    onTap:
+                        _onItemTapped, // Handle tapping on BottomNavigationBar items
+                  ),
+                ),
               ),
-              label: '', // Empty label
             ),
-          ],
-          currentIndex: _selectedIndex < 5
-              ? _selectedIndex
-              : 0, // Ensure the index is valid
-          selectedItemColor: Colors.white, // Selected icon color
-          unselectedItemColor: Colors.grey, // Unselected icon color
-          onTap: _onItemTapped, // Handle tapping on BottomNavigationBar items
+          ),
         ),
       ),
     );

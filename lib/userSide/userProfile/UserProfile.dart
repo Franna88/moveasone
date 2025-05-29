@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'dart:io';
 
+import 'package:move_as_one/Services/UserState.dart';
 import 'package:move_as_one/userSide/UserProfile/MemberOptions/MemberOption.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/settingsPrivacy/settingsItems/settingsMain.dart';
@@ -18,11 +20,25 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  String name = '';
-  String bio = '';
-  String website = '';
-  String profilePicUrl = '';
-  String userId = '';
+  Directory? dir;
+  File? savedFile;
+  bool loading = false;
+  String errorMessage = '';
+  String firstName = '';
+  String lastName = '';
+  String email = '';
+  String profileImageUrl = '';
+  String photoUrl = '';
+  bool hasImage = false;
+  int motivationScore = 0;
+  int daysSinceLastWorkout = 0;
+
+  // New color palette
+  final primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+  final secondaryColor = const Color(0xFF94D8E0); // Pale Turquoise
+  final accentColor = const Color(0xFFEDCBA4); // Toffee
+  final highlightColor = const Color(0xFFF5DEB3); // Sand
+  final backgroundColor = const Color(0xFFFFF8F0); // Light Sand/Cream
 
   @override
   void initState() {
@@ -31,17 +47,125 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<void> getUserDetails() async {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-    final doc =
-        await FirebaseFirestore.instance.collection('users').doc(uid).get();
-    if (doc.exists) {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (userDoc.exists) {
+          Map<String, dynamic> userData =
+              userDoc.data() as Map<String, dynamic>;
+          setState(() {
+            firstName = userData['firstName'] ?? '';
+            lastName = userData['lastName'] ?? '';
+            email = userData['email'] ?? '';
+            profileImageUrl = userData['profileImage'] ?? '';
+            motivationScore =
+                userData['motivationScore'] ?? 75; // Default value if not set
+
+            // Calculate days since last workout
+            if (userData['lastWorkoutDate'] != null) {
+              DateTime lastWorkout =
+                  (userData['lastWorkoutDate'] as Timestamp).toDate();
+              daysSinceLastWorkout =
+                  DateTime.now().difference(lastWorkout).inDays;
+            } else {
+              daysSinceLastWorkout = 7; // Default value if not set
+            }
+          });
+        }
+      }
+    } catch (e) {
       setState(() {
-        userId = uid;
-        name = doc.get('name');
-        bio = doc.get('bio');
-        website = doc.get('website');
-        profilePicUrl = doc.get('profilePic');
+        errorMessage = e.toString();
       });
+    }
+  }
+
+  // Handle logout
+  Future<void> _handleLogout() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const UserState()),
+        (route) => false,
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error logging out: $e')),
+      );
+    }
+  }
+
+  // Show the confirmation dialog
+  void _showLogoutConfirmation() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Confirm Logout',
+            style: TextStyle(
+              color: primaryColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to log out?',
+            style: TextStyle(fontSize: 16),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _handleLogout();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              child: Text('Logout'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Color getMotivationColor() {
+    if (motivationScore >= 80) {
+      return Color(0xFF4CAF50); // Green for high motivation
+    } else if (motivationScore >= 50) {
+      return Color(0xFFFFA726); // Orange for medium motivation
+    } else {
+      return Color(0xFFE57373); // Red for low motivation
+    }
+  }
+
+  String getMotivationStatus() {
+    if (motivationScore >= 80) {
+      return "HIGH FIVE'S - KEEP IT UP!";
+    } else if (motivationScore >= 50) {
+      return "DOING GOOD - STAY FOCUSED!";
+    } else {
+      return "LET'S GET MOVING AGAIN!";
     }
   }
 
@@ -78,6 +202,7 @@ class _UserProfileState extends State<UserProfile> {
                           ),
                         ),
                       ),*/
+                      // Settings icon
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -90,7 +215,47 @@ class _UserProfileState extends State<UserProfile> {
                           Icons.settings_outlined,
                           size: 30,
                         ),
-                      )
+                      ),
+                      SizedBox(width: 10),
+                      // Popup menu for more options
+                      PopupMenuButton<String>(
+                        onSelected: (value) {
+                          if (value == 'logout') {
+                            _showLogoutConfirmation();
+                          }
+                        },
+                        icon: Icon(
+                          Icons.more_vert,
+                          color: primaryColor,
+                          size: 30,
+                        ),
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        itemBuilder: (BuildContext context) => [
+                          PopupMenuItem<String>(
+                            value: 'logout',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.logout,
+                                  color: Colors.red,
+                                  size: 22,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Logout',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -105,10 +270,10 @@ class _UserProfileState extends State<UserProfile> {
                       SizedBox(
                         width: MyUtility(context).width * 0.05,
                       ),
-                      profilePicUrl.isNotEmpty
+                      profileImageUrl.isNotEmpty
                           ? ClipOval(
                               child: Image.network(
-                                profilePicUrl,
+                                profileImageUrl,
                                 width: 75,
                                 height: 75,
                                 fit: BoxFit.cover,
@@ -149,7 +314,7 @@ class _UserProfileState extends State<UserProfile> {
                       Column(
                         children: [
                           Text(
-                            'HIGH FIVE’S',
+                            "HIGH FIVE'S",
                             style: TextStyle(
                               color: Color(0xFF6F6F6F),
                               fontSize: 12,
@@ -200,7 +365,7 @@ class _UserProfileState extends State<UserProfile> {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: name,
+                            text: firstName,
                             style: TextStyle(
                               color: Color(0xFF1E1E1E),
                               fontSize: 18,
@@ -236,7 +401,7 @@ class _UserProfileState extends State<UserProfile> {
                   child: SizedBox(
                     width: 311,
                     child: Text(
-                      bio,
+                      lastName,
                       style: TextStyle(
                         color: Color(0xFF1E1E1E),
                         fontSize: 17,
@@ -250,7 +415,7 @@ class _UserProfileState extends State<UserProfile> {
                   padding: const EdgeInsets.only(left: 20),
                   child: SizedBox(
                     child: Text(
-                      website,
+                      email,
                       style: TextStyle(
                         color: Color(0xFF006261),
                         fontSize: 14,
@@ -325,12 +490,99 @@ class _UserProfileState extends State<UserProfile> {
                   height: MyUtility(context).height * 0.05,
                 ),
                 LastWorkout(
-                  userId: userId,
+                  userId: FirebaseAuth.instance.currentUser!.uid,
                 ),
                 SizedBox(
                   height: MyUtility(context).height * 0.01,
                 ),
-                MemberOptions()
+                MemberOptions(),
+                // Motivation Score Container
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, top: 15, right: 20),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Motivation Score',
+                              style: TextStyle(
+                                color: Color(0xFF1E1E1E),
+                                fontSize: 16,
+                                fontFamily: 'Be Vietnam',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: getMotivationColor(),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '$motivationScore%',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontFamily: 'Be Vietnam',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              getMotivationStatus(),
+                              style: TextStyle(
+                                color: getMotivationColor(),
+                                fontSize: 14,
+                                fontFamily: 'Be Vietnam',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            Text(
+                              daysSinceLastWorkout == 0
+                                  ? 'Worked out today'
+                                  : daysSinceLastWorkout == 1
+                                      ? 'Last workout: yesterday'
+                                      : 'Last workout: $daysSinceLastWorkout days ago',
+                              style: TextStyle(
+                                color: Color(0xFF6F6F6F),
+                                fontSize: 12,
+                                fontFamily: 'Be Vietnam',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: MyUtility(context).height * 0.05,
+                ),
               ],
             ),
           ),

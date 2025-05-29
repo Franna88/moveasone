@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:move_as_one/Services/auth_services.dart';
@@ -7,6 +8,7 @@ import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/Custom
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/PasswordTextField.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/PrivacyPolicyCheckbox.dart';
 import 'package:move_as_one/myutility.dart';
+import 'package:move_as_one/commonUi/ModernGlassButton.dart';
 
 class Signup extends StatefulWidget {
   final String goal;
@@ -81,148 +83,193 @@ class _SignupState extends State<Signup> {
             height: MyUtility(context).height,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('images/signUp.png'),
+                image: AssetImage('images/new_photos/IMG_5616.jpeg'),
                 fit: BoxFit.cover,
               ),
             ),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: MyUtility(context).height * 0.1,
-                ),
-                SizedBox(
-                  width: MyUtility(context).width / 1.2,
-                  child: Text(
-                    'Sign Up',
-                    style: TextStyle(
-                      fontSize: 42,
-                      fontFamily: 'belight',
-                      color: Color(0xFF1E1E1E),
-                    ),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: MyUtility(context).height * 0.05,
                   ),
-                ),
-                SizedBox(
-                  height: MyUtility(context).height * 0.05,
-                ),
-                CustomTextField(
-                  controller: _nameController,
-                  hintText: 'Name',
-                ),
-                SizedBox(
-                  height: MyUtility(context).height * 0.02,
-                ),
-                CustomTextField(
-                  controller: _emailController,
-                  hintText: 'E-mail',
-                ),
-                SizedBox(
-                  height: MyUtility(context).height * 0.02,
-                ),
-                PasswordTextField(
-                  controller: _passwordController,
-                  hintText: 'Password',
-                ),
-                SizedBox(
-                  height: MyUtility(context).height * 0.02,
-                ),
-                PasswordTextField(
-                  controller: _confirmPasswordController,
-                  hintText: 'Confirm password',
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: SizedBox(
-                      width: MyUtility(context).width / 1.2,
-                      child: PrivacyPolicyCheckbox()),
-                ),
-                SizedBox(
-                  height: MyUtility(context).height * 0.2,
-                ),
-                SizedBox(
-                  width: MyUtility(context).width / 1.2,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      SvgIconButton(
-                        iconPath: 'images/apple.svg',
-                        onPressed: () {},
-                      ),
-                      SvgIconButton(
-                        iconPath: 'images/google.svg',
-                        onPressed: () {},
-                      ),
-                      SizedBox(
-                        width: MyUtility(context).width * 0.45,
-                        height: MyUtility(context).height * 0.06,
-                        child: ElevatedButton(
-                          onPressed: void_signup,
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.all<Color>(
-                                Color(0xFF006261)),
-                            shape:
-                                WidgetStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      child: Container(
+                        width: MyUtility(context).width * 0.9,
+                        padding:
+                            EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.2),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Sign Up',
+                              style: TextStyle(
+                                fontSize: 42,
+                                fontFamily: 'belight',
+                                color: Color(0xFF1E1E1E),
+                                fontWeight: FontWeight.bold,
+                                shadows: [
+                                  Shadow(
+                                    offset: Offset(1.0, 1.0),
+                                    blurRadius: 3.0,
+                                    color: Colors.black.withOpacity(0.3),
+                                  ),
+                                ],
                               ),
                             ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            CustomTextField(
+                              controller: _nameController,
+                              hintText: 'Name',
+                            ),
+                            SizedBox(
+                              height: MyUtility(context).height * 0.02,
+                            ),
+                            CustomTextField(
+                              controller: _emailController,
+                              hintText: 'E-mail',
+                            ),
+                            SizedBox(
+                              height: MyUtility(context).height * 0.02,
+                            ),
+                            PasswordTextField(
+                              controller: _passwordController,
+                              hintText: 'Password',
+                            ),
+                            SizedBox(
+                              height: MyUtility(context).height * 0.02,
+                            ),
+                            PasswordTextField(
+                              controller: _confirmPasswordController,
+                              hintText: 'Confirm password',
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: SizedBox(
+                                  width: MyUtility(context).width / 1.2,
+                                  child: PrivacyPolicyCheckbox()),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(child: SizedBox()),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 30),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Container(
+                          width: MyUtility(context).width * 0.9,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.2),
+                              width: 1.5,
+                            ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          child: Column(
                             children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 10.0),
-                                child: Text(
-                                  'Sign Up',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14.0,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  SvgIconButton(
+                                    iconPath: 'images/apple.svg',
+                                    onPressed: () {},
                                   ),
-                                ),
+                                  SvgIconButton(
+                                    iconPath: 'images/google.svg',
+                                    onPressed: () {},
+                                  ),
+                                  SizedBox(
+                                    width: MyUtility(context).width * 0.45,
+                                    height: MyUtility(context).height * 0.06,
+                                    child: ModernGlassButton(
+                                      buttonText: 'Sign Up',
+                                      onTap: void_signup,
+                                      buttonColor: Color(0xFF006261),
+                                      borderRadius: 30,
+                                      height: MyUtility(context).height * 0.06,
+                                      backgroundOpacity: 0.4,
+                                      icon: Icons.keyboard_arrow_right,
+                                    ),
+                                  )
+                                ],
                               ),
-                              Icon(Icons.keyboard_arrow_right,
-                                  color: Colors.white),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Already have an account",
+                                    style: TextStyle(
+                                      color: Color(0xFF707070),
+                                      fontSize: 18.0,
+                                      shadows: [
+                                        Shadow(
+                                          offset: Offset(1.0, 1.0),
+                                          blurRadius: 3.0,
+                                          color: Colors.black.withOpacity(0.3),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const Signin()),
+                                      );
+                                    },
+                                    child: Text(
+                                      'Sign in',
+                                      style: TextStyle(
+                                        color: Color(0xFF006261),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        shadows: [
+                                          Shadow(
+                                            offset: Offset(1.0, 1.0),
+                                            blurRadius: 3.0,
+                                            color:
+                                                Colors.black.withOpacity(0.3),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
                             ],
                           ),
                         ),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: MyUtility(context).height * 0.01,
-                ),
-                SizedBox(
-                  width: MyUtility(context).width / 1.2,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Already have an account",
-                        style: TextStyle(
-                          color: Color(
-                              0xFF707070), // Color from the provided hex code
-                          fontSize: 18.0,
-                        ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Signin()),
-                          );
-                        },
-                        child: Text(
-                          'Sign in',
-                          style:
-                              TextStyle(color: Color(0xFF006261), fontSize: 18),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                )
-              ],
+                ],
+              ),
             )),
       ),
     );

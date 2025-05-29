@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/ui/uploadButton.dart';
-import 'package:move_as_one/commonUi/headerWidget1.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/myutility.dart';
@@ -20,12 +19,6 @@ class _UserAddVideoState extends State<UserAddVideo> {
   Widget build(BuildContext context) {
     return MainContainer(
       children: [
-        HeaderWidget1(
-          header: 'NEW Video',
-          onPress: () {
-            // Action for HeaderWidget1
-          },
-        ),
         SizedBox(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

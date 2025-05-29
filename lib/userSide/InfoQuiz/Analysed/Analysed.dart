@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Login/Signin.dart';
@@ -84,46 +85,100 @@ class _AnalysedState extends State<Analysed>
         height: MyUtility(context).height,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/welcomeBack.png'),
+            image: AssetImage('images/new_photos/IMG_5617.jpeg'),
             alignment: Alignment(-0.4, 1),
             fit: BoxFit.cover,
           ),
         ),
-        child: Column(
-          children: [
-            SizedBox(height: MyUtility(context).height * 0.15),
-            CircularProgressBar(progress: _animation.value),
-            SizedBox(height: MyUtility(context).height * 0.5),
-            SizedBox(
-              width: MyUtility(context).width / 1.2,
-              child: Text(
-                'Your information is',
-                style: TextStyle(
-                  fontSize: 32.2,
-                  fontFamily: 'belight',
-                  color: Color(0xFF1E1E1E),
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(
-              width: MyUtility(context).width / 1.2,
-              child: GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Signin()),
-                ),
-                child: Text(
-                  'Being Analysed',
-                  style: TextStyle(
-                      fontSize: 42.2,
-                      fontFamily: 'belight',
-                      color: Color(0xFF006261)),
-                  textAlign: TextAlign.center,
+        child: SafeArea(
+          child: Column(
+            children: [
+              SizedBox(height: MyUtility(context).height * 0.15),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    width: 150,
+                    height: 150,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.3),
+                        width: 2,
+                      ),
+                    ),
+                    child: CircularProgressBar(progress: _animation.value),
+                  ),
                 ),
               ),
-            ),
-          ],
+              Expanded(child: SizedBox()),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    width: MyUtility(context).width * 0.9,
+                    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                    margin: EdgeInsets.only(bottom: 50),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.3),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Your information is',
+                          style: TextStyle(
+                            fontSize: 32.2,
+                            fontFamily: 'belight',
+                            color: Color(0xFF1E1E1E),
+                            shadows: [
+                              Shadow(
+                                offset: Offset(1.0, 1.0),
+                                blurRadius: 3.0,
+                                color: Colors.black.withOpacity(0.3),
+                              ),
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Signin()),
+                          ),
+                          child: Text(
+                            'Being Analysed',
+                            style: TextStyle(
+                              fontSize: 42.2,
+                              fontFamily: 'belight',
+                              color: Color(0xFF006261),
+                              shadows: [
+                                Shadow(
+                                  offset: Offset(1.0, 1.0),
+                                  blurRadius: 3.0,
+                                  color: Colors.black.withOpacity(0.3),
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -163,7 +218,17 @@ class CircularProgressBar extends StatelessWidget {
       child: Center(
         child: Text(
           '%${(progress * 100).toStringAsFixed(0)}',
-          style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 34,
+            fontWeight: FontWeight.bold,
+            shadows: [
+              Shadow(
+                offset: Offset(1.0, 1.0),
+                blurRadius: 2.0,
+                color: Colors.black.withOpacity(0.3),
+              ),
+            ],
+          ),
         ),
       ),
     );

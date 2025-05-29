@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/workoutsFullLenght.dart';
-import 'package:move_as_one/commonUi/headerWidget1.dart';
 import 'package:move_as_one/commonUi/mainContainer.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/UserVideo/UserViewGridView.dart';
@@ -19,15 +17,6 @@ class _UservideoviewState extends State<Uservideoview> {
   Widget build(BuildContext context) {
     return MainContainer(
       children: [
-        HeaderWidget1(
-          header: 'NEW Video',
-          onPress: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => WorkoutsFullLenght()),
-            );
-          },
-        ),
         SizedBox(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
