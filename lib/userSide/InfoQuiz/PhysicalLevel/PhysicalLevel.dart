@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Analysed/Analysed.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/CustomButton.dart';
@@ -55,87 +56,120 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
         height: MyUtility(context).height,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/memberoptions6.png'),
+            image: AssetImage('images/new_photos/IMG_5618.jpeg'),
             fit: BoxFit.cover,
           ),
         ),
-        child: Column(
-          children: [
-            SizedBox(height: MyUtility(context).height * 0.05),
-            ProgressBar(currentPage: 5),
-            SizedBox(height: MyUtility(context).height * 0.01),
-            PageIndicator(currentPage: 5),
-            SizedBox(height: MyUtility(context).height * 0.05),
-            SizedBox(
-              width: MyUtility(context).width / 1.6,
-              child: Text(
-                "Your regular physical activity level?",
-                style: TextStyle(color: Colors.black, fontSize: 24),
-                textAlign: TextAlign.center,
+        child: SafeArea(
+          child: Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  width: MyUtility(context).width * 0.9,
+                  padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.2),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ProgressBar(currentPage: 5),
+                      SizedBox(height: MyUtility(context).height * 0.01),
+                      PageIndicator(currentPage: 5),
+                      SizedBox(height: MyUtility(context).height * 0.05),
+                      SizedBox(
+                        width: MyUtility(context).width / 1.6,
+                        child: Text(
+                          "Your regular physical activity level?",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                offset: Offset(1.0, 1.0),
+                                blurRadius: 3.0,
+                                color: Colors.black.withOpacity(0.3),
+                              ),
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(height: MyUtility(context).height * 0.05),
+                      /*CustomButton(
+                        text: 'Rookie',
+                        isSelected: selectedIndex == 0,
+                        onPressed: (bool isSelected) {
+                          setState(() {
+                            selectedIndex = isSelected ? 0 : -1;
+                          });
+                          if (isSelected) {
+                            _storeActivityLevel('Rookie');
+                          }
+                        },
+                      ),*/
+                      CustomButton(
+                        text: 'Beginner',
+                        isSelected: selectedIndex == 1,
+                        onPressed: (bool isSelected) {
+                          setState(() {
+                            selectedIndex = isSelected ? 1 : -1;
+                          });
+                          if (isSelected) {
+                            _storeActivityLevel('Beginner');
+                          }
+                        },
+                      ),
+                      CustomButton(
+                        text: 'Intermediate',
+                        isSelected: selectedIndex == 2,
+                        onPressed: (bool isSelected) {
+                          setState(() {
+                            selectedIndex = isSelected ? 2 : -1;
+                          });
+                          if (isSelected) {
+                            _storeActivityLevel('Intermediate');
+                          }
+                        },
+                      ),
+                      CustomButton(
+                        text: 'Advanced',
+                        isSelected: selectedIndex == 3,
+                        onPressed: (bool isSelected) {
+                          setState(() {
+                            selectedIndex = isSelected ? 3 : -1;
+                          });
+                          if (isSelected) {
+                            _storeActivityLevel('Advanced');
+                          }
+                        },
+                      ),
+                      /*CustomButton(
+                        text: 'Ultimate',
+                        isSelected: selectedIndex == 4,
+                        onPressed: (bool isSelected) {
+                          setState(() {
+                            selectedIndex = isSelected ? 4 : -1;
+                          });
+                          if (isSelected) {
+                            _storeActivityLevel('Ultimate');
+                          }
+                        },
+                      ),*/
+                    ],
+                  ),
+                ),
               ),
             ),
-            SizedBox(height: MyUtility(context).height * 0.05),
-            /*CustomButton(
-              text: 'Rookie',
-              isSelected: selectedIndex == 0,
-              onPressed: (bool isSelected) {
-                setState(() {
-                  selectedIndex = isSelected ? 0 : -1;
-                });
-                if (isSelected) {
-                  _storeActivityLevel('Rookie');
-                }
-              },
-            ),*/
-            CustomButton(
-              text: 'Beginner',
-              isSelected: selectedIndex == 1,
-              onPressed: (bool isSelected) {
-                setState(() {
-                  selectedIndex = isSelected ? 1 : -1;
-                });
-                if (isSelected) {
-                  _storeActivityLevel('Beginner');
-                }
-              },
-            ),
-            CustomButton(
-              text: 'Intermediate',
-              isSelected: selectedIndex == 2,
-              onPressed: (bool isSelected) {
-                setState(() {
-                  selectedIndex = isSelected ? 2 : -1;
-                });
-                if (isSelected) {
-                  _storeActivityLevel('Intermediate');
-                }
-              },
-            ),
-            CustomButton(
-              text: 'Advanced',
-              isSelected: selectedIndex == 3,
-              onPressed: (bool isSelected) {
-                setState(() {
-                  selectedIndex = isSelected ? 3 : -1;
-                });
-                if (isSelected) {
-                  _storeActivityLevel('Advanced');
-                }
-              },
-            ),
-            /*CustomButton(
-              text: 'Ultimate',
-              isSelected: selectedIndex == 4,
-              onPressed: (bool isSelected) {
-                setState(() {
-                  selectedIndex = isSelected ? 4 : -1;
-                });
-                if (isSelected) {
-                  _storeActivityLevel('Ultimate');
-                }
-              },
-            ),*/
-          ],
+          ),
         ),
       ),
     );

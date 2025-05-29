@@ -327,12 +327,6 @@ class _GetStartedState extends State<GetStarted>
                             child: InkWell(
                               onTap: () {
                                 // Action for Start Your Journey button
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const YourWorkouts(),
-                                  ),
-                                );
                               },
                               borderRadius: BorderRadius.circular(28),
                               splashColor: Colors.white.withOpacity(0.1),
@@ -502,32 +496,7 @@ class _GetStartedState extends State<GetStarted>
                 ),
               ),
               TextButton(
-                onPressed: () {
-                  if (title == 'Your Workouts') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const YourWorkouts()),
-                    );
-                  } else if (title == 'Motivation') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const Motivational()),
-                    );
-                  } else if (title == 'Resources') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AdditionalResources()),
-                    );
-                  } else if (title == 'Rachelle') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Rachelle()),
-                    );
-                  }
-                },
+                onPressed: () {},
                 style: TextButton.styleFrom(
                   minimumSize: Size.zero,
                   padding:

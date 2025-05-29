@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/enhanced_workout_viewer/enhanced_workout_viewer.dart';
 import 'package:move_as_one/userSide/workouts/workoutItems/MyWorkouts/myWorkouts.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class YourWorkouts extends StatefulWidget {
   const YourWorkouts({super.key});
@@ -16,7 +14,6 @@ class _YourWorkoutsState extends State<YourWorkouts>
     with SingleTickerProviderStateMixin {
   List<Map<String, dynamic>> workoutDocuments = [];
   bool isLoading = true;
-  bool isAuthChecked = false;
   late AnimationController _animationController;
 
   // Modern wellness color scheme
@@ -33,121 +30,8 @@ class _YourWorkoutsState extends State<YourWorkouts>
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
-
-    // Check authentication first
-    _checkAuthAndActivityLevel();
-
-    // Set a timeout to ensure loading doesn't hang
-    Future.delayed(Duration(seconds: 5), () {
-      if (mounted && isLoading) {
-        print("YourWorkouts: Loading timed out, using fallback data");
-        setState(() {
-          isLoading = false;
-          // Provide some fallback data
-          workoutDocuments = _getFallbackWorkouts();
-        });
-      }
-    });
-
+    fetchWorkouts();
     _animationController.forward();
-  }
-
-  // Check if user is authenticated and has activity level set
-  Future<void> _checkAuthAndActivityLevel() async {
-    print("YourWorkouts: Checking auth status and activity level");
-
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-
-      if (user == null) {
-        print("YourWorkouts: No authenticated user found");
-        setState(() {
-          isAuthChecked = true;
-          isLoading = false;
-          workoutDocuments = _getFallbackWorkouts();
-        });
-        return;
-      }
-
-      // Check if user has activity level
-      final userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-
-      if (!userDoc.exists) {
-        print("YourWorkouts: User document doesn't exist");
-        await _createUserWithDefaultActivityLevel(user.uid);
-      } else {
-        final userData = userDoc.data() as Map<String, dynamic>;
-        if (userData['activityLevel'] == null ||
-            userData['activityLevel'] == '') {
-          print("YourWorkouts: Setting default activity level");
-          await _updateUserActivityLevel(user.uid);
-        }
-      }
-
-      setState(() {
-        isAuthChecked = true;
-      });
-
-      // Now fetch workouts
-      fetchWorkouts();
-    } catch (e) {
-      print("YourWorkouts: Error checking auth status: $e");
-      setState(() {
-        isAuthChecked = true;
-        isLoading = false;
-        workoutDocuments = _getFallbackWorkouts();
-      });
-    }
-  }
-
-  // Create a user document with default activity level
-  Future<void> _createUserWithDefaultActivityLevel(String userId) async {
-    try {
-      await FirebaseFirestore.instance.collection('users').doc(userId).set({
-        'activityLevel': 'Intermediate',
-        'createdAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
-      print("YourWorkouts: Created user with default activity level");
-    } catch (e) {
-      print("YourWorkouts: Error creating user document: $e");
-    }
-  }
-
-  // Update user's activity level to default
-  Future<void> _updateUserActivityLevel(String userId) async {
-    try {
-      await FirebaseFirestore.instance.collection('users').doc(userId).update({
-        'activityLevel': 'Intermediate',
-      });
-      print("YourWorkouts: Updated user's activity level");
-    } catch (e) {
-      print("YourWorkouts: Error updating activity level: $e");
-    }
-  }
-
-  // Fallback workouts to show when Firebase fails
-  List<Map<String, dynamic>> _getFallbackWorkouts() {
-    return [
-      {
-        'docId': 'sample1',
-        'displayImage':
-            'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b',
-        'selectedWeekdays': 'Monday, Wednesday, Friday',
-        'bodyArea': 'Upper Body',
-        'name': 'Strength Training',
-      },
-      {
-        'docId': 'sample2',
-        'displayImage':
-            'https://images.unsplash.com/photo-1574680096145-d05b474e2155',
-        'selectedWeekdays': 'Tuesday, Thursday',
-        'bodyArea': 'Lower Body',
-        'name': 'Leg Workout',
-      },
-    ];
   }
 
   @override
@@ -157,57 +41,106 @@ class _YourWorkoutsState extends State<YourWorkouts>
   }
 
   Future<void> fetchWorkouts() async {
-    if (!mounted) return;
-
     try {
-      print("YourWorkouts: Fetching workouts");
       setState(() {
         isLoading = true;
       });
 
-      // Use Firebase Auth to get the current user
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        print("YourWorkouts: No authenticated user found during fetch");
-        setState(() {
-          workoutDocuments = _getFallbackWorkouts();
-          isLoading = false;
-        });
-        return;
-      }
+      // Add debug print to identify where the issue might be
+      print("YourWorkout: Starting to fetch workouts");
 
-      // Check if user document exists with activity level
-      final userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
+      // Add a timeout to prevent infinite loading
+      bool timeoutTriggered = false;
+      Future.delayed(Duration(seconds: 5), () {
+        if (mounted && isLoading) {
+          print("YourWorkout: Timeout triggered - showing fallback data");
+          timeoutTriggered = true;
+          setState(() {
+            isLoading = false;
+            // Provide fallback workout data
+            workoutDocuments = [
+              {
+                'docId': 'fallback1',
+                'displayImage':
+                    'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b',
+                'selectedWeekdays': 'Monday, Wednesday, Friday',
+                'bodyArea': 'Full Body',
+                'name': 'Beginner Workout',
+              },
+              {
+                'docId': 'fallback2',
+                'displayImage':
+                    'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b',
+                'selectedWeekdays': 'Tuesday, Thursday',
+                'bodyArea': 'Core Focus',
+                'name': 'Strength Training',
+              },
+            ];
+          });
+        }
+      });
 
-      if (!userDoc.exists || userDoc.data()?['activityLevel'] == null) {
-        print("YourWorkouts: User has no activity level, using fallback data");
-        setState(() {
-          workoutDocuments = _getFallbackWorkouts();
-          isLoading = false;
-        });
-        return;
-      }
-
-      // Get workouts based on activity level
       final workouts = await EnhancedWorkoutViewer.getWorkoutsByActivityLevel();
-      print("YourWorkouts: Got ${workouts.length} workouts");
+      print("YourWorkout: Received ${workouts.length} workouts from service");
+
+      // Don't update if timeout already happened
+      if (timeoutTriggered) return;
 
       if (mounted) {
-        setState(() {
-          workoutDocuments = workouts.isNotEmpty
-              ? List<Map<String, dynamic>>.from(workouts)
-              : _getFallbackWorkouts();
-          isLoading = false;
-        });
+        if (workouts.isEmpty) {
+          print("YourWorkout: No workouts returned, using fallback data");
+          setState(() {
+            workoutDocuments = [
+              {
+                'docId': 'fallback1',
+                'displayImage':
+                    'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b',
+                'selectedWeekdays': 'Monday, Wednesday, Friday',
+                'bodyArea': 'Full Body',
+                'name': 'Beginner Workout',
+              },
+              {
+                'docId': 'fallback2',
+                'displayImage':
+                    'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b',
+                'selectedWeekdays': 'Tuesday, Thursday',
+                'bodyArea': 'Core Focus',
+                'name': 'Strength Training',
+              },
+            ];
+            isLoading = false;
+          });
+        } else {
+          setState(() {
+            workoutDocuments = List<Map<String, dynamic>>.from(workouts);
+            isLoading = false;
+          });
+        }
       }
     } catch (e) {
-      print("YourWorkouts: Error fetching workouts: $e");
+      print("YourWorkout: Error fetching workouts: $e");
+
       if (mounted) {
         setState(() {
-          workoutDocuments = _getFallbackWorkouts();
+          // Provide fallback workout data on error
+          workoutDocuments = [
+            {
+              'docId': 'fallback1',
+              'displayImage':
+                  'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b',
+              'selectedWeekdays': 'Monday, Wednesday, Friday',
+              'bodyArea': 'Full Body',
+              'name': 'Beginner Workout',
+            },
+            {
+              'docId': 'fallback2',
+              'displayImage':
+                  'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b',
+              'selectedWeekdays': 'Tuesday, Thursday',
+              'bodyArea': 'Core Focus',
+              'name': 'Strength Training',
+            },
+          ];
           isLoading = false;
         });
       }
@@ -416,29 +349,64 @@ class _YourWorkoutsState extends State<YourWorkouts>
             child: InkWell(
               onTap: () {
                 // Navigate to workout detail
+                _navigateToWorkoutDetail(workoutId, name);
               },
               child: Stack(
                 children: [
                   // Background image with overlay
                   Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(imageUrl),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            Colors.black.withOpacity(0.7),
-                          ],
-                          stops: [0.4, 1.0],
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        // Image with fallback
+                        imageUrl.isNotEmpty
+                            ? Image.network(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  print(
+                                      "YourWorkout: Error loading image: $error");
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          primaryColor.withOpacity(0.7),
+                                          secondaryColor.withOpacity(0.5),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
+                            : Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      primaryColor.withOpacity(0.7),
+                                      secondaryColor.withOpacity(0.5),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                        // Gradient overlay
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                Colors.black.withOpacity(0.7),
+                              ],
+                              stops: [0.4, 1.0],
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
 
@@ -518,65 +486,54 @@ class _YourWorkoutsState extends State<YourWorkouts>
                         Row(
                           children: [
                             Expanded(
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () {
-                                    // Start workout action
-                                    _startWorkout(workoutId, name);
-                                  },
-                                  borderRadius: BorderRadius.circular(30),
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(vertical: 12),
-                                    decoration: BoxDecoration(
-                                      color: energyColor,
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.play_arrow_rounded,
+                              child: GestureDetector(
+                                onTap: () {
+                                  _startWorkout(workoutId, name);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                  decoration: BoxDecoration(
+                                    color: energyColor,
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.play_arrow_rounded,
+                                        color: primaryColor,
+                                        size: 20,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        'Begin Practice',
+                                        style: TextStyle(
                                           color: primaryColor,
-                                          size: 20,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                          letterSpacing: 0.5,
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
-                                          'Begin Practice',
-                                          style: TextStyle(
-                                            color: primaryColor,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w700,
-                                            letterSpacing: 0.5,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ),
                             SizedBox(width: 12),
-                            Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () {
-                                  // Bookmark action
-                                  _showSnackBar('Workout saved to favorites');
-                                },
-                                borderRadius: BorderRadius.circular(30),
-                                child: Container(
-                                  padding: EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                  child: Icon(
-                                    Icons.bookmark_border_rounded,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
+                            GestureDetector(
+                              onTap: () {
+                                _saveWorkout(workoutId);
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: Icon(
+                                  Icons.bookmark_border_rounded,
+                                  color: Colors.white,
+                                  size: 20,
                                 ),
                               ),
                             ),
@@ -594,80 +551,60 @@ class _YourWorkoutsState extends State<YourWorkouts>
     );
   }
 
-  void _startWorkout(String workoutId, String name) {
-    if (workoutId.isEmpty) {
-      _showSnackBar('Unable to start workout. Try again later.');
-      return;
+  // Navigation functions
+  void _navigateToWorkoutDetail(String workoutId, String name) {
+    print("YourWorkout: Navigating to workout detail: $workoutId");
+    try {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyWorkouts(),
+        ),
+      );
+    } catch (e) {
+      print("YourWorkout: Navigation error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Could not open workout details. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
-
-    // Show loading dialog
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.white,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  'Loading your workout...',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: primaryColor,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-
-    // Simulate loading (replace with actual workout loading logic)
-    Future.delayed(Duration(milliseconds: 800), () {
-      Navigator.pop(context); // Close the loading dialog
-
-      // Navigate to the workout
-      try {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => EnhancedWorkoutViewer(
-              workoutId: workoutId,
-              userType: 'user',
-            ),
-          ),
-        );
-      } catch (e) {
-        print("YourWorkouts: Error navigating to workout: $e");
-        _showSnackBar('Error starting workout: $e');
-      }
-    });
   }
 
-  void _showSnackBar(String message) {
+  void _startWorkout(String workoutId, String name) {
+    print("YourWorkout: Starting workout: $workoutId");
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Starting workout: $name'),
+          backgroundColor: secondaryColor,
+        ),
+      );
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyWorkouts(),
+        ),
+      );
+    } catch (e) {
+      print("YourWorkout: Start workout error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Could not start workout. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void _saveWorkout(String workoutId) {
+    print("YourWorkout: Saving workout: $workoutId");
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: primaryColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        margin: EdgeInsets.only(
-          bottom: 16,
-          left: 16,
-          right: 16,
-        ),
-        duration: Duration(seconds: 2),
+        content: Text('Workout saved to favorites'),
+        backgroundColor: secondaryColor,
       ),
     );
   }
