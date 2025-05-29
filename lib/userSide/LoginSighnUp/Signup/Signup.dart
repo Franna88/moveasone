@@ -8,6 +8,7 @@ import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/Custom
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/PasswordTextField.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/PrivacyPolicyCheckbox.dart';
 import 'package:move_as_one/myutility.dart';
+import 'package:move_as_one/commonUi/ModernGlassButton.dart';
 
 class Signup extends StatefulWidget {
   final String goal;
@@ -201,40 +202,14 @@ class _SignupState extends State<Signup> {
                                   SizedBox(
                                     width: MyUtility(context).width * 0.45,
                                     height: MyUtility(context).height * 0.06,
-                                    child: ElevatedButton(
-                                      onPressed: void_signup,
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            WidgetStateProperty.all<Color>(
-                                                Color(0xFF006261)),
-                                        shape: WidgetStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                          ),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 10.0,
-                                                horizontal: 10.0),
-                                            child: Text(
-                                              'Sign Up',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14.0,
-                                              ),
-                                            ),
-                                          ),
-                                          Icon(Icons.keyboard_arrow_right,
-                                              color: Colors.white),
-                                        ],
-                                      ),
+                                    child: ModernGlassButton(
+                                      buttonText: 'Sign Up',
+                                      onTap: void_signup,
+                                      buttonColor: Color(0xFF006261),
+                                      borderRadius: 30,
+                                      height: MyUtility(context).height * 0.06,
+                                      backgroundOpacity: 0.4,
+                                      icon: Icons.keyboard_arrow_right,
                                     ),
                                   )
                                 ],

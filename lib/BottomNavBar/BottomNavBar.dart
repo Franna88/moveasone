@@ -105,14 +105,13 @@ class _BottomNavBarState extends State<BottomNavBar>
       width: 50,
       height: 50,
       decoration: BoxDecoration(
-        color:
-            isSelected ? secondaryColor.withOpacity(0.2) : Colors.transparent,
+        color: isSelected ? Colors.white.withOpacity(0.3) : Colors.transparent,
         borderRadius: BorderRadius.circular(15),
         boxShadow: isSelected
             ? [
                 BoxShadow(
-                  color: accentColor.withOpacity(0.2),
-                  blurRadius: 10,
+                  color: Colors.white.withOpacity(0.4),
+                  blurRadius: 15,
                   spreadRadius: 1,
                 )
               ]
@@ -122,7 +121,8 @@ class _BottomNavBarState extends State<BottomNavBar>
         child: _isSvg(assetPath)
             ? SvgPicture.asset(
                 assetPath,
-                color: isSelected ? accentColor : Colors.white.withOpacity(0.6),
+                color:
+                    isSelected ? Colors.white : Colors.white.withOpacity(0.7),
                 width: isSelected ? 28 : 24,
                 height: isSelected ? 28 : 24,
               )
@@ -153,119 +153,137 @@ class _BottomNavBarState extends State<BottomNavBar>
               _selectedIndex], // Display the selected page with animation
         ),
         extendBody: true,
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 20,
-                offset: Offset(0, -5),
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+          child: Container(
+            height: 80,
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 20,
+                  offset: Offset(0, 4),
+                ),
+              ],
             ),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              child: BottomNavigationBar(
-                backgroundColor: primaryColor.withOpacity(0.95),
-                elevation: 0,
-                type: BottomNavigationBarType.fixed,
-                showSelectedLabels: false,
-                showUnselectedLabels: false,
-                items: <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: _buildIcon('images/Exercise.svg', 0),
-                    label: '',
-                    tooltip: 'Workouts',
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.3),
+                      width: 1.5,
+                    ),
                   ),
-                  BottomNavigationBarItem(
-                    icon: _buildIcon('images/Video.svg', 1),
-                    label: '',
-                    tooltip: 'Videos',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Container(
-                      height: 60,
-                      width: 60,
-                      child: Center(
-                        child: Container(
-                          height: 50,
-                          width: 50,
+                  child: BottomNavigationBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    type: BottomNavigationBarType.fixed,
+                    showSelectedLabels: false,
+                    showUnselectedLabels: false,
+                    items: <BottomNavigationBarItem>[
+                      BottomNavigationBarItem(
+                        icon: _buildIcon('images/Exercise.svg', 0),
+                        label: '',
+                        tooltip: 'Workouts',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: _buildIcon('images/Video.svg', 1),
+                        label: '',
+                        tooltip: 'Videos',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Container(
+                          height: 60,
+                          width: 60,
+                          child: Center(
+                            child: Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.white.withOpacity(0.4),
+                                    accentColor.withOpacity(0.8)
+                                  ],
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.white.withOpacity(0.4),
+                                    blurRadius: 15,
+                                    spreadRadius: 2,
+                                  ),
+                                ],
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.6),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: SvgPicture.asset(
+                                'images/Plus-Circle.svg',
+                                color: Colors.white,
+                                width: 30,
+                                height: 30,
+                              ),
+                            ),
+                          ),
+                        ),
+                        label: '',
+                        tooltip: 'Add',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: _buildIcon('images/Search.svg', 3),
+                        label: '',
+                        tooltip: 'Community',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [secondaryColor, accentColor],
+                            border: Border.all(
+                              color: _selectedIndex == 4
+                                  ? Colors.white
+                                  : Colors.transparent,
+                              width: 2,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: accentColor.withOpacity(0.3),
-                                blurRadius: 12,
-                                spreadRadius: 2,
-                              ),
-                            ],
+                            boxShadow: _selectedIndex == 4
+                                ? [
+                                    BoxShadow(
+                                      color: Colors.white.withOpacity(0.4),
+                                      blurRadius: 15,
+                                      spreadRadius: 1,
+                                    )
+                                  ]
+                                : null,
                           ),
-                          child: SvgPicture.asset(
-                            'images/Plus-Circle.svg',
-                            color: Colors.white,
-                            width: 30,
-                            height: 30,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.grey,
+                            radius: _selectedIndex == 4 ? 20 : 18,
+                            backgroundImage: AssetImage('images/Avatar1.jpg'),
                           ),
                         ),
+                        label: '',
+                        tooltip: 'Profile',
                       ),
-                    ),
-                    label: '',
-                    tooltip: 'Add',
+                    ],
+                    currentIndex: _selectedIndex < 5
+                        ? _selectedIndex
+                        : 0, // Ensure the index is valid
+                    selectedItemColor: Colors.white, // Selected icon color
+                    unselectedItemColor:
+                        Colors.white.withOpacity(0.7), // Unselected icon color
+                    onTap:
+                        _onItemTapped, // Handle tapping on BottomNavigationBar items
                   ),
-                  BottomNavigationBarItem(
-                    icon: _buildIcon('images/Search.svg', 3),
-                    label: '',
-                    tooltip: 'Community',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: AnimatedContainer(
-                      duration: Duration(milliseconds: 300),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: _selectedIndex == 4
-                              ? accentColor
-                              : Colors.transparent,
-                          width: 2,
-                        ),
-                        boxShadow: _selectedIndex == 4
-                            ? [
-                                BoxShadow(
-                                  color: accentColor.withOpacity(0.3),
-                                  blurRadius: 10,
-                                  spreadRadius: 1,
-                                )
-                              ]
-                            : null,
-                      ),
-                      child: CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        radius: _selectedIndex == 4 ? 20 : 18,
-                        backgroundImage: AssetImage('images/Avatar1.jpg'),
-                      ),
-                    ),
-                    label: '',
-                    tooltip: 'Profile',
-                  ),
-                ],
-                currentIndex: _selectedIndex < 5
-                    ? _selectedIndex
-                    : 0, // Ensure the index is valid
-                selectedItemColor: accentColor, // Selected icon color
-                unselectedItemColor:
-                    Colors.white.withOpacity(0.6), // Unselected icon color
-                onTap:
-                    _onItemTapped, // Handle tapping on BottomNavigationBar items
+                ),
               ),
             ),
           ),

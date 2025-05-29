@@ -5,6 +5,7 @@ import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/CustomButton.d
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/PageIndicator.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/ProgressBar.dart';
 import 'package:move_as_one/myutility.dart';
+import 'package:move_as_one/commonUi/ModernGlassButton.dart';
 
 class PhysicalLevel extends StatefulWidget {
   final String goal;
@@ -164,6 +165,30 @@ class _PhysicalLevelState extends State<PhysicalLevel> {
                           }
                         },
                       ),*/
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 30),
+                        child: ModernGlassButton(
+                          buttonText: 'Continue',
+                          onTap: () {
+                            if (selectedIndex != -1) {
+                              _storeActivityLevel(selectedIndex == 0
+                                  ? 'Rookie'
+                                  : selectedIndex == 1
+                                      ? 'Beginner'
+                                      : selectedIndex == 2
+                                          ? 'Intermediate'
+                                          : selectedIndex == 3
+                                              ? 'Advanced'
+                                              : 'Ultimate');
+                            }
+                          },
+                          buttonColor: Color(0xFF006261),
+                          width: MyUtility(context).width * 0.9,
+                          borderRadius: 30,
+                          height: MyUtility(context).height * 0.06,
+                          backgroundOpacity: 0.3,
+                        ),
+                      ),
                     ],
                   ),
                 ),

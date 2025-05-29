@@ -4,6 +4,7 @@ import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/PageIndicator.dart';
 import 'package:move_as_one/userSide/InfoQuiz/Goal/GoalComponents/ProgressBar.dart';
 import 'package:move_as_one/myutility.dart';
+import 'package:move_as_one/commonUi/ModernGlassButton.dart';
 
 import 'package:move_as_one/userSide/InfoQuiz/HowTall/HowTall.dart'; // Import HowTall screen
 
@@ -175,54 +176,18 @@ class _AgeState extends State<Age> {
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: 30),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                    child: Container(
-                      width: MyUtility(context).width * 0.9,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.2),
-                          width: 1,
-                        ),
-                      ),
-                      child: SizedBox(
-                        width: MyUtility(context).width / 1.2,
-                        height: MyUtility(context).height * 0.06,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (selectedAge != -1) {
-                              _navigateToHowTall(selectedAge);
-                            }
-                          },
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.all<Color>(
-                                Color(0xFF006261)),
-                            shape:
-                                WidgetStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10.0, horizontal: 20.0),
-                            child: Text(
-                              'Continue',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16.0,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                child: ModernGlassButton(
+                  buttonText: 'Continue',
+                  onTap: () {
+                    if (selectedAge != -1) {
+                      _navigateToHowTall(selectedAge);
+                    }
+                  },
+                  buttonColor: Color(0xFF006261),
+                  width: MyUtility(context).width * 0.9,
+                  borderRadius: 30,
+                  height: MyUtility(context).height * 0.06,
+                  backgroundOpacity: 0.3,
                 ),
               ),
             ],

@@ -7,6 +7,7 @@ import 'package:move_as_one/userSide/LoginSighnUp/Login/LoginComponents/SvgIconB
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/CustomTextField.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/PasswordTextField.dart';
+import 'package:move_as_one/commonUi/ModernGlassButton.dart';
 
 class Signin extends StatefulWidget {
   const Signin({super.key});
@@ -205,37 +206,18 @@ class _SigninState extends State<Signin> {
                                   SizedBox(
                                     width: MyUtility(context).width * 0.45,
                                     height: MyUtility(context).height * 0.06,
-                                    child: ElevatedButton(
-                                      onPressed: () async {
+                                    child: ModernGlassButton(
+                                      buttonText: 'Sign in',
+                                      onTap: () async {
                                         await AuthService().Login(
                                             email: _emailController.text,
                                             password: _passwordController.text,
                                             context: context);
                                       },
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            WidgetStateProperty.all<Color>(
-                                                primaryColor),
-                                        shape: WidgetStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                          ),
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 10.0, horizontal: 20.0),
-                                        child: Text(
-                                          'Sign in',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
+                                      buttonColor: primaryColor,
+                                      borderRadius: 30,
+                                      height: MyUtility(context).height * 0.06,
+                                      backgroundOpacity: 0.4,
                                     ),
                                   ),
                                 ],

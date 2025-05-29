@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 
 import 'package:move_as_one/admin/commonUi/commonButtons.dart';
+import 'package:move_as_one/commonUi/ModernGlassButton.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Login/Signin.dart';
@@ -207,28 +208,21 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       children: [
                         // Get Started button with frosted glass effect
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                            child: CommonButtons(
-                              buttonText: 'Get Started',
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const Signin()),
-                                );
-                              },
-                              buttonColor:
-                                  colors.paleTurquoise.withOpacity(0.85),
-                              width: MyUtility(context).width * 0.7,
-                              height: 56,
-                              borderRadius: 30,
-                              elevated: true,
-                              icon: Icons.arrow_forward_rounded,
-                            ),
-                          ),
+                        ModernGlassButton(
+                          buttonText: 'Get Started',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Signin()),
+                            );
+                          },
+                          buttonColor: colors.paleTurquoise,
+                          width: MyUtility(context).width * 0.8,
+                          icon: Icons.arrow_forward_rounded,
+                          elevated: true,
+                          borderRadius: 30,
+                          backgroundOpacity: 0.3,
                         ),
                       ],
                     ),
