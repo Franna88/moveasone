@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/Const/conts.dart' as consts;
+import 'package:move_as_one/userSide/userProfile/userProfileItems/userProfileLocked/userProfileLocked.dart';
 
 class PendingRequests extends StatefulWidget {
   final String picture;
@@ -206,14 +207,21 @@ class _PendingRequestsState extends State<PendingRequests> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ClipOval(
-            child: widget.picture.isNotEmpty
+            child: widget.picture.isNotEmpty &&
+                    (widget.picture.startsWith('http://') ||
+                        widget.picture.startsWith('https://'))
                 ? Image.network(
                     widget.picture,
                     width: 50,
                     height: 50,
                     fit: BoxFit.cover,
                   )
-                : Icon(Icons.person, color: Colors.grey, size: 50),
+                : Image.asset(
+                    'images/Avatar1.jpg',
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
           ),
           SizedBox(width: 12),
           Expanded(
@@ -230,6 +238,30 @@ class _PendingRequestsState extends State<PendingRequests> {
             ),
           ),
           if (friendRequestStatus == 'received') ...[
+            SizedBox(width: 8),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserProfileLocked(
+                      userId: widget.friendId,
+                      name: widget.name,
+                      profilePic: widget.picture,
+                      bio: '', // You can fetch and pass bio if needed
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFF94D8E0),
+                  shape: BoxShape.circle,
+                ),
+                padding: EdgeInsets.all(8.0),
+                child: Icon(Icons.person, color: Colors.white),
+              ),
+            ),
             SizedBox(width: 8),
             GestureDetector(
               onTap: _acceptFriendRequest,

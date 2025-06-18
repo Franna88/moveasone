@@ -153,39 +153,6 @@ class _YourWorkoutsState extends State<YourWorkouts>
       height: MyUtility(context).height * 0.42,
       child: Column(
         children: [
-          // Section header
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      height: 24,
-                      width: 4,
-                      decoration: BoxDecoration(
-                        color: secondaryColor,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                    SizedBox(width: 12),
-                    Text(
-                      'Your Journey',
-                      style: TextStyle(
-                        color: primaryColor,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ],
-                ),
-                _buildViewAllButton(),
-              ],
-            ),
-          ),
-
           // Workout cards section
           Expanded(
             child: isLoading

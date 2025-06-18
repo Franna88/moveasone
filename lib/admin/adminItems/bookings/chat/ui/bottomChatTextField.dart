@@ -44,7 +44,12 @@ class _BottomChatTextFieldState extends State<BottomChatTextField> {
       // Fetch the current user's document
       DocumentSnapshot currentUserDoc =
           await _firestore.collection('users').doc(currentUserId).get();
-      List friendsList = currentUserDoc['friendsList'];
+      List friendsList = [];
+      if (currentUserDoc.data() != null &&
+          currentUserDoc.data() is Map &&
+          (currentUserDoc.data() as Map).containsKey('friendsList')) {
+        friendsList = currentUserDoc['friendsList'] ?? [];
+      }
 
       // Find or create the friend entry for the receiver
       var friendEntry = friendsList.firstWhere(
@@ -55,18 +60,22 @@ class _BottomChatTextFieldState extends State<BottomChatTextField> {
       if (friendEntry == null) {
         friendEntry = {
           'id': receiverId,
-          'status': 'friend', // Set the status to 'friend' or any other status
+          'status': 'friend',
           'messages': [],
         };
         friendsList.add(friendEntry);
-      }
-
-      if (friendEntry['messages'] == null) {
-        friendEntry['messages'] = [];
+      } else {
+        // Ensure status is 'friend'
+        friendEntry['status'] = 'friend';
+        // Ensure messages array exists
+        if (friendEntry['messages'] == null ||
+            friendEntry['messages'] is! List) {
+          friendEntry['messages'] = [];
+        }
       }
 
       // Add the message to the friend's messages
-      friendEntry['messages'].add({
+      (friendEntry['messages'] as List).add({
         'senderId': currentUserId,
         'receiverId': receiverId,
         'message': message,
@@ -82,7 +91,12 @@ class _BottomChatTextFieldState extends State<BottomChatTextField> {
       // Fetch the receiver user's document
       DocumentSnapshot receiverUserDoc =
           await _firestore.collection('users').doc(receiverId).get();
-      List receiverFriendsList = receiverUserDoc['friendsList'];
+      List receiverFriendsList = [];
+      if (receiverUserDoc.data() != null &&
+          receiverUserDoc.data() is Map &&
+          (receiverUserDoc.data() as Map).containsKey('friendsList')) {
+        receiverFriendsList = receiverUserDoc['friendsList'] ?? [];
+      }
 
       // Find or create the friend entry for the current user
       var receiverFriendEntry = receiverFriendsList.firstWhere(
@@ -93,18 +107,22 @@ class _BottomChatTextFieldState extends State<BottomChatTextField> {
       if (receiverFriendEntry == null) {
         receiverFriendEntry = {
           'id': currentUserId,
-          'status': 'friend', // Set the status to 'friend' or any other status
+          'status': 'friend',
           'messages': [],
         };
         receiverFriendsList.add(receiverFriendEntry);
-      }
-
-      if (receiverFriendEntry['messages'] == null) {
-        receiverFriendEntry['messages'] = [];
+      } else {
+        // Ensure status is 'friend'
+        receiverFriendEntry['status'] = 'friend';
+        // Ensure messages array exists
+        if (receiverFriendEntry['messages'] == null ||
+            receiverFriendEntry['messages'] is! List) {
+          receiverFriendEntry['messages'] = [];
+        }
       }
 
       // Add the message to the receiver's friend's messages
-      receiverFriendEntry['messages'].add({
+      (receiverFriendEntry['messages'] as List).add({
         'senderId': currentUserId,
         'receiverId': receiverId,
         'message': message,

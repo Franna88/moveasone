@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
-import 'package:move_as_one/admin/commonUi/commonButtons.dart';
 import 'package:move_as_one/commonUi/ModernGlassButton.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Login/Signin.dart';
+import 'package:move_as_one/Services/debug_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,7 +18,15 @@ class _HomePageState extends State<HomePage> {
   final UiColors colors = UiColors();
 
   @override
+  void initState() {
+    super.initState();
+    DebugService().logWidgetLifecycle('HomePage', 'initState');
+    DebugService().logUserAction('view_home_page', screen: 'HomePage');
+  }
+
+  @override
   Widget build(BuildContext context) {
+    DebugService().logWidgetLifecycle('HomePage', 'build');
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -44,69 +52,14 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     height: MyUtility(context).height * 0.06,
                   ),
-                  // Logo area with gentle shadow
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 24),
-                        decoration: BoxDecoration(
-                          color: colors.bgLight.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.2),
-                            width: 1,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: colors.cornflowerBlue.withOpacity(0.1),
-                              blurRadius: 10,
-                              spreadRadius: 1,
-                            ),
-                          ],
-                        ),
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'Move as ',
-                                style: TextStyle(
-                                  fontSize: 36,
-                                  fontFamily: 'belight',
-                                  fontWeight: FontWeight.bold,
-                                  color: colors.cornflowerBlue,
-                                  letterSpacing: 1.2,
-                                  shadows: [
-                                    Shadow(
-                                      offset: Offset(1.0, 1.0),
-                                      blurRadius: 3.0,
-                                      color: Colors.black.withOpacity(0.5),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              TextSpan(
-                                text: 'One',
-                                style: TextStyle(
-                                  fontSize: 36,
-                                  fontFamily: 'belight',
-                                  fontWeight: FontWeight.bold,
-                                  color: colors.toffee,
-                                  letterSpacing: 1.2,
-                                  shadows: [
-                                    Shadow(
-                                      offset: Offset(1.0, 1.0),
-                                      blurRadius: 3.0,
-                                      color: Colors.black.withOpacity(0.5),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 0.0, bottom: 16.0),
+                    child: Opacity(
+                      opacity: 0.25,
+                      child: Image.asset(
+                        'images/MAO_logo_new.jpeg',
+                        height: 220, // Increased size
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
@@ -136,7 +89,7 @@ class _HomePageState extends State<HomePage> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      'Unlock your',
+                                      'Reclaim your',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 34,
@@ -211,6 +164,9 @@ class _HomePageState extends State<HomePage> {
                         ModernGlassButton(
                           buttonText: 'Get Started',
                           onTap: () {
+                            DebugService().logUserAction('tap_get_started',
+                                screen: 'HomePage');
+                            DebugService().logNavigation('HomePage', 'Signin');
                             Navigator.push(
                               context,
                               MaterialPageRoute(

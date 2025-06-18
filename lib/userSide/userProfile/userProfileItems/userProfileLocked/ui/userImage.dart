@@ -6,10 +6,14 @@ class UserImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isNetwork = userImage.isNotEmpty &&
+        (userImage.startsWith('http://') || userImage.startsWith('https://'));
     return CircleAvatar(
       backgroundColor: Colors.grey,
       radius: 33,
-      backgroundImage: NetworkImage(userImage),
+      backgroundImage: isNetwork
+          ? NetworkImage(userImage)
+          : AssetImage('images/Avatar1.jpg') as ImageProvider,
     );
   }
 }

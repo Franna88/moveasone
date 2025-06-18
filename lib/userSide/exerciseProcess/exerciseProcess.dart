@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/audioScreen.dart';
 import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/doneScreen.dart';
-import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/enhancedRestScreen.dart';
 import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/enhancedVideoScreen.dart';
+import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/enhancedRestScreen.dart';
+import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/phaseTransitionScreen.dart';
+import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/setsAndRepsTracker.dart';
+import 'package:move_as_one/userSide/exerciseProcess/widgets/workoutProgressIndicator.dart';
 
 class ExerciseProcess extends StatefulWidget {
   final Map entireExercise;
@@ -17,17 +20,150 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
   List exerciseBuildList = [];
   late int exerciseIndex = 0;
   bool isLoading = true;
+  bool showingPhaseTransition = false;
+
+  // Phase tracking
+  int totalWarmups = 0;
+  int totalWorkouts = 0;
+  int totalCooldowns = 0;
+  String currentPhase = '';
+  int currentPhaseIndex = 0;
+  int totalExercisesInCurrentPhase = 0;
+
+  // Sets and Reps tracking
+  Map<String, dynamic>? currentExerciseData;
+  int currentSetIndex = 0;
+  int totalSetsForCurrentExercise = 1;
+  bool isInRestBetweenSets = false;
 
 //change index
   changePageIndex() {
+    // Check if we need to show a phase transition
+    if (_shouldShowPhaseTransition()) {
+      _showPhaseTransition();
+    } else {
+      setState(() {
+        exerciseIndex++;
+        _updateCurrentPhaseInfo();
+      });
+    }
+  }
+
+  bool _shouldShowPhaseTransition() {
+    if (exerciseIndex >= exerciseBuildList.length - 1) return false;
+
+    String currentType = exerciseBuildList[exerciseIndex]['type'];
+    String nextType = exerciseBuildList[exerciseIndex + 1]['type'];
+
+    // Show transition when moving between different phases (skip rest)
+    return currentType != nextType && nextType != 'rest';
+  }
+
+  void _showPhaseTransition() {
+    if (exerciseIndex >= exerciseBuildList.length - 1) return;
+
+    String nextPhase = exerciseBuildList[exerciseIndex + 1]['type'];
+    String nextExerciseName =
+        exerciseBuildList[exerciseIndex + 1]['name'] ?? 'Next Exercise';
+
+    // Calculate remaining exercises in next phase
+    int remainingInPhase =
+        _getRemainingExercisesInPhase(nextPhase, exerciseIndex + 1);
+
     setState(() {
-      exerciseIndex++;
+      showingPhaseTransition = true;
     });
-    setState(() {});
+
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            PhaseTransitionScreen(
+          fromPhase: currentPhase,
+          toPhase: nextPhase,
+          nextExerciseName: nextExerciseName,
+          totalPhasesRemaining: remainingInPhase,
+          onContinue: () {
+            Navigator.pop(context);
+            setState(() {
+              showingPhaseTransition = false;
+              exerciseIndex++;
+              _updateCurrentPhaseInfo();
+            });
+          },
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        transitionDuration: const Duration(milliseconds: 300),
+      ),
+    );
+  }
+
+  int _getRemainingExercisesInPhase(String phase, int startIndex) {
+    int count = 0;
+    for (int i = startIndex; i < exerciseBuildList.length; i++) {
+      if (exerciseBuildList[i]['type'] == phase &&
+          exerciseBuildList[i]['type'] != 'rest') {
+        count++;
+      } else if (exerciseBuildList[i]['type'] != phase &&
+          exerciseBuildList[i]['type'] != 'rest') {
+        break;
+      }
+    }
+    return count;
+  }
+
+  void _updateCurrentPhaseInfo() {
+    if (exerciseIndex < exerciseBuildList.length) {
+      currentPhase = exerciseBuildList[exerciseIndex]['type'];
+
+      // Calculate current position in phase
+      currentPhaseIndex = 0;
+      totalExercisesInCurrentPhase = 0;
+
+      // Count exercises before current index in same phase
+      for (int i = 0; i < exerciseIndex; i++) {
+        if (exerciseBuildList[i]['type'] == currentPhase &&
+            exerciseBuildList[i]['type'] != 'rest') {
+          currentPhaseIndex++;
+        }
+      }
+
+      // Count total exercises in current phase
+      for (int i = 0; i < exerciseBuildList.length; i++) {
+        if (exerciseBuildList[i]['type'] == currentPhase &&
+            exerciseBuildList[i]['type'] != 'rest') {
+          totalExercisesInCurrentPhase++;
+        }
+      }
+    }
   }
 
 //breakDown Excercise list to get order
   orderList() async {
+    // Count totals first
+    if (widget.entireExercise['warmUps'] != null &&
+        widget.entireExercise['warmUps'] is List) {
+      totalWarmups = widget.entireExercise['warmUps'].length;
+    }
+
+    if (widget.entireExercise['workouts'] != null &&
+        widget.entireExercise['workouts'] is List) {
+      totalWorkouts = widget.entireExercise['workouts'].length;
+    } else if (widget.entireExercise['exercises'] != null &&
+        widget.entireExercise['exercises'] is List) {
+      totalWorkouts = widget.entireExercise['exercises'].length;
+    }
+
+    if (widget.entireExercise['coolDowns'] != null &&
+        widget.entireExercise['coolDowns'] is List) {
+      totalCooldowns = widget.entireExercise['coolDowns'].length;
+    } else if (widget.entireExercise['cooldowns'] != null &&
+        widget.entireExercise['cooldowns'] is List) {
+      totalCooldowns = widget.entireExercise['cooldowns'].length;
+    }
+
     // Process warm-ups if they exist
     if (widget.entireExercise['warmUps'] != null &&
         widget.entireExercise['warmUps'] is List &&
@@ -84,6 +220,9 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
       });
     }
 
+    // Initialize current phase info
+    _updateCurrentPhaseInfo();
+
     setState(() {
       isLoading = false;
     });
@@ -129,60 +268,90 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
         exerciseDuration = exerciseData['duration'];
       }
 
-      // Process each set of the exercise
-      for (var setIndex = 0; setIndex < setCount; setIndex++) {
-        var exerciseBuild = {
-          "type": groupType,
-          "mediaType": (exerciseData['videoUrl'] == null ||
-                  exerciseData['videoUrl'] == "")
-              ? "Audio"
-              : "Video",
-          "mediaTypeUrl": (exerciseData['videoUrl'] == null ||
-                  exerciseData['videoUrl'] == "")
-              ? exerciseData['audioUrl'] ?? ""
-              : exerciseData['videoUrl'] ?? "",
+      // Create a single exercise entry with complete sets/reps data
+      var exerciseBuild = {
+        "type": groupType,
+        "mediaType":
+            (exerciseData['videoUrl'] == null || exerciseData['videoUrl'] == "")
+                ? "Audio"
+                : "Video",
+        "mediaTypeUrl":
+            (exerciseData['videoUrl'] == null || exerciseData['videoUrl'] == "")
+                ? exerciseData['audioUrl'] ?? ""
+                : exerciseData['videoUrl'] ?? "",
+        "image": exerciseData['imageUrl'] ?? exerciseData['image'] ?? "",
+        "repsPerSet": int.tryParse(repsPerSet) ?? 1,
+        "totalSets": setCount,
+        "restBetweenSets": restTimeBetweenSets,
+        "isTimeBased": isTimeBased,
+        "duration": exerciseDuration,
+        "name": exerciseData['name'] ?? "Exercise",
+        "description": exerciseData['description'] ?? "",
+        "difficulty": exerciseData['difficulty'] ?? "Basic",
+        "equipment": exerciseData['equipment'] ?? "No Equipment",
+        "exerciseType":
+            "setsAndReps", // New field to indicate this uses our enhanced tracker
+        // Legacy compatibility fields
+        "repsTotal": repsPerSet,
+        "repCounter": 1,
+        "setTotal": setCount.toString(),
+      };
+
+      setState(() {
+        exerciseBuildList.add(exerciseBuild);
+      });
+
+      // Add rest between exercises (not between sets)
+      bool isLastExercise = (i == exerciseGroup.length - 1);
+      if (!isLastExercise) {
+        var restBuild = {
+          "type": "rest",
+          "mediaType": "Rest",
+          "mediaTypeUrl": "",
           "image": exerciseData['imageUrl'] ?? exerciseData['image'] ?? "",
-          "repsTotal": repsPerSet,
-          "repCounter": setIndex + 1,
-          "setTotal": setCount.toString(),
-          "isTimeBased": isTimeBased,
-          "duration": exerciseDuration,
-          "name": exerciseData['name'] ?? "Exercise",
-          "description": exerciseData['description'] ?? "",
-          "difficulty": exerciseData['difficulty'] ?? "Basic",
-          "equipment": exerciseData['equipment'] ?? "No Equipment",
+          "repsTotal": "1",
+          "repCounter": 1,
+          "name": "Rest",
+          "description": "Take a break before the next exercise",
+          'timer': restTimeBetweenSets,
         };
 
-        // Add rest after each set except the last one of the last exercise
-        bool isLastSet = (setIndex == setCount - 1);
-        bool isLastExercise = (i == exerciseGroup.length - 1);
-
-        if (!isLastSet || !isLastExercise) {
-          var restBuild = {
-            "type": "rest",
-            "mediaType": "Rest",
-            "mediaTypeUrl": "",
-            "image": exerciseData['imageUrl'] ?? exerciseData['image'] ?? "",
-            "repsTotal": "1",
-            "repCounter": 1,
-            "name": "Rest",
-            "description": isLastSet
-                ? "Take a break before the next exercise"
-                : "Rest between sets",
-            'timer': restTimeBetweenSets,
-          };
-
-          setState(() {
-            exerciseBuildList.add(exerciseBuild);
-            exerciseBuildList.add(restBuild);
-          });
-        } else {
-          setState(() {
-            exerciseBuildList.add(exerciseBuild);
-          });
-        }
+        setState(() {
+          exerciseBuildList.add(restBuild);
+        });
       }
     }
+  }
+
+  void _showExitConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Exit Workout?'),
+          content: const Text(
+            'Are you sure you want to exit? Your progress will not be saved.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context), // Close dialog
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close dialog
+                Navigator.popUntil(
+                    context, (route) => route.isFirst); // Exit to home
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text('Exit'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -212,56 +381,129 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
       }
 
       if (nextIndex < exerciseBuildList.length) {
-        nextExerciseName =
-            exerciseBuildList[nextIndex]['name'] ?? "Next Exercise";
+        nextExerciseName = (exerciseBuildList[nextIndex]['name'] as String?) ??
+            "Next Exercise";
       }
     }
 
     return Scaffold(
       body: Stack(
         children: [
-          // Video screen
+          // Enhanced Sets & Reps Exercise Screen (for exercises with multiple sets)
           Visibility(
-            visible: exerciseBuildList[exerciseIndex]['mediaType'] == "Video",
-            child: EnhancedVideoScreen(
-              changePageIndex: changePageIndex,
-              videoUrl: exerciseBuildList[exerciseIndex]['mediaTypeUrl'],
-              workoutType: exerciseBuildList[exerciseIndex]['type'],
-              reps: exerciseBuildList[exerciseIndex]['repsTotal'],
-              repsCounter: exerciseBuildList[exerciseIndex]['repCounter'],
-              title:
-                  "${exerciseBuildList[exerciseIndex]['name']} (Set ${exerciseBuildList[exerciseIndex]['repCounter']}/${exerciseBuildList[exerciseIndex]['setTotal'] ?? '1'})",
-              description: exerciseBuildList[exerciseIndex]['description'],
-              isTimeBased:
-                  exerciseBuildList[exerciseIndex]['isTimeBased'] ?? false,
-              duration: exerciseBuildList[exerciseIndex]['duration'] ?? 30,
+            visible: (exerciseBuildList[exerciseIndex]['exerciseType']
+                        as String?) ==
+                    "setsAndReps" &&
+                (exerciseBuildList[exerciseIndex]['type'] as String?) != 'rest',
+            child: SetsAndRepsTracker(
+              exerciseData: {
+                'name': (exerciseBuildList[exerciseIndex]['name'] as String?) ??
+                    "Exercise",
+                'setTotal':
+                    (exerciseBuildList[exerciseIndex]['totalSets'] as int?) ??
+                        1,
+                'repsTotal':
+                    (exerciseBuildList[exerciseIndex]['repsPerSet'] as int?) ??
+                        1,
+                'timer': (exerciseBuildList[exerciseIndex]['restBetweenSets']
+                        as int?) ??
+                    30,
+                'image':
+                    (exerciseBuildList[exerciseIndex]['image'] as String?) ??
+                        "",
+                'videoUrl': (exerciseBuildList[exerciseIndex]['mediaTypeUrl']
+                        as String?) ??
+                    "",
+                'isTimeBased': (exerciseBuildList[exerciseIndex]['isTimeBased']
+                        as bool?) ??
+                    false,
+                'duration':
+                    (exerciseBuildList[exerciseIndex]['duration'] as int?) ??
+                        30,
+              },
+              onExerciseComplete: () {
+                // When all sets are complete, move to next exercise
+                changePageIndex();
+              },
+              onStatusUpdate: (String status) {
+                // Update workout status - you can use this for feedback to user
+                print('Sets & Reps Status: $status');
+              },
             ),
           ),
 
-          // Audio screen
+          // Video screen (for single-set exercises or legacy format)
           Visibility(
-            visible: exerciseBuildList[exerciseIndex]['mediaType'] == "Audio",
+            visible: (exerciseBuildList[exerciseIndex]['mediaType']
+                        as String?) ==
+                    "Video" &&
+                (exerciseBuildList[exerciseIndex]['exerciseType'] as String?) !=
+                    "setsAndReps",
+            child: EnhancedVideoScreen(
+              changePageIndex: changePageIndex,
+              videoUrl: (exerciseBuildList[exerciseIndex]['mediaTypeUrl']
+                      as String?) ??
+                  "",
+              workoutType:
+                  (exerciseBuildList[exerciseIndex]['type'] as String?) ?? "",
+              reps:
+                  (exerciseBuildList[exerciseIndex]['repsTotal']?.toString()) ??
+                      "1",
+              repsCounter:
+                  (exerciseBuildList[exerciseIndex]['repCounter'] as int?) ?? 1,
+              title: (exerciseBuildList[exerciseIndex]['name'] as String?) ??
+                  "Exercise",
+              description: (exerciseBuildList[exerciseIndex]['description']
+                      as String?) ??
+                  "",
+              isTimeBased:
+                  (exerciseBuildList[exerciseIndex]['isTimeBased'] as bool?) ??
+                      false,
+              duration:
+                  (exerciseBuildList[exerciseIndex]['duration'] as int?) ?? 30,
+            ),
+          ),
+
+          // Audio screen (for single-set exercises or legacy format)
+          Visibility(
+            visible: (exerciseBuildList[exerciseIndex]['mediaType']
+                        as String?) ==
+                    "Audio" &&
+                (exerciseBuildList[exerciseIndex]['exerciseType'] as String?) !=
+                    "setsAndReps",
             child: AudioScreen(
               changePageIndex: changePageIndex,
-              audioUrl: exerciseBuildList[exerciseIndex]['mediaTypeUrl'],
-              imageUrl: exerciseBuildList[exerciseIndex]['image'],
-              workoutType: exerciseBuildList[exerciseIndex]['type'],
-              reps: exerciseBuildList[exerciseIndex]['repsTotal'],
-              repsCounter: exerciseBuildList[exerciseIndex]['repCounter'],
-              title:
-                  "${exerciseBuildList[exerciseIndex]['name']} (Set ${exerciseBuildList[exerciseIndex]['repCounter']}/${exerciseBuildList[exerciseIndex]['setTotal'] ?? '1'})",
-              description: exerciseBuildList[exerciseIndex]['description'],
+              audioUrl: (exerciseBuildList[exerciseIndex]['mediaTypeUrl']
+                      as String?) ??
+                  "",
+              imageUrl:
+                  (exerciseBuildList[exerciseIndex]['image'] as String?) ?? "",
+              workoutType:
+                  (exerciseBuildList[exerciseIndex]['type'] as String?) ?? "",
+              reps:
+                  (exerciseBuildList[exerciseIndex]['repsTotal']?.toString()) ??
+                      "1",
+              repsCounter:
+                  (exerciseBuildList[exerciseIndex]['repCounter'] as int?) ?? 1,
+              title: (exerciseBuildList[exerciseIndex]['name'] as String?) ??
+                  "Exercise",
+              description: (exerciseBuildList[exerciseIndex]['description']
+                      as String?) ??
+                  "",
             ),
           ),
 
           // Rest screen
           Visibility(
-            visible: exerciseBuildList[exerciseIndex]['mediaType'] == "Rest" &&
-                exerciseIndex != exerciseBuildList.length - 1,
+            visible:
+                (exerciseBuildList[exerciseIndex]['mediaType'] as String?) ==
+                        "Rest" &&
+                    exerciseIndex != exerciseBuildList.length - 1,
             child: EnhancedRestScreen(
               changePageIndex: changePageIndex,
-              imageUrl: exerciseBuildList[exerciseIndex]['image'],
-              time: exerciseBuildList[exerciseIndex]['timer'] ?? 0,
+              imageUrl:
+                  (exerciseBuildList[exerciseIndex]['image'] as String?) ?? "",
+              time: (exerciseBuildList[exerciseIndex]['timer'] as int?) ?? 0,
               nextExerciseName: nextExerciseName,
             ),
           ),
@@ -273,6 +515,61 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
               entireExercise: widget.entireExercise,
             ),
           ),
+
+          // Exit button (top-left corner)
+          Positioned(
+            top: 50,
+            left: 16,
+            child: SafeArea(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                  onPressed: () => _showExitConfirmation(context),
+                ),
+              ),
+            ),
+          ),
+
+          // Workout Progress Indicator (only show for non-setsAndReps exercises)
+          if (exerciseIndex < exerciseBuildList.length - 1 &&
+              (exerciseBuildList[exerciseIndex]['exerciseType'] as String?) !=
+                  "setsAndReps")
+            Positioned(
+              top: 60,
+              left: 16,
+              right: 16,
+              child: Column(
+                children: [
+                  WorkoutProgressIndicator(
+                    currentPhase: currentPhase,
+                    currentExerciseIndex: currentPhaseIndex,
+                    totalExercisesInPhase: totalExercisesInCurrentPhase,
+                    totalWarmups: totalWarmups,
+                    totalWorkouts: totalWorkouts,
+                    totalCooldowns: totalCooldowns,
+                  ),
+                  const SizedBox(height: 8),
+                  if (currentPhase != 'rest')
+                    WorkoutPhaseProgress(
+                      currentPhase: currentPhase,
+                      currentExerciseIndex: (exerciseBuildList[exerciseIndex]
+                                  ['type'] as String?) !=
+                              'rest'
+                          ? currentPhaseIndex
+                          : currentPhaseIndex - 1,
+                      totalExercisesInPhase: totalExercisesInCurrentPhase,
+                    ),
+                ],
+              ),
+            ),
         ],
       ),
     );

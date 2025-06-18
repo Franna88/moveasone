@@ -11,6 +11,7 @@ import 'package:move_as_one/userSide/userProfile/userProfileItems/userProfileLoc
 import 'package:move_as_one/userSide/userProfile/userProfileItems/userProfileLocked/ui/userNameTag.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/userProfileLocked/ui/userStatus.dart';
 import 'package:move_as_one/userSide/workoutPopups/popUpItems/hiFivePopUp.dart';
+import 'package:move_as_one/admin/adminItems/bookings/chat/myChat.dart';
 
 class UserProfileLocked extends StatefulWidget {
   final String profilePic;
@@ -194,6 +195,36 @@ class _UserProfileLockedState extends State<UserProfileLocked> {
             ),
             onTap: () {
               // Add logic here if needed
+            },
+          ),
+          ProfileInteractButton(
+            buttonChild: Text(
+              'Send message',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'BeVietnam',
+                fontSize: 16,
+                color: Colors.black,
+              ),
+            ),
+            onTap: () {
+              final currentUser = FirebaseAuth.instance.currentUser;
+              if (currentUser != null) {
+                final chatId = (currentUser.uid.compareTo(widget.userId) > 0)
+                    ? '${currentUser.uid}_${widget.userId}'
+                    : '${widget.userId}_${currentUser.uid}';
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyChat(
+                      userName: widget.name,
+                      userPic: widget.profilePic,
+                      userId: widget.userId,
+                      chatId: chatId,
+                    ),
+                  ),
+                );
+              }
             },
           ),
           SizedBox(height: heightDevice * 0.06),

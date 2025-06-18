@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:move_as_one/Services/UserState.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/IntroVideoScreen.dart';
+import 'package:move_as_one/Services/debug_service.dart';
 
 class AuthService {
   successProcess(context) {
@@ -35,9 +36,18 @@ class AuthService {
       required String age,
       required String activityLevel,
       int hiFive = 0}) async {
+    DebugService().startPerformanceTimer('firebase_signup');
+    DebugService()
+        .log('Attempting signup for email: $email', LogLevel.info, tag: 'AUTH');
+
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
+
+      DebugService().log(
+          'Firebase auth account created successfully', LogLevel.info,
+          tag: 'AUTH');
+      DebugService().logFirebaseOperation('createUser', success: true);
 
       var userAccountDetails = {
         "name": userName,
@@ -62,7 +72,15 @@ class AuthService {
           .collection("users")
           .doc(userCredential.user!.uid)
           .set(userAccountDetails)
-          .whenComplete(successProcess(context));
+          .whenComplete(() {
+        DebugService().log('User document created in Firestore', LogLevel.info,
+            tag: 'AUTH');
+        DebugService().logFirebaseOperation('create',
+            collection: 'users',
+            documentId: userCredential.user!.uid,
+            success: true);
+        successProcess(context);
+      });
 
       // Navigate to Longin after a successful sign-up
     } on FirebaseAuthException catch (e) {
@@ -74,6 +92,17 @@ class AuthService {
       } else {
         message = 'An error occurred. Please try again.';
       }
+
+      DebugService().logError('Signup failed', e, StackTrace.current,
+          tag: 'AUTH',
+          additionalData: {
+            'email': email,
+            'error_code': e.code,
+            'error_message': e.message,
+          });
+      DebugService()
+          .logFirebaseOperation('createUser', success: false, error: e.code);
+
       Fluttertoast.showToast(
           msg: message,
           toastLength: Toast.LENGTH_LONG,
@@ -83,6 +112,9 @@ class AuthService {
           textColor: Colors.white,
           fontSize: 16.0);
     } catch (e) {
+      DebugService().logError('Unexpected signup error', e, StackTrace.current,
+          tag: 'AUTH', additionalData: {'email': email});
+
       Fluttertoast.showToast(
           msg: 'An unexpected error occurred. Please try again.',
           toastLength: Toast.LENGTH_LONG,
@@ -91,6 +123,8 @@ class AuthService {
           backgroundColor: Colors.black,
           textColor: Colors.white,
           fontSize: 16.0);
+    } finally {
+      DebugService().endPerformanceTimer('firebase_signup');
     }
   }
 
@@ -99,9 +133,17 @@ class AuthService {
       {required String email,
       required String password,
       required BuildContext context}) async {
+    DebugService().startPerformanceTimer('firebase_login');
+    DebugService()
+        .log('Attempting login for email: $email', LogLevel.info, tag: 'AUTH');
+
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+
+      DebugService().log('Login successful for email: $email', LogLevel.info,
+          tag: 'AUTH');
+      DebugService().logFirebaseOperation('signIn', success: true);
 
       Fluttertoast.showToast(
           msg: 'Long-in successful!',
@@ -113,6 +155,7 @@ class AuthService {
           fontSize: 16.0);
 
       // Navigate to HomePage after a successful sign-in
+      DebugService().logNavigation('Signin', 'UserState');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (BuildContext context) => UserState()),
@@ -126,6 +169,17 @@ class AuthService {
       } else {
         message = 'An error occurred. Please try again.';
       }
+
+      DebugService().logError('Login failed', e, StackTrace.current,
+          tag: 'AUTH',
+          additionalData: {
+            'email': email,
+            'error_code': e.code,
+            'error_message': e.message,
+          });
+      DebugService()
+          .logFirebaseOperation('signIn', success: false, error: e.code);
+
       Fluttertoast.showToast(
           msg: message,
           toastLength: Toast.LENGTH_LONG,
@@ -135,6 +189,9 @@ class AuthService {
           textColor: Colors.white,
           fontSize: 16.0);
     } catch (e) {
+      DebugService().logError('Unexpected login error', e, StackTrace.current,
+          tag: 'AUTH', additionalData: {'email': email});
+
       Fluttertoast.showToast(
           msg: 'An unexpected error occurred. Please try again.',
           toastLength: Toast.LENGTH_LONG,
@@ -143,6 +200,8 @@ class AuthService {
           backgroundColor: Colors.black,
           textColor: Colors.white,
           fontSize: 16.0);
+    } finally {
+      DebugService().endPerformanceTimer('firebase_login');
     }
   }
 }

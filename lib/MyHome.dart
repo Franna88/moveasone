@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:move_as_one/BottomNavBar/BottomNavBar.dart';
 import 'package:move_as_one/Services/UserState.dart';
+import 'package:move_as_one/Services/debug_service.dart';
 
 class MyHome extends StatefulWidget {
   const MyHome({super.key});
@@ -20,22 +21,39 @@ class _MyHomeState extends State<MyHome> {
 
   // Handle logout
   Future<void> _handleLogout() async {
+    DebugService().startPerformanceTimer('logout_process_myhome');
+    DebugService()
+        .log('Starting logout from MyHome', LogLevel.info, tag: 'AUTH');
+
     try {
       await FirebaseAuth.instance.signOut();
+      DebugService().log(
+          'Firebase signOut successful from MyHome', LogLevel.info,
+          tag: 'AUTH');
+      DebugService().logNavigation('MyHome', 'UserState');
+
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const UserState()),
         (route) => false,
       );
-    } catch (e) {
+
+      DebugService().log('MyHome logout completed successfully', LogLevel.info,
+          tag: 'AUTH');
+    } catch (e, stackTrace) {
+      DebugService()
+          .logError('MyHome logout failed', e, stackTrace, tag: 'AUTH');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error logging out: $e')),
       );
+    } finally {
+      DebugService().endPerformanceTimer('logout_process_myhome');
     }
   }
 
   // Show logout confirmation
   void _showLogoutConfirmation() {
+    DebugService().logUserAction('show_logout_confirmation', screen: 'MyHome');
     showDialog(
       context: context,
       builder: (BuildContext context) {

@@ -8,6 +8,7 @@ import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/CustomTextField.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/PasswordTextField.dart';
 import 'package:move_as_one/commonUi/ModernGlassButton.dart';
+import 'package:move_as_one/Services/debug_service.dart';
 
 class Signin extends StatefulWidget {
   const Signin({super.key});
@@ -28,7 +29,15 @@ class _SigninState extends State<Signin> {
   final backgroundColor = const Color(0xFFFFF8F0); // Light Sand/Cream
 
   @override
+  void initState() {
+    super.initState();
+    DebugService().logWidgetLifecycle('Signin', 'initState');
+    DebugService().logUserAction('view_signin_page', screen: 'Signin');
+  }
+
+  @override
   Widget build(BuildContext context) {
+    DebugService().logWidgetLifecycle('Signin', 'build');
     return Material(
       child: SingleChildScrollView(
         child: Container(
@@ -83,7 +92,7 @@ class _SigninState extends State<Signin> {
                               ),
                             ),
                             Text(
-                              'champion!',
+                              'welcome back!',
                               style: TextStyle(
                                 fontSize: 44,
                                 fontFamily: 'belight',
@@ -140,6 +149,11 @@ class _SigninState extends State<Signin> {
                               alignment: Alignment.centerRight,
                               child: TextButton(
                                 onPressed: () {
+                                  DebugService().logUserAction(
+                                      'tap_forgot_password',
+                                      screen: 'Signin');
+                                  DebugService().logNavigation(
+                                      'Signin', 'ForgotPassword');
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -197,11 +211,19 @@ class _SigninState extends State<Signin> {
                                 children: [
                                   SvgIconButton(
                                     iconPath: 'images/apple.svg',
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      DebugService().logUserAction(
+                                          'tap_apple_signin',
+                                          screen: 'Signin');
+                                    },
                                   ),
                                   SvgIconButton(
                                     iconPath: 'images/google.svg',
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      DebugService().logUserAction(
+                                          'tap_google_signin',
+                                          screen: 'Signin');
+                                    },
                                   ),
                                   SizedBox(
                                     width: MyUtility(context).width * 0.45,
@@ -209,10 +231,25 @@ class _SigninState extends State<Signin> {
                                     child: ModernGlassButton(
                                       buttonText: 'Sign in',
                                       onTap: () async {
+                                        DebugService().logUserAction(
+                                            'tap_signin',
+                                            screen: 'Signin',
+                                            parameters: {
+                                              'email': _emailController.text,
+                                              'has_password':
+                                                  _passwordController
+                                                      .text.isNotEmpty,
+                                            });
+                                        DebugService().startPerformanceTimer(
+                                            'signin_process');
+
                                         await AuthService().Login(
                                             email: _emailController.text,
                                             password: _passwordController.text,
                                             context: context);
+
+                                        DebugService().endPerformanceTimer(
+                                            'signin_process');
                                       },
                                       buttonColor: primaryColor,
                                       borderRadius: 30,
@@ -245,6 +282,10 @@ class _SigninState extends State<Signin> {
                                   ),
                                   TextButton(
                                     onPressed: () {
+                                      DebugService().logUserAction('tap_signup',
+                                          screen: 'Signin');
+                                      DebugService()
+                                          .logNavigation('Signin', 'Goal');
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(

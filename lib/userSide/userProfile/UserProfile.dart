@@ -11,6 +11,7 @@ import 'package:move_as_one/userSide/settingsPrivacy/settingsItems/settingsMain.
 import 'package:move_as_one/userSide/userProfile/LastWorkout/LastWorkout.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/editProfile/editProfileMain.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/myProgress/myProgressMain.dart';
+import 'package:move_as_one/Services/debug_service.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -87,22 +88,41 @@ class _UserProfileState extends State<UserProfile> {
 
   // Handle logout
   Future<void> _handleLogout() async {
+    DebugService().startPerformanceTimer('logout_process_userprofile');
+    DebugService()
+        .log('Starting logout from UserProfile', LogLevel.info, tag: 'AUTH');
+
     try {
       await FirebaseAuth.instance.signOut();
+      DebugService().log(
+          'Firebase signOut successful from UserProfile', LogLevel.info,
+          tag: 'AUTH');
+      DebugService().logNavigation('UserProfile', 'UserState');
+
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const UserState()),
         (route) => false,
       );
-    } catch (e) {
+
+      DebugService().log(
+          'Logout from UserProfile completed successfully', LogLevel.info,
+          tag: 'AUTH');
+    } catch (e, stackTrace) {
+      DebugService().logError('Logout from UserProfile failed', e, stackTrace,
+          tag: 'AUTH');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error logging out: $e')),
       );
+    } finally {
+      DebugService().endPerformanceTimer('logout_process_userprofile');
     }
   }
 
   // Show the confirmation dialog
   void _showLogoutConfirmation() {
+    DebugService()
+        .logUserAction('show_logout_confirmation', screen: 'UserProfile');
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -123,7 +143,11 @@ class _UserProfileState extends State<UserProfile> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                DebugService()
+                    .logUserAction('cancel_logout', screen: 'UserProfile');
+                Navigator.of(context).pop();
+              },
               child: Text(
                 'Cancel',
                 style: TextStyle(color: Colors.grey[600]),
@@ -131,6 +155,8 @@ class _UserProfileState extends State<UserProfile> {
             ),
             ElevatedButton(
               onPressed: () {
+                DebugService()
+                    .logUserAction('confirm_logout', screen: 'UserProfile');
                 Navigator.of(context).pop();
                 _handleLogout();
               },

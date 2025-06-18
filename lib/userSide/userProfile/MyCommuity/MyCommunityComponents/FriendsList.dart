@@ -75,7 +75,7 @@ class _FriendsListState extends State<FriendsList> {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Image.asset(
-                            'images/default_avatar.jpg',
+                            'images/Avatar1.jpg',
                             width: 50,
                             height: 50,
                             fit: BoxFit.cover,
@@ -91,7 +91,7 @@ class _FriendsListState extends State<FriendsList> {
                             fit: BoxFit.cover,
                           )
                         : Image.asset(
-                            'images/default_avatar.jpg',
+                            'images/Avatar1.jpg',
                             width: 50,
                             height: 50,
                             fit: BoxFit.cover,

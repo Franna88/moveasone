@@ -10,6 +10,10 @@ import 'package:move_as_one/userSide/Home/WorkshopRoom.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui';
+import 'package:move_as_one/userSide/fromRochelle/videoCategory/videoCategoryItems/videoBrowsPage.dart';
+import 'package:move_as_one/WorkoutCreatorVIdeo/FullScreenVideoPlayer.dart';
+import 'package:move_as_one/userSide/workouts/workoutItems/MyWorkouts/myWorkouts.dart';
+import 'package:move_as_one/Services/debug_service.dart';
 
 class GetStarted extends StatefulWidget {
   const GetStarted({super.key});
@@ -54,6 +58,7 @@ class _GetStartedState extends State<GetStarted>
   @override
   void initState() {
     super.initState();
+    DebugService().logWidgetLifecycle('GetStarted', 'initState');
     _headerInfoFuture = _loadHeaderInfo();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 1200),
@@ -70,6 +75,7 @@ class _GetStartedState extends State<GetStarted>
 
   @override
   void dispose() {
+    DebugService().logWidgetLifecycle('GetStarted', 'dispose');
     _animationController.dispose();
     _scrollController.dispose();
     _pageController.dispose();
@@ -77,25 +83,51 @@ class _GetStartedState extends State<GetStarted>
   }
 
   Future<Map<String, dynamic>> _loadHeaderInfo() async {
-    DocumentSnapshot document = await FirebaseFirestore.instance
-        .collection('updateHeader')
-        .doc('headerInfo')
-        .get();
+    DebugService().startPerformanceTimer('loadHeaderInfo');
+    DebugService().log('Loading header info from Firebase', LogLevel.info,
+        tag: 'FIREBASE');
 
-    if (document.exists) {
-      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-      return {
-        'headerText':
-            data['headerText'] ?? 'You have the power to decide to be great.',
-        'subtitleText': data['subtitleText'] ?? 'Let\'s start now!',
-        'imageUrl': data['imageUrl'] ?? '',
-      };
-    } else {
+    try {
+      DocumentSnapshot document = await FirebaseFirestore.instance
+          .collection('updateHeader')
+          .doc('headerInfo')
+          .get();
+
+      DebugService().logFirebaseOperation('read',
+          collection: 'updateHeader',
+          documentId: 'headerInfo',
+          success: document.exists);
+
+      if (document.exists) {
+        Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+        DebugService().log('Header info loaded successfully', LogLevel.info,
+            tag: 'FIREBASE');
+        return {
+          'headerText':
+              data['headerText'] ?? 'You have the power to decide to be great.',
+          'subtitleText': data['subtitleText'] ?? 'Let\'s start now!',
+          'imageUrl': data['imageUrl'] ?? '',
+        };
+      } else {
+        DebugService().log(
+            'Header info document not found, using defaults', LogLevel.warning,
+            tag: 'FIREBASE');
+        return {
+          'headerText': 'You have the power to decide to be great.',
+          'subtitleText': 'Let\'s start now!',
+          'imageUrl': '',
+        };
+      }
+    } catch (e, stackTrace) {
+      DebugService().logError('Error loading header info', e, stackTrace,
+          tag: 'FIREBASE');
       return {
         'headerText': 'You have the power to decide to be great.',
         'subtitleText': 'Let\'s start now!',
         'imageUrl': '',
       };
+    } finally {
+      DebugService().endPerformanceTimer('loadHeaderInfo');
     }
   }
 
@@ -496,7 +528,24 @@ class _GetStartedState extends State<GetStarted>
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (title == 'Rachelle') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AllShortsGridPage(),
+                      ),
+                    );
+                  } else if (title == 'Your Workouts') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MyWorkouts(),
+                      ),
+                    );
+                  }
+                  // Add navigation for other sections as needed
+                },
                 style: TextButton.styleFrom(
                   minimumSize: Size.zero,
                   padding:
@@ -936,6 +985,229 @@ class _GetStartedState extends State<GetStarted>
           ),
         );
       },
+    );
+  }
+}
+
+class AllShortsGridPage extends StatelessWidget {
+  const AllShortsGridPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    DebugService().logWidgetLifecycle('AllShortsGridPage', 'build');
+    DebugService()
+        .logUserAction('view_all_shorts', screen: 'AllShortsGridPage');
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('All Shorts'),
+      ),
+      body: FutureBuilder<QuerySnapshot>(
+        future: _loadShorts(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            DebugService().log('Loading shorts from Firebase', LogLevel.info,
+                tag: 'SHORTS');
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            DebugService().logError(
+                'Error loading shorts', snapshot.error, null,
+                tag: 'SHORTS');
+            return const Center(
+                child: Text('Error loading shorts. Please try again.'));
+          }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            DebugService().log('No shorts found in database', LogLevel.warning,
+                tag: 'SHORTS');
+            return const Center(child: Text('No shorts found.'));
+          }
+          final videos = snapshot.data!.docs;
+          DebugService().log('Loaded ${videos.length} shorts', LogLevel.info,
+              tag: 'SHORTS');
+          return GridView.builder(
+            padding: const EdgeInsets.all(16),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 0.7,
+            ),
+            itemCount: videos.length,
+            itemBuilder: (context, index) {
+              final video = videos[index].data() as Map<String, dynamic>;
+              return _ShortVideoCard(
+                thumbnailUrl: video['thumbnailUrl'] ?? '',
+                description: video['videoName'] ?? '',
+                videoUrl: video['videoUrl'] ?? '',
+                index: index,
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Future<QuerySnapshot> _loadShorts() async {
+    DebugService().startPerformanceTimer('loadShorts');
+    try {
+      final result = await FirebaseFirestore.instance
+          .collection('shorts')
+          .orderBy('timestamp', descending: true)
+          .get();
+
+      DebugService()
+          .logFirebaseOperation('query', collection: 'shorts', success: true);
+
+      return result;
+    } catch (e, stackTrace) {
+      DebugService()
+          .logError('Failed to load shorts', e, stackTrace, tag: 'SHORTS');
+      DebugService().logFirebaseOperation('query',
+          collection: 'shorts', success: false, error: e.toString());
+      rethrow;
+    } finally {
+      DebugService().endPerformanceTimer('loadShorts');
+    }
+  }
+}
+
+class _ShortVideoCard extends StatelessWidget {
+  final String thumbnailUrl;
+  final String description;
+  final String videoUrl;
+  final int index;
+  const _ShortVideoCard({
+    required this.thumbnailUrl,
+    required this.description,
+    required this.videoUrl,
+    required this.index,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        DebugService().logUserAction('play_short_video',
+            screen: 'AllShortsGridPage',
+            parameters: {
+              'video_index': index,
+              'video_url': videoUrl,
+              'description': description,
+            });
+        DebugService()
+            .logNavigation('AllShortsGridPage', 'FullScreenVideoPlayer');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FullScreenVideoPlayer(videoUrl: videoUrl),
+          ),
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(thumbnailUrl),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.6),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Center(
+              child: Container(
+                height: 60,
+                width: 60,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withOpacity(0.2),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.5),
+                    width: 2,
+                  ),
+                ),
+                child: const Icon(
+                  Icons.play_arrow,
+                  color: Colors.white,
+                  size: 32,
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 16,
+              left: 16,
+              right: 16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    description,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black54,
+                          offset: Offset(0, 2),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: const [
+                      Icon(
+                        Icons.swipe_up,
+                        color: Colors.white70,
+                        size: 14,
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        'Swipe to watch',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

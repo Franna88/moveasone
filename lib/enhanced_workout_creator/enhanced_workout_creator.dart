@@ -65,7 +65,7 @@ class EnhancedWorkoutCreatorStandalone extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           ),
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
           ),
@@ -75,8 +75,7 @@ class EnhancedWorkoutCreatorStandalone extends StatelessWidget {
           primary: const Color(0xFF6699CC), // Cornflower Blue
           secondary: const Color(0xFF94D8E0), // Pale Turquoise
           tertiary: const Color(0xFFEDCBA4), // Toffee
-          surface: Colors.white,
-          background: const Color(0xFFFFF8F0), // Light Sand/Cream
+          surface: Colors.white, // Light Sand/Cream
         ),
       ),
       home: const EnhancedWorkoutCreator(),

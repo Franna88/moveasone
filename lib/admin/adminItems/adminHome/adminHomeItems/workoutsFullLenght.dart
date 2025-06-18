@@ -11,6 +11,7 @@ import 'package:move_as_one/admin/adminItems/adminHome/ui/workoutsColumn.dart';
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:move_as_one/Services/UserState.dart';
+import 'package:move_as_one/Services/debug_service.dart';
 
 class WorkoutsFullLenght extends StatefulWidget {
   const WorkoutsFullLenght({super.key});
@@ -62,22 +63,40 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
 
   // Handle logout
   Future<void> _handleLogout() async {
+    DebugService().startPerformanceTimer('logout_process_admin');
+    DebugService().log('Starting logout from Admin Dashboard', LogLevel.info,
+        tag: 'AUTH');
+
     try {
       await FirebaseAuth.instance.signOut();
+      DebugService().log(
+          'Firebase signOut successful from Admin Dashboard', LogLevel.info,
+          tag: 'AUTH');
+      DebugService().logNavigation('AdminDashboard', 'UserState');
+
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const UserState()),
         (route) => false,
       );
-    } catch (e) {
+
+      DebugService().log('Admin logout completed successfully', LogLevel.info,
+          tag: 'AUTH');
+    } catch (e, stackTrace) {
+      DebugService()
+          .logError('Admin logout failed', e, stackTrace, tag: 'AUTH');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error logging out: $e')),
       );
+    } finally {
+      DebugService().endPerformanceTimer('logout_process_admin');
     }
   }
 
   // Show logout confirmation
   void _showLogoutConfirmation() {
+    DebugService()
+        .logUserAction('show_logout_confirmation', screen: 'AdminDashboard');
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -98,7 +117,11 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                DebugService()
+                    .logUserAction('cancel_logout', screen: 'AdminDashboard');
+                Navigator.of(context).pop();
+              },
               child: Text(
                 'Cancel',
                 style: TextStyle(color: Colors.grey[600]),
@@ -106,6 +129,8 @@ class _WorkoutsFullLenghtState extends State<WorkoutsFullLenght>
             ),
             ElevatedButton(
               onPressed: () {
+                DebugService()
+                    .logUserAction('confirm_logout', screen: 'AdminDashboard');
                 Navigator.of(context).pop();
                 _handleLogout();
               },

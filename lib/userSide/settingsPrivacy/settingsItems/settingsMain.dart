@@ -8,6 +8,7 @@ import 'package:move_as_one/userSide/settingsPrivacy/settingsItems/unitOfMeasure
 import 'package:move_as_one/userSide/settingsPrivacy/ui/arrowRightIcon.dart';
 import 'package:move_as_one/commonUi/headerWidget.dart';
 import 'package:move_as_one/userSide/settingsPrivacy/ui/settingOptionsWidget.dart';
+import 'package:move_as_one/Services/debug_service.dart';
 
 class SettingsMain extends StatelessWidget {
   const SettingsMain({super.key});
@@ -92,13 +93,47 @@ class SettingsMain extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           GestureDetector(
-                            onTap: () {
-                              FirebaseAuth.instance.signOut();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const UserState()),
-                              );
+                            onTap: () async {
+                              DebugService().logUserAction('tap_logout',
+                                  screen: 'SettingsMain');
+                              DebugService()
+                                  .startPerformanceTimer('logout_process');
+
+                              try {
+                                DebugService().log(
+                                    'Starting logout process', LogLevel.info,
+                                    tag: 'AUTH');
+                                await FirebaseAuth.instance.signOut();
+                                DebugService().log(
+                                    'Firebase signOut successful',
+                                    LogLevel.info,
+                                    tag: 'AUTH');
+                                DebugService()
+                                    .logNavigation('SettingsMain', 'UserState');
+
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const UserState()),
+                                  (route) => false,
+                                );
+
+                                DebugService().log(
+                                    'Logout completed successfully',
+                                    LogLevel.info,
+                                    tag: 'AUTH');
+                              } catch (e, stackTrace) {
+                                DebugService().logError(
+                                    'Logout failed', e, stackTrace,
+                                    tag: 'AUTH');
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Error logging out: $e')),
+                                );
+                              } finally {
+                                DebugService()
+                                    .endPerformanceTimer('logout_process');
+                              }
                             },
                             child: Text(
                               'Log Out',

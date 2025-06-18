@@ -27,13 +27,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>This app needs access to camera to scan QR codes and take pictures for user profile.</string>
+	<string>This app needs access to your camera to record videos.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location when in use for location-based features.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This app needs access to microphone for voice messaging and video recording.</string>
+	<string>This app needs access to your microphone to record videos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs access to photo library for selecting and sharing images.</string>
+	<string>This app needs access to your photo library to upload videos.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

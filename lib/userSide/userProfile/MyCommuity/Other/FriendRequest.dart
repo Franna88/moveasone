@@ -85,7 +85,7 @@ class _FriendRequestState extends State<FriendRequest> {
                           return PendingRequests(
                             picture: friendPicture.isNotEmpty
                                 ? friendPicture
-                                : 'images/default_avatar.jpg',
+                                : 'images/Avatar1.jpg',
                             name: friendName,
                             friendId: friendId,
                             onFriendAdded: _refreshPage,

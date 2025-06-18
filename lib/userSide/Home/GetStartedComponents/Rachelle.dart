@@ -4,7 +4,8 @@ import 'package:move_as_one/WorkoutCreatorVideo/FullScreenVideoPlayer.dart';
 import 'package:move_as_one/myutility.dart';
 
 class Rachelle extends StatefulWidget {
-  const Rachelle({super.key});
+  final bool showHeader;
+  const Rachelle({super.key, this.showHeader = true});
 
   @override
   State<Rachelle> createState() => _RachelleState();
@@ -68,77 +69,10 @@ class _RachelleState extends State<Rachelle>
       height: MyUtility(context).height * 0.32,
       child: Column(
         children: [
-          // Modern header with subtle animation
-          AnimatedBuilder(
-            animation: _animationController,
-            builder: (context, child) {
-              return Transform.translate(
-                offset: Offset(0, 15 * (1 - _animationController.value)),
-                child: Opacity(
-                  opacity: _animationController.value,
-                  child: child,
-                ),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        height: 24,
-                        width: 4,
-                        decoration: BoxDecoration(
-                          color: accentColor,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Text(
-                        'Rachelle',
-                        style: TextStyle(
-                          color: primaryColor,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                  // Interactive see all button
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: secondaryColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'All shorts',
-                          style: TextStyle(
-                            color: secondaryColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        SizedBox(width: 4),
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          color: secondaryColor,
-                          size: 12,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
+          if (widget.showHeader) ...[
+            // Modern header with subtle animation (re-add if needed)
+            // You can copy the header code here if you want to show it
+          ],
           // Modern video carousel with depth effect
           Expanded(
             child: videos.isEmpty

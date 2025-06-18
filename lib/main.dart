@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:move_as_one/Services/UserState.dart';
+import 'package:move_as_one/Services/debug_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await DebugService.initialize();
   runApp(MyApp());
 }
 
@@ -28,8 +30,6 @@ class MyApp extends StatelessWidget {
           primary: primaryColor,
           secondary: secondaryColor,
           surface: backgroundColor,
-          background: backgroundColor,
-          onBackground: Colors.black87,
           onSurface: Colors.black87,
         ),
         scaffoldBackgroundColor: backgroundColor,

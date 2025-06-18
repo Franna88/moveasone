@@ -3,7 +3,7 @@ import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:move_as_one/enhanced_workout_viewer/models/workout_model.dart';
 import 'package:move_as_one/enhanced_workout_viewer/services/workout_service.dart';
 import 'package:move_as_one/enhanced_workout_viewer/widgets/exercise_card.dart';
-import 'package:move_as_one/userSide/exerciseProcess/exerciseProcess.dart';
+import 'package:move_as_one/userSide/exerciseProcess/workoutFlowManager.dart';
 
 class WorkoutDetailViewer extends StatefulWidget {
   final String workoutId;
@@ -47,23 +47,10 @@ class _WorkoutDetailViewerState extends State<WorkoutDetailViewer> {
   }
 
   void _startWorkout(BuildContext context, WorkoutModel workout) {
-    // Ensure we have at least one exercise for each section
-    if (workout.warmups.isEmpty &&
-        workout.exercises.isEmpty &&
-        workout.cooldowns.isEmpty) {
-      // Show error message if no exercises are available
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('This workout has no exercises to perform'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-      return;
-    }
-
-    // Convert workout model to the format expected by ExerciseProcess
-    // Ensure all required fields are present and correctly formatted
+    // Convert workout model to the format expected by WorkoutFlowManager
     Map<String, dynamic> entireExercise = {
+      "name": workout.name,
+      "description": workout.description,
       "warmUps": workout.warmups.map((e) {
         // Ensure repetition is a string (not null)
         String repetition = e.repetition.isNotEmpty ? e.repetition : "1";
@@ -128,41 +115,15 @@ class _WorkoutDetailViewerState extends State<WorkoutDetailViewer> {
       "displayImage": workout.imageUrl.isNotEmpty
           ? workout.imageUrl
           : "https://via.placeholder.com/150",
+      "imageUrl": workout.imageUrl.isNotEmpty
+          ? workout.imageUrl
+          : "https://via.placeholder.com/150",
       "restTime": workout.duration > 0 ? workout.duration : 30,
+      "estimatedDuration": workout.duration,
     };
 
-    // If any section is empty, provide at least an empty list
-    if (entireExercise["warmUps"].isEmpty) {
-      entireExercise["warmUps"] = [];
-    }
-    if (entireExercise["workouts"].isEmpty) {
-      entireExercise["workouts"] = [];
-    }
-    if (entireExercise["coolDowns"].isEmpty) {
-      entireExercise["coolDowns"] = [];
-    }
-
-    // Make sure at least one section has exercises
-    if (entireExercise["warmUps"].isEmpty &&
-        entireExercise["workouts"].isEmpty &&
-        entireExercise["coolDowns"].isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('This workout has no exercises to perform'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ExerciseProcess(
-          entireExercise: entireExercise,
-        ),
-      ),
-    );
+    // Use the enhanced workout starter
+    EnhancedWorkoutStarter.startWorkout(context, entireExercise);
   }
 
   @override

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:move_as_one/admin/adminItems/workoutCreator/creatorFullView/warmUpCreator.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
-import 'package:move_as_one/userSide/exerciseProcess/exerciseProcess.dart';
+import 'package:move_as_one/userSide/exerciseProcess/workoutFlowManager.dart';
 
 class ExerciseVideoWidget extends StatefulWidget {
   final String docId;
@@ -43,21 +43,24 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
     var widthDevice = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => widget.userType == "user"
-                ? ExerciseProcess(
-                    entireExercise: widget.entireExercise,
-                  )
-                : WarmUpCreator(
-                    docId: widget.docId,
-                    type: widget.type, // Replace with the actual type if needed
-                    warmupData: widget.warmupData,
-                    exerciseList: widget.list,
-                  ),
-          ),
-        );
+        if (widget.userType == "user") {
+          // Use the enhanced workout starter for users
+          EnhancedWorkoutStarter.startWorkout(
+              context, Map<String, dynamic>.from(widget.entireExercise));
+        } else {
+          // For admin users, navigate to the workout creator
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => WarmUpCreator(
+                docId: widget.docId,
+                type: widget.type,
+                warmupData: widget.warmupData,
+                exerciseList: widget.list,
+              ),
+            ),
+          );
+        }
         /* */
       },
       child: Container(

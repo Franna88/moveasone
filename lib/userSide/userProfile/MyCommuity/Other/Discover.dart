@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:move_as_one/userSide/userProfile/MyCommuity/MyCommunityComponents/NotFriends.dart';
+import 'package:move_as_one/userSide/userProfile/userProfileItems/userProfileLocked/userProfileLocked.dart';
 
 class Discover extends StatefulWidget {
   const Discover({super.key});
@@ -278,12 +280,40 @@ class _DiscoverState extends State<Discover>
                                 ),
                               );
                             },
-                            child: _buildUserCard(
-                              userId,
-                              userName,
-                              userPicture,
-                              userData['bio'] as String? ?? 'No bio available',
-                              userData['fitnessLevel'] as String? ?? 'Beginner',
+                            child: Column(
+                              children: [
+                                NotFriends(
+                                  userId: userId,
+                                  picture: userPicture,
+                                  name: userName,
+                                  onPressed: _refreshFriends,
+                                ),
+                                SizedBox(height: 4),
+                                ElevatedButton.icon(
+                                  icon: Icon(Icons.person),
+                                  label: Text('View Profile'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: secondaryColor,
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => UserProfileLocked(
+                                          userId: userId,
+                                          name: userName,
+                                          profilePic: userPicture,
+                                          bio: '', // Add bio if available
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           );
                         },

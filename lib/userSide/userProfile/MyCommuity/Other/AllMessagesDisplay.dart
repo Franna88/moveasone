@@ -148,8 +148,8 @@ class _AllMessagesDisplayState extends State<AllMessagesDisplay> {
 
             final friendData = snapshot.data!;
             final friendName = friendData['name'] as String? ?? 'Unknown';
-            final friendPic = friendData['profilePic'] as String? ??
-                'images/default_avatar.jpg';
+            final friendPic =
+                friendData['profilePic'] as String? ?? 'images/Avatar1.jpg';
 
             return AllMessageUser(
               ontap: () {
