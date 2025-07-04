@@ -254,6 +254,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
 
     return GestureDetector(
       onTap: _toggleControls,
+      behavior: HitTestBehavior.deferToChild,
       child: Container(
         color: Colors.black,
         child: Stack(
@@ -305,6 +306,31 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
                         ),
                       ),
 
+            // Always visible back button
+            if (isCurrentVideo)
+              Positioned(
+                top: 0,
+                left: 0,
+                width: 100,
+                height: 100,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                      onPressed: () {
+                        print('Always visible back button pressed!');
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ),
+              ),
+
             // Controls overlay
             if (isCurrentVideo)
               FadeTransition(
@@ -345,7 +371,11 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
                                       color: Colors.white,
                                       size: 24,
                                     ),
-                                    onPressed: () => Navigator.pop(context),
+                                    onPressed: () {
+                                      print(
+                                          'Back button pressed!'); // Debug print
+                                      Navigator.pop(context);
+                                    },
                                   ),
                                   Row(
                                     children: [
