@@ -22,9 +22,9 @@ class _DiscoverState extends State<Discover>
   late AnimationController _animationController;
 
   // Modern wellness color scheme
-  final Color primaryColor = const Color(0xFF025959);
-  final Color secondaryColor = const Color(0xFF01B3B3);
-  final Color accentColor = const Color(0xFF94FBAB);
+  final Color primaryColor = const Color(0xFF6699CC);
+  final Color secondaryColor = const Color(0xFF7FB2DE);
+  final Color accentColor = const Color(0xFFA3E1DB);
   final Color subtleColor = const Color(0xFFE5F9E0);
   final Color backgroundColor = const Color(0xFFF8FFFA);
 

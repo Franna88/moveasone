@@ -10,10 +10,12 @@ import 'package:move_as_one/userSide/Home/WorkshopRoom.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui';
-import 'package:move_as_one/userSide/fromRochelle/videoCategory/videoCategoryItems/videoBrowsPage.dart';
 import 'package:move_as_one/WorkoutCreatorVIdeo/FullScreenVideoPlayer.dart';
 import 'package:move_as_one/userSide/workouts/workoutItems/MyWorkouts/myWorkouts.dart';
 import 'package:move_as_one/Services/debug_service.dart';
+import 'package:move_as_one/WorkoutCreatorVIdeo/VideoPlayerDiagnostic.dart';
+import 'package:flutter/foundation.dart';
+import 'package:move_as_one/userSide/Home/LiveWorkshops.dart';
 
 class GetStarted extends StatefulWidget {
   const GetStarted({super.key});
@@ -32,7 +34,7 @@ class _GetStartedState extends State<GetStarted>
   int _currentPage = 0;
 
   // Modern elegant color palette
-  final Color primary = const Color(0xFF7FB2DE); // Cornflower Blue
+  final Color primary = const Color(0xFF6699CC); // Primary Blue
   final Color secondary = const Color(0xFFCEC2EF); // Lavender
   final Color accent = const Color(0xFFE8A08C); // Light Coral
   final Color neutral = const Color(0xFFF7F5FA); // Light Background
@@ -65,6 +67,22 @@ class _GetStartedState extends State<GetStarted>
       vsync: this,
     );
     _animationController.forward();
+
+    // Add overflow error handling
+    FlutterError.onError = (FlutterErrorDetails details) {
+      if (details.exception.toString().contains('RenderFlex overflowed')) {
+        DebugService().log(
+            'RenderFlex overflow caught and handled: ${details.exception}',
+            LogLevel.warning,
+            tag: 'UI_OVERFLOW');
+        // Don't throw in production, just log
+        if (kDebugMode) {
+          FlutterError.presentError(details);
+        }
+      } else {
+        FlutterError.presentError(details);
+      }
+    };
 
     // Set system UI style for a more immersive experience
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -149,6 +167,21 @@ class _GetStartedState extends State<GetStarted>
         return Scaffold(
           backgroundColor: neutral,
           extendBodyBehindAppBar: true,
+          floatingActionButton: kDebugMode
+              ? FloatingActionButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const VideoPlayerDiagnostic(),
+                      ),
+                    );
+                  },
+                  backgroundColor: Colors.red,
+                  child: Icon(Icons.bug_report, color: Colors.white),
+                  tooltip: 'Video Diagnostic Tool',
+                )
+              : null,
           body: CustomScrollView(
             controller: _scrollController,
             physics: const BouncingScrollPhysics(),
@@ -490,18 +523,23 @@ class _GetStartedState extends State<GetStarted>
               kBottomNavigationBarHeight +
               20,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Section headers with content
-            _buildSectionWithHeader('Rachelle', 'All shorts', Rachelle()),
-            _buildSectionWithHeader(
-                'Your Workouts', 'View all', YourWorkouts()),
-            _buildSectionWithHeader('Motivation', 'Explore', Motivational()),
-            _buildSectionWithHeader('Resources', 'More', AdditionalResources()),
-            _buildSectionWithHeader(
-                'Live Workshops', 'See all', _buildWorkshopsList()),
-          ],
+        child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Section headers with content
+              _buildSectionWithHeader('Rachelle', 'All shorts', Rachelle()),
+              _buildSectionWithHeader(
+                  'Your Workouts', 'View all', YourWorkouts()),
+              _buildSectionWithHeader('Motivation', 'Explore', Motivational()),
+              _buildSectionWithHeader(
+                  'Resources', 'More', AdditionalResources()),
+              _buildSectionWithHeader(
+                  'Live Workshops', 'See all', _buildWorkshopsList()),
+            ],
+          ),
         ),
       ),
     );
@@ -511,6 +549,7 @@ class _GetStartedState extends State<GetStarted>
       String title, String actionText, Widget content) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
           padding:
@@ -518,17 +557,24 @@ class _GetStartedState extends State<GetStarted>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: neutralDark,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: -0.3,
+              Flexible(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: neutralDark,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.3,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               TextButton(
                 onPressed: () {
+                  // Add haptic feedback
+                  HapticFeedback.lightImpact();
+                  print('Button tapped: $title -> $actionText');
+
                   if (title == 'Rachelle') {
                     Navigator.push(
                       context,
@@ -543,14 +589,43 @@ class _GetStartedState extends State<GetStarted>
                         builder: (context) => const MyWorkouts(),
                       ),
                     );
+                  } else if (title == 'Motivation') {
+                    // Navigate to Motivation/Explore page
+                    print('Navigating to Motivational page');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Motivational(),
+                      ),
+                    );
+                  } else if (title == 'Resources') {
+                    // Navigate to Additional Resources/More page
+                    print('Navigating to AdditionalResources page');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const AdditionalResources(showAll: true),
+                      ),
+                    );
+                  } else if (title == 'Live Workshops') {
+                    // Navigate to Live Workshops page
+                    print('Navigating to LiveWorkshops page');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LiveWorkshops(),
+                      ),
+                    );
                   }
-                  // Add navigation for other sections as needed
                 },
                 style: TextButton.styleFrom(
-                  minimumSize: Size.zero,
+                  minimumSize: const Size(80, 44),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  tapTargetSize: MaterialTapTargetSize.padded,
+                  splashFactory: InkRipple.splashFactory,
+                  overlayColor: primary.withOpacity(0.1),
                 ),
                 child: Row(
                   children: [
@@ -867,16 +942,37 @@ class _GetStartedState extends State<GetStarted>
       return;
     }
 
-    try {
-      // Show loading indicator
-      _showLoadingDialog(context);
+    print('Starting workshop join process for: $workshopId');
 
+    // Simple loading indicator using snackbar instead of dialog
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            ),
+            SizedBox(width: 16),
+            Text('Joining workshop...'),
+          ],
+        ),
+        backgroundColor: primary,
+        duration: Duration(milliseconds: 800), // Shorter duration
+      ),
+    );
+
+    try {
       final workshopRef =
           FirebaseFirestore.instance.collection('workshops').doc(workshopId);
       final workshopDoc = await workshopRef.get();
 
-      // Dismiss loading dialog
-      Navigator.pop(context);
+      // Dismiss loading snackbar regardless of result
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
       if (!workshopDoc.exists) {
         _showSnackBar('Workshop not found', isError: true);
@@ -902,7 +998,7 @@ class _GetStartedState extends State<GetStarted>
               'id': user.uid,
               'name': user.displayName ?? 'Anonymous',
               'email': user.email,
-              'joinedAt': FieldValue.serverTimestamp(),
+              'joinedAt': DateTime.now().toIso8601String(),
             }
           ]),
         });
@@ -911,17 +1007,23 @@ class _GetStartedState extends State<GetStarted>
       }
 
       // Navigate to workshop room
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => WorkshopRoom(
-            workshopId: workshopId,
-            workshopTitle: title,
-            isHost: false,
+      if (mounted) {
+        print('Navigating to WorkshopRoom for: $workshopId');
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WorkshopRoom(
+              workshopId: workshopId,
+              workshopTitle: title,
+              isHost: false,
+            ),
           ),
-        ),
-      );
+        );
+        print('Returned from WorkshopRoom');
+      }
     } catch (e) {
+      // Ensure snackbar is dismissed on error too
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
       _showSnackBar('Error joining workshop: $e', isError: true);
     }
   }
@@ -954,38 +1056,64 @@ class _GetStartedState extends State<GetStarted>
   }
 
   void _showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(primary),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Joining workshop...',
-                  style: TextStyle(
-                    color: neutralDark,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: true, // Allow dismissing by tapping outside
+        builder: (BuildContext dialogContext) {
+          // Auto-dismiss after 10 seconds as failsafe
+          Future.delayed(Duration(seconds: 10), () {
+            if (Navigator.canPop(dialogContext)) {
+              Navigator.pop(dialogContext);
+            }
+          });
+
+          return Dialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
-          ),
-        );
-      },
-    );
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(primary),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Joining workshop...',
+                    style: TextStyle(
+                      color: neutralDark,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextButton(
+                    onPressed: () {
+                      if (Navigator.canPop(dialogContext)) {
+                        Navigator.pop(dialogContext);
+                      }
+                    },
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(
+                        color: primary,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      print('Error showing loading dialog: $e');
+    }
   }
 }
 

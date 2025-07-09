@@ -47,16 +47,19 @@ class _EditProfileMainState extends State<EditProfileMain> {
     final doc =
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
     if (doc.exists) {
-      setState(() {
-        _nameController.text = doc.get('name');
-        _bioController.text = doc.get('bio');
-        _websiteController.text = doc.get('website');
-        _genderController.text = doc.get('gender');
-        _ageController.text = doc.get('age');
-        _heightController.text = doc.get('height');
-        _weightController.text = doc.get('weight');
-        _profilePicUrl = doc.get('profilePic');
-      });
+      final data = doc.data() as Map<String, dynamic>?;
+      if (data != null) {
+        setState(() {
+          _nameController.text = data['name'] ?? '';
+          _bioController.text = data['bio'] ?? '';
+          _websiteController.text = data['website'] ?? '';
+          _genderController.text = data['gender'] ?? '';
+          _ageController.text = data['age'] ?? '';
+          _heightController.text = data['height'] ?? '';
+          _weightController.text = data['weight'] ?? '';
+          _profilePicUrl = data['profilePic'] ?? '';
+        });
+      }
       print('User details fetched successfully.');
     } else {
       print('No user details found.');

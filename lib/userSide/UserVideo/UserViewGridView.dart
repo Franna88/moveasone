@@ -17,9 +17,9 @@ class _UserviewgridviewState extends State<Userviewgridview>
   bool _isLoading = true;
 
   // Modern wellness color scheme
-  final Color primaryColor = const Color(0xFF025959);
-  final Color secondaryColor = const Color(0xFF01B3B3);
-  final Color accentColor = const Color(0xFF94FBAB);
+  final Color primaryColor = const Color(0xFF6699CC);
+  final Color secondaryColor = const Color(0xFF7FB2DE);
+  final Color accentColor = const Color(0xFFA3E1DB);
   final Color subtleColor = const Color(0xFFE5F9E0);
   final Color backgroundColor = const Color(0xFFF8FFFA);
 
@@ -186,9 +186,20 @@ class _UserviewgridviewState extends State<Userviewgridview>
                                 ),
                                 itemBuilder: (context, index) {
                                   var video = userVideos[index];
-                                  var thumbnailUrl = video['thumbnailUrl'];
-                                  var videoName = video['videoName'];
-                                  var videoUrl = video['videoUrl'];
+
+                                  // Add null safety with default values
+                                  var thumbnailUrl =
+                                      video['thumbnailUrl'] as String? ?? '';
+                                  var videoName =
+                                      video['videoName'] as String? ??
+                                          'Untitled Video';
+                                  var videoUrl =
+                                      video['videoUrl'] as String? ?? '';
+
+                                  // Skip videos with empty URLs to prevent playback errors
+                                  if (videoUrl.isEmpty) {
+                                    return Container(); // Return empty container for invalid videos
+                                  }
 
                                   final delay = 0.2 + (index * 0.1);
                                   final delayedAnimation = CurvedAnimation(
@@ -303,20 +314,29 @@ class _UserviewgridviewState extends State<Userviewgridview>
                       topLeft: Radius.circular(16),
                       topRight: Radius.circular(16),
                     ),
-                    child: Image.network(
-                      thumbnailUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey[200],
-                          child: Icon(
-                            Icons.image_not_supported,
-                            color: Colors.grey[400],
-                            size: 48,
+                    child: thumbnailUrl.isNotEmpty
+                        ? Image.network(
+                            thumbnailUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey[200],
+                                child: Icon(
+                                  Icons.image_not_supported,
+                                  color: Colors.grey[400],
+                                  size: 48,
+                                ),
+                              );
+                            },
+                          )
+                        : Container(
+                            color: primaryColor.withOpacity(0.1),
+                            child: Icon(
+                              Icons.videocam_outlined,
+                              color: primaryColor.withOpacity(0.5),
+                              size: 48,
+                            ),
                           ),
-                        );
-                      },
-                    ),
                   ),
 
                   // Play button overlay
@@ -411,8 +431,8 @@ class _UserviewgridviewState extends State<Userviewgridview>
 
 void showDeleteDialog(
     BuildContext context, int index, VoidCallback refreshVideos) {
-  final primaryColor = Color(0xFF025959);
-  final secondaryColor = Color(0xFF01B3B3);
+  final primaryColor = Color(0xFF6699CC);
+  final secondaryColor = Color(0xFF7FB2DE);
 
   showDialog(
     context: context,

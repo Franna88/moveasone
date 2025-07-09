@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:async';
+import '../../../Services/enhanced_video_service.dart';
 
 class EnhancedVideoScreen extends StatefulWidget {
   final Function changePageIndex;
@@ -59,33 +60,98 @@ class _EnhancedVideoScreenState extends State<EnhancedVideoScreen>
       curve: Curves.easeInOut,
     );
 
-    _controller = VideoPlayerController.network(widget.videoUrl)
-      ..initialize().then((_) {
-        setState(() {
-          _isBuffering = false;
-          // Start hiding controls timer
-          _startHideControlsTimer();
-          _animationController.forward();
-        });
-      })
-      ..addListener(() {
-        final isPlaying = _controller.value.isPlaying;
-        if (isPlaying != _isPlaying) {
-          setState(() {
-            _isPlaying = isPlaying;
-          });
-        }
-
-        if (_controller.value.isBuffering != _isBuffering) {
-          setState(() {
-            _isBuffering = _controller.value.isBuffering;
-          });
-        }
-      });
+    _initializeVideo();
 
     // Setup timer for time-based exercises
     if (widget.isTimeBased) {
       _remainingSeconds = widget.duration;
+    }
+  }
+
+  Future<void> _initializeVideo() async {
+    try {
+      setState(() {
+        _isBuffering = true;
+      });
+
+      // Use EnhancedVideoService for robust video loading
+      final videoService = EnhancedVideoService();
+      final result = await videoService.loadVideo(
+        videoUrl: widget.videoUrl,
+        timeout: const Duration(seconds: 30),
+        maxRetries: 3,
+        checkConnectivity: true,
+      );
+
+      if (mounted) {
+        if (result.state == VideoLoadState.loaded &&
+            result.controller != null) {
+          _controller = result.controller!;
+
+          // Add listener for video state changes
+          _controller.addListener(() {
+            if (mounted) {
+              final isPlaying = _controller.value.isPlaying;
+              if (isPlaying != _isPlaying) {
+                setState(() {
+                  _isPlaying = isPlaying;
+                });
+              }
+
+              if (_controller.value.isBuffering != _isBuffering) {
+                setState(() {
+                  _isBuffering = _controller.value.isBuffering;
+                });
+              }
+            }
+          });
+
+          setState(() {
+            _isBuffering = false;
+          });
+
+          _startHideControlsTimer();
+          _animationController.forward();
+        } else {
+          setState(() {
+            _isBuffering = false;
+          });
+
+          // Show error message
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(result.errorMessage ?? 'Failed to load video'),
+                backgroundColor: result.state == VideoLoadState.networkError
+                    ? Colors.orange
+                    : Colors.red,
+                action: SnackBarAction(
+                  label: 'Retry',
+                  textColor: Colors.white,
+                  onPressed: () => _initializeVideo(),
+                ),
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isBuffering = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Video error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: Colors.white,
+              onPressed: () => _initializeVideo(),
+            ),
+          ),
+        );
+      }
     }
   }
 
@@ -182,6 +248,11 @@ class _EnhancedVideoScreenState extends State<EnhancedVideoScreen>
     final mins = (seconds / 60).floor().toString().padLeft(2, '0');
     final secs = (seconds % 60).toString().padLeft(2, '0');
     return '$mins:$secs';
+  }
+
+  Color get _phaseColor {
+    // Always return primary blue for consistency
+    return UiColors().primaryBlue;
   }
 
   @override
@@ -307,13 +378,7 @@ class _EnhancedVideoScreenState extends State<EnhancedVideoScreen>
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 10, vertical: 4),
                                           decoration: BoxDecoration(
-                                            color:
-                                                widget.workoutType == "warmUp"
-                                                    ? UiColors().teal
-                                                    : widget.workoutType ==
-                                                            "workouts"
-                                                        ? UiColors().brown
-                                                        : Colors.blue,
+                                            color: UiColors().primaryBlue,
                                             borderRadius:
                                                 BorderRadius.circular(16),
                                           ),
@@ -381,7 +446,7 @@ class _EnhancedVideoScreenState extends State<EnhancedVideoScreen>
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 12, vertical: 6),
                                     decoration: BoxDecoration(
-                                      color: UiColors().brown,
+                                      color: _phaseColor,
                                       borderRadius: BorderRadius.circular(16),
                                     ),
                                     child: Text(
@@ -523,7 +588,7 @@ class _EnhancedVideoScreenState extends State<EnhancedVideoScreen>
                                       ),
                                       ElevatedButton(
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: UiColors().brown,
+                                          backgroundColor: _phaseColor,
                                           foregroundColor: Colors.white,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:

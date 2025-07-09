@@ -60,8 +60,15 @@ dependencies:
   intl: ^0.20.2
 #  auto_orientation: ^2.3.1
   url_launcher: ^6.3.1
+  google_fonts: ^6.1.0
+  # Updated Zego packages to resolve conflicts
   zego_uikit_signaling_plugin: ^2.8.12
   zego_uikit_prebuilt_call: ^4.16.28
+  # Note: These may need to be updated to compatible versions
+  # Enhanced video functionality
+  video_compress: ^3.1.2
+  dio: ^5.4.0  # For better file upload handling
+  connectivity_plus: ^6.0.3  # Network connectivity checking
 
 dev_dependencies:
   flutter_test:

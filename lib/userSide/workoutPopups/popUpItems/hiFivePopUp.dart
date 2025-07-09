@@ -12,76 +12,93 @@ class HiFivePopUp extends StatelessWidget {
   Widget build(BuildContext context) {
     var heightDevice = MediaQuery.of(context).size.height;
     var widthDevice = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: Center(
-        child: Container(
-          height: heightDevice * 0.50,
-          width: widthDevice,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            image: DecorationImage(
-              colorFilter: ColorFilter.mode(
-                  Color.fromARGB(151, 0, 0, 0), BlendMode.colorBurn),
-              image: AssetImage('images/commonImg.png'),
-              fit: BoxFit.cover,
-            ),
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        height: heightDevice * 0.50,
+        width: widthDevice,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          image: DecorationImage(
+            colorFilter: ColorFilter.mode(
+                Color.fromARGB(151, 0, 0, 0), BlendMode.colorBurn),
+            image: AssetImage('images/commonImg.png'),
+            fit: BoxFit.cover,
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            child: Column(
-              children: [
-                Container(
-                  height: 100,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () => Navigator.of(context).pop(),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: Column(
+            children: [
+              Container(
+                height: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8),
                         child: Icon(
                           Icons.close,
                           size: 30,
                           color: Colors.white,
                         ),
                       ),
-                      AnimatedEmoji(),
-                    ],
-                  ),
+                    ),
+                    AnimatedEmoji(),
+                  ],
                 ),
-                Spacer(),
-                //SENDERS NAME
-                SenderName(senderName: senderName),
-                Text(
-                  'Just gave you a Hi-Five',
-                  style: TextStyle(
-                    fontFamily: 'BeVietnam',
-                    fontSize: 14,
-                    color: Colors.white,
-                  ),
+              ),
+              Spacer(),
+              //SENDERS NAME
+              SenderName(senderName: senderName),
+              Text(
+                'Just gave you a Hi-Five',
+                style: TextStyle(
+                  fontFamily: 'BeVietnam',
+                  fontSize: 14,
+                  color: Colors.white,
                 ),
-                SizedBox(
-                  height: heightDevice * 0.06,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ReplyEmoji(
+              ),
+              SizedBox(
+                height: heightDevice * 0.06,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        // Handle thank you reply
+                        Navigator.of(context).pop();
+                      },
+                      child: ReplyEmoji(
                         replyText: 'Reply Thank you',
                         emojiImage: 'images/thankYou.png',
                       ),
-                      ReplyEmoji(
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        // Handle hi-five back
+                        Navigator.of(context).pop();
+                      },
+                      child: ReplyEmoji(
                         replyText: 'Hi-Five back',
                         emojiImage: 'images/hiFive.png',
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 ),
-                const SizedBox(
-                  height: 30,
-                )
-              ],
-            ),
+              ),
+              const SizedBox(
+                height: 30,
+              )
+            ],
           ),
         ),
       ),

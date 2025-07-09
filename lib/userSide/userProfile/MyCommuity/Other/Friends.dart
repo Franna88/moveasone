@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:move_as_one/userSide/userProfile/Sendhi5Back/Sendhi5Back.dart';
+import 'package:move_as_one/admin/adminItems/bookings/chat/myChat.dart';
 
 class FriendsListPage extends StatefulWidget {
   const FriendsListPage({super.key});
@@ -18,11 +19,15 @@ class _FriendsListPageState extends State<FriendsListPage>
   late AnimationController _animationController;
   bool _isLoading = true;
   List<Map<String, dynamic>> _friendsList = [];
+  Set<String> _sendingHiFives =
+      {}; // Track which friends are receiving hi-fives
+  Set<String> _recentlySetHiFives =
+      {}; // Track recently sent hi-fives for visual feedback
 
   // Modern wellness color scheme
-  final Color primaryColor = const Color(0xFF025959);
-  final Color secondaryColor = const Color(0xFF01B3B3);
-  final Color accentColor = const Color(0xFF94FBAB);
+  final Color primaryColor = const Color(0xFF6699CC);
+  final Color secondaryColor = const Color(0xFF7FB2DE);
+  final Color accentColor = const Color(0xFFA3E1DB);
   final Color subtleColor = const Color(0xFFE5F9E0);
   final Color backgroundColor = const Color(0xFFF8FFFA);
 
@@ -81,6 +86,104 @@ class _FriendsListPageState extends State<FriendsListPage>
         _isLoading = false;
       });
     }
+  }
+
+  Future<void> _sendHiFive(String friendId, String friendName) async {
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) {
+      _showSnackBar('Please sign in to send hi-fives', isError: true);
+      return;
+    }
+
+    setState(() {
+      _sendingHiFives.add(friendId);
+    });
+
+    try {
+      DocumentReference recipientRef =
+          _firestore.collection('users').doc(friendId);
+
+      await _firestore.runTransaction((transaction) async {
+        DocumentSnapshot snapshot = await transaction.get(recipientRef);
+        if (!snapshot.exists) {
+          throw Exception("User does not exist!");
+        }
+
+        int currentHiFiveCount = 0;
+        final data = snapshot.data() as Map<String, dynamic>?;
+        if (data != null && data.containsKey('hiFive')) {
+          currentHiFiveCount = data['hiFive'] ?? 0;
+        }
+
+        int newHiFiveCount = currentHiFiveCount + 1;
+        transaction.update(recipientRef, {'hiFive': newHiFiveCount});
+
+        // Add a new hi-five notification to the recipient's notifications collection
+        transaction.set(recipientRef.collection('hiFiveNotifications').doc(), {
+          'senderId': currentUser.uid,
+          'senderName': currentUser.displayName ?? 'Someone',
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+      });
+
+      // Show success feedback
+      _showSnackBar('Hi-Five sent to $friendName! ✋', isError: false);
+
+      // Show visual feedback with filled heart
+      setState(() {
+        _recentlySetHiFives.add(friendId);
+      });
+
+      // Remove the visual feedback after 2 seconds
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() {
+            _recentlySetHiFives.remove(friendId);
+          });
+        }
+      });
+    } catch (e) {
+      print('Error sending hi-five: $e');
+      _showSnackBar('Failed to send hi-five. Please try again.', isError: true);
+    } finally {
+      setState(() {
+        _sendingHiFives.remove(friendId);
+      });
+    }
+  }
+
+  void _showSnackBar(String message, {required bool isError}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(
+              isError ? Icons.error_outline : Icons.front_hand_sharp,
+              color: isError ? Colors.white : Colors.yellow,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                message,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: isError ? Colors.red[600] : Colors.green[600],
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: isError ? 4 : 3),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.all(16),
+      ),
+    );
   }
 
   @override
@@ -216,9 +319,13 @@ class _FriendsListPageState extends State<FriendsListPage>
           return SizedBox.shrink();
         }
 
-        final friendData = snapshot.data!;
-        final friendName = friendData['name'] as String? ?? 'Unknown User';
-        final friendPicture = friendData['profilePic'] as String? ?? '';
+        final data = snapshot.data!.data() as Map<String, dynamic>?;
+        if (data == null) {
+          return SizedBox.shrink();
+        }
+
+        final friendName = data['name'] as String? ?? 'Unknown User';
+        final friendPicture = data['profilePic'] as String? ?? '';
 
         return AnimatedBuilder(
           animation: delayedAnimation,
@@ -346,18 +453,52 @@ class _FriendsListPageState extends State<FriendsListPage>
                             size: 22,
                           ),
                           onPressed: () {
-                            // Message friend
+                            final currentUser = _auth.currentUser;
+                            if (currentUser != null) {
+                              final chatId =
+                                  (currentUser.uid.compareTo(friendId) > 0)
+                                      ? '${currentUser.uid}_$friendId'
+                                      : '${friendId}_${currentUser.uid}';
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MyChat(
+                                    userId: friendId,
+                                    userName: friendName,
+                                    userPic: friendPicture,
+                                    chatId: chatId,
+                                  ),
+                                ),
+                              );
+                            }
                           },
                         ),
                         IconButton(
-                          icon: Icon(
-                            Icons.favorite_border,
-                            color: secondaryColor,
-                            size: 22,
-                          ),
-                          onPressed: () {
-                            // Send hi5
-                          },
+                          icon: _sendingHiFives.contains(friendId)
+                              ? SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        accentColor),
+                                  ),
+                                )
+                              : Icon(
+                                  _recentlySetHiFives.contains(friendId)
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: _recentlySetHiFives.contains(friendId)
+                                      ? Colors.pink[400]
+                                      : secondaryColor,
+                                  size: 22,
+                                ),
+                          onPressed: _sendingHiFives.contains(friendId)
+                              ? null
+                              : () {
+                                  _sendHiFive(friendId, friendName);
+                                },
                         ),
                       ],
                     ),

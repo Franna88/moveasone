@@ -51,7 +51,7 @@ class _AnalysedState extends State<Analysed>
 
     _controller.forward();
 
-    // Navigate to WorkoutCreatorVideo after the animation completes
+    // Navigate to Signup after the animation completes
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         Navigator.pushReplacement(
@@ -63,7 +63,7 @@ class _AnalysedState extends State<Analysed>
                     gender: widget.gender,
                     age: widget.age,
                     height: widget.height,
-                    weightUnit: widget.weight,
+                    weightUnit: widget.weightUnit,
                     activityLevel: widget.activityLevel,
                   )),
         );
@@ -97,7 +97,7 @@ class _AnalysedState extends State<Analysed>
               ClipRRect(
                 borderRadius: BorderRadius.circular(100),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
                   child: Container(
                     width: 150,
                     height: 150,
@@ -118,7 +118,7 @@ class _AnalysedState extends State<Analysed>
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
                   child: Container(
                     width: MyUtility(context).width * 0.9,
                     padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),

@@ -14,11 +14,11 @@ class _NewVideosMainState extends State<NewVideosMain>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  // Modern color scheme
-  final Color primaryColor = const Color(0xFF6A3EA1); // Purple
-  final Color secondaryColor = const Color(0xFF60BFC5); // Teal
-  final Color accentColor = const Color(0xFFFF7F5C); // Coral/Orange
-  final Color backgroundColor = const Color(0xFFF7F5FA); // Light purple tint
+  // Modern blue color scheme
+  final Color primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+  final Color secondaryColor = const Color(0xFF7FB2DE); // Light Blue
+  final Color accentColor = const Color(0xFF6699CC); // Primary Blue
+  final Color backgroundColor = const Color(0xFFF8FBFF); // Light blue tint
 
   @override
   void initState() {

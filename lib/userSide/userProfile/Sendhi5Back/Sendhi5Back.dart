@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:move_as_one/userSide/UserProfile/Sendhi5Back/Sendihi5BackComponents/Hi5LastWorkout.dart';
 import 'package:move_as_one/userSide/UserProfile/Sendhi5Back/Sendihi5BackComponents/Videos.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/Const/conts.dart' as consts;
 import 'package:move_as_one/userSide/userProfile/userProfileItems/userProfileLocked/userProfileLocked.dart';
+import 'package:move_as_one/admin/adminItems/bookings/chat/myChat.dart';
 
 class Sendhi5Back extends StatefulWidget {
   final String userId;
@@ -24,6 +26,7 @@ class Sendhi5Back extends StatefulWidget {
 class _Sendhi5BackState extends State<Sendhi5Back> {
   String bio = '';
   String hiFive = '';
+  bool _isNavigating = false;
 
   @override
   void initState() {
@@ -37,10 +40,66 @@ class _Sendhi5BackState extends State<Sendhi5Back> {
         .doc(widget.userId)
         .get();
     if (doc.exists) {
-      setState(() {
-        bio = doc.get('bio');
-        hiFive + doc.get('hiFive');
-      });
+      final data = doc.data() as Map<String, dynamic>?;
+      if (data != null) {
+        setState(() {
+          bio = data['bio'] ?? '';
+          hiFive = (data['hiFive'] ?? 0).toString();
+        });
+      }
+    }
+  }
+
+  void _openChat() async {
+    if (_isNavigating) return; // Prevent double-tap
+
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.error_outline, color: Colors.white),
+              SizedBox(width: 8),
+              Text('Please sign in to send messages'),
+            ],
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isNavigating = true;
+    });
+
+    try {
+      // Generate unique chat ID
+      final chatId = (currentUser.uid.compareTo(widget.userId) > 0)
+          ? '${currentUser.uid}_${widget.userId}'
+          : '${widget.userId}_${currentUser.uid}';
+
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyChat(
+            userId: widget.userId,
+            userName: widget.name,
+            userPic: widget.picture,
+            chatId: chatId,
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isNavigating = false;
+        });
+      }
     }
   }
 
@@ -90,12 +149,41 @@ class _Sendhi5BackState extends State<Sendhi5Back> {
                     width: MyUtility(context).width * 0.05,
                   ),
                   ClipOval(
-                    child: Image.network(
-                      widget.picture,
-                      width: 75,
-                      height: 75,
-                      fit: BoxFit.cover,
-                    ),
+                    child: widget.picture.isNotEmpty
+                        ? Image.network(
+                            widget.picture,
+                            width: 75,
+                            height: 75,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                width: 75,
+                                height: 75,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.person,
+                                  size: 40,
+                                  color: Colors.grey[600],
+                                ),
+                              );
+                            },
+                          )
+                        : Container(
+                            width: 75,
+                            height: 75,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.person,
+                              size: 40,
+                              color: Colors.grey[600],
+                            ),
+                          ),
                   ),
                   SizedBox(width: 15),
                   Column(
@@ -245,7 +333,11 @@ class _Sendhi5BackState extends State<Sendhi5Back> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _isNavigating
+                        ? null
+                        : () {
+                            _openChat();
+                          },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFFFFFFF),
                       foregroundColor: Color(0xFF006261),
@@ -259,24 +351,49 @@ class _Sendhi5BackState extends State<Sendhi5Back> {
                         ),
                       ),
                     ),
-                    child: Row(
-                      children: [
-                        SizedBox(width: 8),
-                        Text(
-                          'Send message',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontFamily: 'Be Vietnam',
-                            fontWeight: FontWeight.w300,
-                            color: Color(0xFF1E1E1E),
+                    child: _isNavigating
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Color(0xFF006261)),
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                'Opening...',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontFamily: 'Be Vietnam',
+                                  fontWeight: FontWeight.w300,
+                                  color: Color(0xFF1E1E1E),
+                                ),
+                              ),
+                            ],
+                          )
+                        : Row(
+                            children: [
+                              SizedBox(width: 8),
+                              Text(
+                                'Send message',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontFamily: 'Be Vietnam',
+                                  fontWeight: FontWeight.w300,
+                                  color: Color(0xFF1E1E1E),
+                                ),
+                              ),
+                              Icon(
+                                Icons.keyboard_arrow_right,
+                                color: Color(0xFF1E1E1E),
+                              ),
+                            ],
                           ),
-                        ),
-                        Icon(
-                          Icons.keyboard_arrow_right,
-                          color: Color(0xFF1E1E1E),
-                        ),
-                      ],
-                    ),
                   ),
                 ],
               ),
@@ -284,8 +401,8 @@ class _Sendhi5BackState extends State<Sendhi5Back> {
             SizedBox(
               height: MyUtility(context).height * 0.02,
             ),
-            Videos(),
-            Hi5LastWorkout()
+            Videos(userId: widget.userId),
+            Hi5LastWorkout(userId: widget.userId)
           ],
         ),
       ),

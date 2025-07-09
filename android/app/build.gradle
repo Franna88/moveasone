@@ -30,7 +30,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     compileSdk 34
-    namespace = "com.app.moveAsOne"
+    namespace = "com.barefootbytes.moveasoneapp"
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -44,7 +44,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.app.moveAsOne"
+        applicationId = "com.barefootbytes.moveasoneapp"
         minSdk = 24
         targetSdk = 34
         versionCode = flutterVersionCode.toInteger()

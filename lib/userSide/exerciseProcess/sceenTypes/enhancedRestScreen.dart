@@ -154,7 +154,7 @@ class _EnhancedRestScreenState extends State<EnhancedRestScreen>
                     color: Colors.black.withOpacity(0.4),
                     border: Border(
                       bottom: BorderSide(
-                        color: UiColors().brown.withOpacity(0.3),
+                        color: UiColors().primaryBlue.withOpacity(0.3),
                         width: 1,
                       ),
                     ),
@@ -167,7 +167,7 @@ class _EnhancedRestScreenState extends State<EnhancedRestScreen>
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: UiColors().brown,
+                          color: UiColors().primaryBlue,
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: const Text(

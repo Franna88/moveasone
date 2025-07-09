@@ -12,6 +12,9 @@ import 'package:move_as_one/userSide/userProfile/LastWorkout/LastWorkout.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/editProfile/editProfileMain.dart';
 import 'package:move_as_one/userSide/userProfile/userProfileItems/myProgress/myProgressMain.dart';
 import 'package:move_as_one/Services/debug_service.dart';
+import 'package:move_as_one/admin/adminItems/bookings/chat/myChat.dart';
+import 'package:move_as_one/config/admin_config.dart';
+import 'package:move_as_one/services/trainer_messaging_service.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -193,6 +196,10 @@ class _UserProfileState extends State<UserProfile> {
     } else {
       return "LET'S GET MOVING AGAIN!";
     }
+  }
+
+  void _messageRachelle(BuildContext context) {
+    TrainerMessagingService.messageRachelle(context);
   }
 
   @override
@@ -443,7 +450,7 @@ class _UserProfileState extends State<UserProfile> {
                     child: Text(
                       email,
                       style: TextStyle(
-                        color: Color(0xFF006261),
+                        color: Color(0xFF6699CC),
                         fontSize: 14,
                         fontFamily: 'Be Vietnam',
                         fontWeight: FontWeight.w500,
@@ -467,7 +474,7 @@ class _UserProfileState extends State<UserProfile> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 19),
                           decoration: ShapeDecoration(
-                            color: Color(0xFFAA5F3A),
+                            color: Color(0xFF6699CC),
                             shape: RoundedRectangleBorder(
                               side: BorderSide(
                                   width: 1, color: Color(0xFF1E1E1E)),
@@ -475,7 +482,9 @@ class _UserProfileState extends State<UserProfile> {
                             ),
                           ),
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              _messageRachelle(context);
+                            },
                             child: Center(
                               child: Text(
                                 'Message Rachelle',

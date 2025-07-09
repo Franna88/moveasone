@@ -70,7 +70,7 @@ class _ExerciseDropDownState extends State<ExerciseDropDown> {
                           widget.addSectionPress();
                         },
                         style: TextButton.styleFrom(
-                          backgroundColor: Color(0xFFAA5F3A),
+                          backgroundColor: Color(0xFF6699CC),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),

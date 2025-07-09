@@ -112,11 +112,7 @@ class VideoPlayerDemo extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: workoutType == 'warmUp'
-                          ? UiColors().teal
-                          : workoutType == 'workouts'
-                              ? UiColors().brown
-                              : Colors.blue,
+                      color: UiColors().primaryBlue,
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(

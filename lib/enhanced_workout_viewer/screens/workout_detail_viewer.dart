@@ -196,7 +196,7 @@ class _WorkoutDetailViewerState extends State<WorkoutDetailViewer> {
             child: ElevatedButton(
               onPressed: () => _startWorkout(context, workout),
               style: ElevatedButton.styleFrom(
-                backgroundColor: UiColors().brown,
+                backgroundColor: UiColors().primaryBlue,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
@@ -384,7 +384,7 @@ class _WorkoutDetailViewerState extends State<WorkoutDetailViewer> {
         ),
         child: Column(
           children: [
-            Icon(icon, color: UiColors().brown, size: 24),
+            Icon(icon, color: UiColors().primaryBlue, size: 24),
             const SizedBox(height: 8),
             Text(
               value,
@@ -461,7 +461,7 @@ class _WorkoutDetailViewerState extends State<WorkoutDetailViewer> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? UiColors().brown : Colors.transparent,
+            color: isSelected ? UiColors().primaryBlue : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Center(

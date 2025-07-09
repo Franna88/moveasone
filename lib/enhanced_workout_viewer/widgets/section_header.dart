@@ -54,7 +54,7 @@ class SectionHeader extends StatelessWidget {
                     Text(
                       actionText!,
                       style: TextStyle(
-                        color: UiColors().brown,
+                        color: UiColors().primaryBlue,
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
                       ),
@@ -62,7 +62,7 @@ class SectionHeader extends StatelessWidget {
                   if (actionIcon != null)
                     Icon(
                       actionIcon,
-                      color: UiColors().brown,
+                      color: UiColors().primaryBlue,
                       size: 20,
                     ),
                 ],

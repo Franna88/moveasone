@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:move_as_one/commonUi/uiColors.dart';
 
 class PhaseTransitionScreen extends StatefulWidget {
   final String fromPhase;
@@ -25,6 +26,9 @@ class _PhaseTransitionScreenState extends State<PhaseTransitionScreen>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+
+  // Use app's color scheme
+  final UiColors _colors = UiColors();
 
   String get _phaseTitle {
     switch (widget.toPhase.toLowerCase()) {
@@ -72,18 +76,8 @@ class _PhaseTransitionScreenState extends State<PhaseTransitionScreen>
   }
 
   Color get _phaseColor {
-    switch (widget.toPhase.toLowerCase()) {
-      case 'warmup':
-      case 'warm-up':
-        return Colors.orange;
-      case 'workouts':
-        return Colors.red;
-      case 'cooldowns':
-      case 'cool-down':
-        return Colors.blue;
-      default:
-        return Colors.purple;
-    }
+    // Always return primary blue for consistency
+    return _colors.primaryBlue;
   }
 
   @override

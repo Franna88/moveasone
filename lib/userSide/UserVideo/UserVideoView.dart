@@ -44,7 +44,7 @@ class _UservideoviewState extends State<Uservideoview> {
                   Container(
                     height: 3,
                     width: MyUtility(context).width / 2.1,
-                    decoration: BoxDecoration(color: Color(0xFF006261)),
+                    decoration: BoxDecoration(color: Color(0xFF6699CC)),
                   ),
                 ],
               ),

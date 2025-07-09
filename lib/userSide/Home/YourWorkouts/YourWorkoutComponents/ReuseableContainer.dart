@@ -77,7 +77,7 @@ class ReuseableContainer extends StatelessWidget {
                     Text(
                       day,
                       style: TextStyle(
-                        color: Color(0xFFAA5F3A),
+                        color: Color(0xFF6699CC),
                         fontSize: 22,
                         fontFamily: 'Be Vietnam',
                         shadows: [

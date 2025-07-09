@@ -72,7 +72,7 @@ class _HowTallState extends State<HowTall> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
                   child: Container(
                     width: MyUtility(context).width * 0.9,
                     padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
@@ -161,7 +161,7 @@ class _HowTallState extends State<HowTall> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
                       child: Container(
                         width: MyUtility(context).width * 0.7,
                         height: MyUtility(context).height * 0.4,

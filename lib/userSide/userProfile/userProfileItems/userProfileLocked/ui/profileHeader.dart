@@ -6,19 +6,15 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var widthDevice = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.only(top: 25, bottom: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
+      child: Stack(
         children: [
-          const SizedBox(
-            width: 15,
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
+          // Back button positioned on the left
+          Positioned(
+            left: 15,
+            top: 0,
+            bottom: 0,
             child: InkWell(
               onTap: () {
                 Navigator.pop(context);
@@ -30,17 +26,15 @@ class ProfileHeader extends StatelessWidget {
               ),
             ),
           ),
-          Container(
-            width: widthDevice * 0.80,
-            child: Center(
-              child: Text(
-                textAlign: TextAlign.center,
-                header,
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                    letterSpacing: 0.5,
-                    fontWeight: FontWeight.w400),
+          // Centered header text
+          Center(
+            child: Text(
+              header,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+                letterSpacing: 0.5,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),

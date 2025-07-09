@@ -4,7 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:move_as_one/BottomNavBar/BottomNavBar.dart';
 import 'package:move_as_one/HomePage.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/adminHomeItems/workoutsFullLenght.dart';
-import 'package:move_as_one/Services/debug_service.dart';
+import 'package:move_as_one/services/debug_service.dart';
+import 'package:move_as_one/services/admin_user_service.dart';
 
 class UserState extends StatefulWidget {
   const UserState({super.key});
@@ -29,6 +30,9 @@ class _UserStateState extends State<UserState> {
     DebugService().log('Starting user type check', LogLevel.info, tag: 'AUTH');
 
     try {
+      // Initialize admin user when app starts
+      AdminUserService.ensureAdminUserExists();
+
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         DebugService()

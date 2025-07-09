@@ -32,7 +32,7 @@ class BottomButtonContainer extends StatelessWidget {
             child: CommonButtons(
                 buttonText: buttonText,
                 onTap: onPressed,
-                buttonColor: UiColors().brown),
+                buttonColor: UiColors().primaryBlue),
           ),
         ],
       ),

@@ -94,7 +94,7 @@ class _DoneScreenState extends State<DoneScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   NavVideoButton(
-                    buttonColor: UiColors().brown,
+                    buttonColor: UiColors().primaryBlue,
                     buttonText: 'Finish Workout',
                     onTap: () async {
                       await _updateUserExercises();

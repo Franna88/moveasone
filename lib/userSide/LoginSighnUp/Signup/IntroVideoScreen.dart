@@ -4,8 +4,36 @@ import 'package:video_player/video_player.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Login/Signin.dart'; // Adjust the import based on your file structure
 //import 'package:auto_orientation/auto_orientation.dart';
 import 'package:flutter/services.dart';
+import 'package:move_as_one/Services/auth_services.dart';
+import 'package:move_as_one/userSide/LoginSighnUp/Signup/Signup.dart';
+import 'package:move_as_one/userSide/InfoQuiz/Goal/Goal.dart';
 
 class IntroVideoScreen extends StatefulWidget {
+  final String? userName;
+  final String? email;
+  final String? password;
+  final String? goal;
+  final String? weight;
+  final String? gender;
+  final String? age;
+  final String? height;
+  final String? weightUnit;
+  final String? activityLevel;
+
+  const IntroVideoScreen({
+    Key? key,
+    this.userName,
+    this.email,
+    this.password,
+    this.goal,
+    this.weight,
+    this.gender,
+    this.age,
+    this.height,
+    this.weightUnit,
+    this.activityLevel,
+  }) : super(key: key);
+
   @override
   _IntroVideoScreenState createState() => _IntroVideoScreenState();
 }
@@ -13,6 +41,7 @@ class IntroVideoScreen extends StatefulWidget {
 class _IntroVideoScreenState extends State<IntroVideoScreen> {
   late VideoPlayerController _controller;
   bool _showControls = false;
+  bool _hasNavigated = false;
   Timer? _timer;
 
   @override
@@ -29,15 +58,48 @@ class _IntroVideoScreenState extends State<IntroVideoScreen> {
       });
 
     _controller.addListener(() {
-      if (_controller.value.position == _controller.value.duration) {
+      // Check if video has actually finished playing and we haven't navigated yet
+      if (!_hasNavigated &&
+          _controller.value.isInitialized &&
+          _controller.value.duration.inMilliseconds > 0 &&
+          _controller.value.position.inMilliseconds >=
+              _controller.value.duration.inMilliseconds - 100) {
+        _hasNavigated = true; // Prevent multiple navigations
+
         // AutoOrientation
         //     .portraitAutoMode(); // Switch back to portrait orientation
         SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
             overlays: SystemUiOverlay.values); // Disable fullscreen mode
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Signin()),
-        );
+
+        // If signup parameters are provided (coming from sign up button), proceed with signup
+        if (widget.userName != null &&
+            widget.email != null &&
+            widget.password != null) {
+          _proceedWithSignup();
+        }
+        // If user data is provided (coming from analysis screen), navigate to signup form
+        else if (widget.goal != null) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Signup(
+                      goal: widget.goal!,
+                      gender: widget.gender!,
+                      age: widget.age!,
+                      height: widget.height!,
+                      weight: widget.weight!,
+                      weightUnit: widget.weightUnit!,
+                      activityLevel: widget.activityLevel!,
+                    )),
+          );
+        }
+        // Otherwise, navigate to goal selection (start info quiz) - coming from signin "Sign up" button
+        else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const Goal()),
+          );
+        }
       }
     });
   }
@@ -54,6 +116,26 @@ class _IntroVideoScreenState extends State<IntroVideoScreen> {
           _showControls = false;
         });
       });
+    }
+  }
+
+  void _proceedWithSignup() async {
+    if (widget.userName != null &&
+        widget.email != null &&
+        widget.password != null) {
+      await AuthService().Signup(
+        userName: widget.userName!,
+        email: widget.email!,
+        password: widget.password!,
+        goal: widget.goal ?? '',
+        weight: widget.weight ?? '',
+        gender: widget.gender ?? '',
+        age: widget.age ?? '',
+        height: widget.height ?? '',
+        weightUnit: widget.weightUnit ?? '',
+        activityLevel: widget.activityLevel ?? '',
+        context: context,
+      );
     }
   }
 
@@ -90,6 +172,36 @@ class _IntroVideoScreenState extends State<IntroVideoScreen> {
                         child: VideoPlayer(_controller),
                       )
                     : Center(child: CircularProgressIndicator()),
+              ),
+              // Back button - always visible
+              Positioned(
+                top: 40,
+                left: 16,
+                child: SafeArea(
+                  child: GestureDetector(
+                    onTap: () {
+                      // Restore system UI mode before navigating back
+                      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+                          overlays: SystemUiOverlay.values);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Signin()),
+                      );
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.5),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ),
               ),
               _showControls
                   ? Positioned.fill(

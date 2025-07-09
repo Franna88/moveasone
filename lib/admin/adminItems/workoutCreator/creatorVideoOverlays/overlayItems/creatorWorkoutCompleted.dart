@@ -3,6 +3,7 @@ import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays
 import 'package:move_as_one/commonUi/navVideoButton.dart';
 import 'package:move_as_one/commonUi/uiColors.dart';
 import 'package:video_player/video_player.dart';
+import '../../../../../Services/enhanced_video_service.dart';
 
 class CreatorWorkoutCompleted extends StatefulWidget {
   final String videoUrl;
@@ -20,16 +21,48 @@ class _CreatorWorkoutCompletedState extends State<CreatorWorkoutCompleted> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(widget.videoUrl)
-      ..initialize().then((_) {
-        setState(() {});
-      });
+    _initializeVideo();
+  }
 
-    _controller.addListener(() {
-      setState(() {
-        _isPlaying = _controller.value.isPlaying;
-      });
-    });
+  Future<void> _initializeVideo() async {
+    try {
+      // Use EnhancedVideoService for robust video loading
+      final videoService = EnhancedVideoService();
+      final result = await videoService.loadVideo(
+        videoUrl: widget.videoUrl,
+        timeout: const Duration(seconds: 30),
+        maxRetries: 3,
+        checkConnectivity: true,
+      );
+
+      if (mounted) {
+        if (result.state == VideoLoadState.loaded &&
+            result.controller != null) {
+          _controller = result.controller!;
+
+          _controller.addListener(() {
+            if (mounted) {
+              setState(() {
+                _isPlaying = _controller.value.isPlaying;
+              });
+            }
+          });
+
+          setState(() {});
+        } else {
+          // Handle error - show placeholder
+          print('Failed to load video: ${result.errorMessage}');
+          // Create a dummy controller to prevent null errors
+          _controller = VideoPlayerController.networkUrl(Uri.parse(''));
+          setState(() {});
+        }
+      }
+    } catch (e) {
+      print('Video initialization error: $e');
+      // Create a dummy controller to prevent null errors
+      _controller = VideoPlayerController.networkUrl(Uri.parse(''));
+      setState(() {});
+    }
   }
 
   @override

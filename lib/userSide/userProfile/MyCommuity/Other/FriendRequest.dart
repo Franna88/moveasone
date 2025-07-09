@@ -77,8 +77,14 @@ class _FriendRequestState extends State<FriendRequest> {
                             return Text('User not found');
                           }
 
-                          final friendData = friendSnapshot.data!;
-                          final friendName = friendData['name'] as String;
+                          final friendData = friendSnapshot.data!.data()
+                              as Map<String, dynamic>?;
+                          if (friendData == null) {
+                            return Text('User data is empty');
+                          }
+
+                          final friendName =
+                              friendData['name'] as String? ?? 'Unknown';
                           final friendPicture =
                               friendData['profilePic'] as String? ?? '';
 

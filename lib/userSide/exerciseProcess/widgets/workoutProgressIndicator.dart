@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:move_as_one/commonUi/uiColors.dart';
 
 class WorkoutProgressIndicator extends StatelessWidget {
   final String currentPhase;
@@ -20,12 +21,10 @@ class WorkoutProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final UiColors colors = UiColors();
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(20),
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -33,7 +32,7 @@ class WorkoutProgressIndicator extends StatelessWidget {
           _buildPhaseIndicator(
             phase: 'Warm-up',
             icon: Icons.local_fire_department,
-            color: Colors.orange,
+            color: colors.primaryBlue,
             isActive: currentPhase == 'warmUp',
             isCompleted: _isPhaseCompleted('warmUp'),
             hasExercises: totalWarmups > 0,
@@ -47,7 +46,7 @@ class WorkoutProgressIndicator extends StatelessWidget {
             _buildPhaseIndicator(
               phase: 'Workout',
               icon: Icons.fitness_center,
-              color: Colors.red,
+              color: colors.primaryBlue,
               isActive: currentPhase == 'workouts',
               isCompleted: _isPhaseCompleted('workouts'),
               hasExercises: totalWorkouts > 0,
@@ -61,7 +60,7 @@ class WorkoutProgressIndicator extends StatelessWidget {
             _buildPhaseIndicator(
               phase: 'Cool-down',
               icon: Icons.spa,
-              color: Colors.blue,
+              color: colors.primaryBlue,
               isActive: currentPhase == 'coolDowns',
               isCompleted: _isPhaseCompleted('coolDowns'),
               hasExercises: totalCooldowns > 0,
@@ -172,6 +171,7 @@ class WorkoutPhaseProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final UiColors colors = UiColors();
     String phaseTitle = _getPhaseTitle(currentPhase);
     Color phaseColor = _getPhaseColor(currentPhase);
     double progress = totalExercisesInPhase > 0
@@ -248,16 +248,10 @@ class WorkoutPhaseProgress extends StatelessWidget {
   }
 
   Color _getPhaseColor(String phase) {
-    switch (phase.toLowerCase()) {
-      case 'warmup':
-        return Colors.orange;
-      case 'workouts':
-        return Colors.red;
-      case 'cooldowns':
-        return Colors.blue;
-      default:
-        return Colors.purple;
-    }
+    final UiColors colors = UiColors();
+
+    // Always return primary blue for consistency
+    return colors.primaryBlue;
   }
 
   IconData _getPhaseIcon(String phase) {

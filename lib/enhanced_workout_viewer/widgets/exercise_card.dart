@@ -106,7 +106,7 @@ class ExerciseCard extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: UiColors().brown,
+              color: UiColors().primaryBlue,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
@@ -253,7 +253,7 @@ class ExerciseCard extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: UiColors().brown),
+            Icon(icon, size: 16, color: UiColors().primaryBlue),
             const SizedBox(width: 4),
             Text(
               value,

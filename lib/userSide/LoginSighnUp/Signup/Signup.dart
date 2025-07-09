@@ -57,7 +57,8 @@ class _SignupState extends State<Signup> {
 
       return;
     }
-    //awaits on sign ups until passwords are the same.
+
+    // Proceed with signup
     if (password == confirmPassword) {
       await AuthService().Signup(
           userName: _nameController.text,
@@ -68,7 +69,7 @@ class _SignupState extends State<Signup> {
           gender: widget.gender,
           age: widget.age,
           height: widget.height,
-          weightUnit: widget.weight,
+          weightUnit: widget.weightUnit,
           activityLevel: widget.activityLevel,
           context: context);
     }
@@ -96,7 +97,7 @@ class _SignupState extends State<Signup> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
                       child: Container(
                         width: MyUtility(context).width * 0.9,
                         padding:
@@ -172,7 +173,7 @@ class _SignupState extends State<Signup> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
                         child: Container(
                           width: MyUtility(context).width * 0.9,
                           padding: EdgeInsets.symmetric(

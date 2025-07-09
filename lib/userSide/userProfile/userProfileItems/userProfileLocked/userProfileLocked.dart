@@ -12,6 +12,7 @@ import 'package:move_as_one/userSide/userProfile/userProfileItems/userProfileLoc
 import 'package:move_as_one/userSide/userProfile/userProfileItems/userProfileLocked/ui/userStatus.dart';
 import 'package:move_as_one/userSide/workoutPopups/popUpItems/hiFivePopUp.dart';
 import 'package:move_as_one/admin/adminItems/bookings/chat/myChat.dart';
+import 'dart:async';
 
 class UserProfileLocked extends StatefulWidget {
   final String profilePic;
@@ -34,6 +35,9 @@ class UserProfileLocked extends StatefulWidget {
 class _UserProfileLockedState extends State<UserProfileLocked> {
   int hiFiveCount = 0;
   User? currentUser;
+  bool _isDialogOpen = false; // Track if Hi-Five dialog is currently open
+  StreamSubscription? _hiFiveListener; // Store listener reference for disposal
+  DateTime? _lastDialogTime; // Prevent spam dialogs
 
   @override
   void initState() {
@@ -41,6 +45,12 @@ class _UserProfileLockedState extends State<UserProfileLocked> {
     currentUser = FirebaseAuth.instance.currentUser;
     _fetchHiFiveCount();
     _listenForHiFives();
+  }
+
+  @override
+  void dispose() {
+    _hiFiveListener?.cancel(); // Cancel the listener to prevent memory leaks
+    super.dispose();
   }
 
   Future<void> _fetchHiFiveCount() async {
@@ -101,7 +111,7 @@ class _UserProfileLockedState extends State<UserProfileLocked> {
   void _listenForHiFives() {
     if (currentUser == null) return;
 
-    FirebaseFirestore.instance
+    _hiFiveListener = FirebaseFirestore.instance
         .collection('users')
         .doc(currentUser!.uid)
         .collection('hiFiveNotifications')
@@ -110,12 +120,35 @@ class _UserProfileLockedState extends State<UserProfileLocked> {
       for (var docChange in snapshot.docChanges) {
         if (docChange.type == DocumentChangeType.added) {
           String senderId = docChange.doc['senderId'];
-          // Show the popup only if the notification is not from the current user
-          if (currentUser!.uid != senderId) {
+
+          // Show the popup only if:
+          // 1. Notification is not from the current user
+          // 2. No dialog is currently open
+          // 3. At least 2 seconds have passed since last dialog (prevent spam)
+          final now = DateTime.now();
+          final canShowDialog = currentUser!.uid != senderId &&
+              !_isDialogOpen &&
+              (_lastDialogTime == null ||
+                  now.difference(_lastDialogTime!).inSeconds > 2);
+
+          if (canShowDialog) {
+            _isDialogOpen = true;
+            _lastDialogTime = now;
+
             showDialog(
               context: context,
-              builder: (context) => HiFivePopUp(senderName: 'Someone'),
-            );
+              barrierDismissible: true,
+              builder: (context) => WillPopScope(
+                onWillPop: () async {
+                  _isDialogOpen = false; // Reset flag when dialog is dismissed
+                  return true;
+                },
+                child: HiFivePopUp(senderName: 'Someone'),
+              ),
+            ).then((_) {
+              // Reset flag when dialog is closed by any method
+              _isDialogOpen = false;
+            });
           }
         }
       }
@@ -129,25 +162,42 @@ class _UserProfileLockedState extends State<UserProfileLocked> {
       body: MainContainer(
         children: [
           ProfileHeader(header: 'SEND HI-FIVE'),
-          const SizedBox(height: 20),
+          const SizedBox(height: 25),
+
+          // User profile section
           Padding(
-            padding: const EdgeInsets.only(left: 20, bottom: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                // User image
                 UserImage(userImage: widget.profilePic),
-                const SizedBox(width: 30),
-                ExercisesAmount(amountOfExercises: '103'),
-                const SizedBox(width: 30),
-                HiFiveAmount(hiFivesAmount: '$hiFiveCount'),
+                const SizedBox(width: 20),
+                // Stats section with proper spacing
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: ExercisesAmount(amountOfExercises: '103'),
+                      ),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: HiFiveAmount(hiFivesAmount: '$hiFiveCount'),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
+          const SizedBox(height: 25),
+
+          // User details section
           UserNameTag(userName: widget.name, userTag: '@anikko_334'),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: UserStatus(userStatus: widget.bio),
-          ),
+          UserStatus(userStatus: widget.bio),
+          // Action buttons with better spacing
+          const SizedBox(height: 10),
           ProfileInteractButton(
             buttonChild: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -159,11 +209,14 @@ class _UserProfileLockedState extends State<UserProfileLocked> {
                     fontFamily: 'BeVietnam',
                     fontSize: 16,
                     color: Colors.black,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
+                const SizedBox(width: 8),
                 Icon(
                   Icons.front_hand_sharp,
                   color: Colors.yellow,
+                  size: 20,
                 ),
               ],
             ),
@@ -177,6 +230,7 @@ class _UserProfileLockedState extends State<UserProfileLocked> {
                 fontFamily: 'BeVietnam',
                 fontSize: 16,
                 color: Colors.black,
+                fontWeight: FontWeight.w500,
               ),
             ),
             onTap: () {
@@ -191,6 +245,7 @@ class _UserProfileLockedState extends State<UserProfileLocked> {
                 fontFamily: 'BeVietnam',
                 fontSize: 16,
                 color: Colors.black,
+                fontWeight: FontWeight.w500,
               ),
             ),
             onTap: () {
@@ -205,6 +260,7 @@ class _UserProfileLockedState extends State<UserProfileLocked> {
                 fontFamily: 'BeVietnam',
                 fontSize: 16,
                 color: Colors.black,
+                fontWeight: FontWeight.w500,
               ),
             ),
             onTap: () {
@@ -227,8 +283,9 @@ class _UserProfileLockedState extends State<UserProfileLocked> {
               }
             },
           ),
-          SizedBox(height: heightDevice * 0.06),
+          const SizedBox(height: 30),
           ProfileProtected(),
+          const SizedBox(height: 30),
         ],
       ),
     );

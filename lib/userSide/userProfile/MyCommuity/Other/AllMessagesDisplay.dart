@@ -146,7 +146,11 @@ class _AllMessagesDisplayState extends State<AllMessagesDisplay> {
               );
             }
 
-            final friendData = snapshot.data!;
+            final friendData = snapshot.data!.data() as Map<String, dynamic>?;
+            if (friendData == null) {
+              return SizedBox.shrink();
+            }
+
             final friendName = friendData['name'] as String? ?? 'Unknown';
             final friendPic =
                 friendData['profilePic'] as String? ?? 'images/Avatar1.jpg';

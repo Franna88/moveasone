@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:just_audio/just_audio.dart';
 import 'setsAndRepsTracker.dart';
+import '../../../Services/enhanced_video_service.dart';
+import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/setsAndRepsTracker.dart';
+import 'package:move_as_one/commonUi/uiColors.dart';
 
 class EnhancedExerciseScreen extends StatefulWidget {
   final Map<String, dynamic> exerciseData;
@@ -26,12 +29,20 @@ class _EnhancedExerciseScreenState extends State<EnhancedExerciseScreen> {
   bool _isMediaLoaded = false;
   bool _isMediaPlaying = false;
   String _statusMessage = '';
+  bool _isLoading = true;
+  final UiColors _colors = UiColors();
+
+  // Get phase color - always use primary blue for consistency
+  Color get _phaseColor {
+    return _colors.primaryBlue;
+  }
 
   @override
   void initState() {
     super.initState();
     _initializeMedia();
     _determineMediaMode();
+    _initializeExercise();
   }
 
   void _determineMediaMode() {
@@ -67,32 +78,51 @@ class _EnhancedExerciseScreenState extends State<EnhancedExerciseScreen> {
     }
   }
 
-  void _initializeVideo(String videoUrl) {
+  void _initializeVideo(String videoUrl) async {
     try {
       print('DEBUG: Initializing video with URL: $videoUrl');
-      _videoController = VideoPlayerController.network(videoUrl);
-      _videoController!.initialize().then((_) {
-        if (mounted) {
+
+      setState(() {
+        _isMediaLoaded = false;
+        _statusMessage = 'Loading video...';
+      });
+
+      // Use EnhancedVideoService for robust video loading
+      final videoService = EnhancedVideoService();
+      final result = await videoService.loadVideo(
+        videoUrl: videoUrl,
+        timeout: const Duration(seconds: 30),
+        maxRetries: 3,
+        checkConnectivity: true,
+      );
+
+      if (mounted) {
+        if (result.state == VideoLoadState.loaded &&
+            result.controller != null) {
+          _videoController = result.controller!;
           setState(() {
             _isMediaLoaded = true;
             _statusMessage = 'Video loaded - tap to play';
           });
-        }
-      }).catchError((error) {
-        print('DEBUG: Video initialization error: $error');
-        if (mounted) {
+          print('DEBUG: Video loaded successfully');
+        } else {
+          print('DEBUG: Video loading failed: ${result.errorMessage}');
           setState(() {
             _isMediaLoaded = true;
-            _statusMessage = 'Video unavailable - follow instructions';
+            _statusMessage = result.state == VideoLoadState.networkError
+                ? 'Network error - check connection'
+                : 'Video unavailable - follow instructions';
           });
         }
-      });
+      }
     } catch (e) {
       print('DEBUG: Video setup error: $e');
-      setState(() {
-        _isMediaLoaded = true;
-        _statusMessage = 'Video error - follow instructions';
-      });
+      if (mounted) {
+        setState(() {
+          _isMediaLoaded = true;
+          _statusMessage = 'Video error - follow instructions';
+        });
+      }
     }
   }
 
@@ -164,6 +194,23 @@ class _EnhancedExerciseScreenState extends State<EnhancedExerciseScreen> {
     widget.onStatusUpdate(status);
   }
 
+  void _initializeExercise() async {
+    setState(() {
+      _isLoading = true;
+      _statusMessage = 'Loading exercise...';
+    });
+
+    // Simulate loading time
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+        _statusMessage = '';
+      });
+    }
+  }
+
   void _showExitConfirmation(BuildContext context) {
     showDialog(
       context: context,
@@ -224,14 +271,14 @@ class _EnhancedExerciseScreenState extends State<EnhancedExerciseScreen> {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
-                color: Colors.deepPurple.withOpacity(0.1),
+                color: _phaseColor.withOpacity(0.1),
                 child: Text(
                   _statusMessage,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: Colors.deepPurple,
+                    color: _phaseColor,
                   ),
                 ),
               ),
@@ -266,9 +313,19 @@ class _EnhancedExerciseScreenState extends State<EnhancedExerciseScreen> {
               child: Container(
                 margin: const EdgeInsets.all(16),
                 child: SetsAndRepsTracker(
-                  exerciseData: widget.exerciseData,
-                  onExerciseComplete: widget.onComplete,
-                  onStatusUpdate: _onStatusUpdate,
+                  exerciseName: widget.exerciseData['name'] ?? 'Exercise',
+                  totalSets: int.tryParse(
+                          widget.exerciseData['setTotal']?.toString() ?? '1') ??
+                      1,
+                  repsPerSet: int.tryParse(
+                          widget.exerciseData['repsTotal']?.toString() ??
+                              '1') ??
+                      1,
+                  exerciseDuration: widget.exerciseData['duration'] ?? 30,
+                  isTimeBased: widget.exerciseData['isTimeBased'] ?? false,
+                  restBetweenSets: widget.exerciseData['timer'] ?? 30,
+                  workoutType: widget.exerciseData['type'] ?? 'workouts',
+                  onComplete: widget.onComplete,
                 ),
               ),
             ),

@@ -4,6 +4,7 @@ import 'package:video_player/video_player.dart';
 
 import '../../../admin/adminItems/workoutCreator/creatorVideoOverlays/ui/commonOverlayHeader.dart';
 import '../../../commonUi/navVideoButton.dart';
+import '../../../Services/enhanced_video_service.dart';
 
 class VideoScreen extends StatefulWidget {
   Function changePageIndex;
@@ -28,33 +29,66 @@ class VideoScreen extends StatefulWidget {
 }
 
 class _VideoScreenState extends State<VideoScreen> {
-  late VideoPlayerController _controller;
+  VideoPlayerController? _controller;
   bool _isPlaying = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(widget.videoUrl)
-      ..initialize().then((_) {
-        setState(() {});
-      });
+    _initializeVideo();
+  }
 
-    _controller.addListener(() {
-      setState(() {
-        _isPlaying = _controller.value.isPlaying;
-      });
-    });
+  Future<void> _initializeVideo() async {
+    try {
+      // Use EnhancedVideoService for robust video loading
+      final videoService = EnhancedVideoService();
+      final result = await videoService.loadVideo(
+        videoUrl: widget.videoUrl,
+        timeout: const Duration(seconds: 30),
+        maxRetries: 3,
+        checkConnectivity: true,
+      );
+
+      if (mounted) {
+        if (result.state == VideoLoadState.loaded &&
+            result.controller != null) {
+          _controller = result.controller!;
+
+          _controller!.addListener(() {
+            if (mounted) {
+              setState(() {
+                _isPlaying = _controller!.value.isPlaying;
+              });
+            }
+          });
+
+          setState(() {});
+        } else {
+          // Handle error - could show a snackbar or error message
+          print('Failed to load video: ${result.errorMessage}');
+          // Don't create a controller if loading failed
+          setState(() {});
+        }
+      }
+    } catch (e) {
+      print('Video initialization error: $e');
+      // Don't create a controller if initialization failed
+      setState(() {});
+    }
   }
 
   getVideoPosition() {
-    var duration = Duration(
-        milliseconds: _controller.value.position.inMilliseconds.round());
-    return duration.inSeconds;
+    if (_controller != null) {
+      var duration = Duration(
+          milliseconds: _controller!.value.position.inMilliseconds.round());
+      return duration.inSeconds;
+    }
+    return 0;
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -67,20 +101,20 @@ class _VideoScreenState extends State<VideoScreen> {
       width: widthDevice,
       child: Stack(
         children: [
-          _controller.value.isInitialized
+          _controller != null && _controller!.value.isInitialized
               ? GestureDetector(
                   onTap: () {
                     setState(() {
-                      _isPlaying ? _controller.pause() : _controller.play();
+                      _isPlaying ? _controller!.pause() : _controller!.play();
                     });
                   },
                   child: SizedBox.expand(
                     child: FittedBox(
                       fit: BoxFit.cover,
                       child: SizedBox(
-                        width: _controller.value.size.width,
-                        height: _controller.value.size.height,
-                        child: VideoPlayer(_controller),
+                        width: _controller!.value.size.width,
+                        height: _controller!.value.size.height,
+                        child: VideoPlayer(_controller!),
                       ),
                     ),
                   ),
@@ -149,12 +183,15 @@ class _VideoScreenState extends State<VideoScreen> {
                         children: [
                           NavVideoButton(
                             buttonColor: UiColors().teal,
-                            buttonText:
-                                'Watch - ${_controller.value.duration.inMinutes} : ${_controller.value.duration.inSeconds}',
+                            buttonText: _controller != null
+                                ? 'Watch - ${_controller!.value.duration.inMinutes} : ${_controller!.value.duration.inSeconds}'
+                                : 'Video Loading...',
                             onTap: () {
-                              setState(() {
-                                _controller.play();
-                              });
+                              if (_controller != null) {
+                                setState(() {
+                                  _controller!.play();
+                                });
+                              }
                             },
                           ),
                           SizedBox(

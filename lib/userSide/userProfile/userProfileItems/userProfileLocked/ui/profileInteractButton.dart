@@ -8,22 +8,23 @@ class ProfileInteractButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var widthDevice = MediaQuery.of(context).size.width;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          width: widthDevice * 0.90,
+          width: double.infinity,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(28),
-            border: Border.all(color: Colors.black),
-          ),
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 15),
-              child: buttonChild,
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(
+              color: Colors.black,
+              width: 1.5,
             ),
+            color: Colors.white,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 18),
+            child: Center(child: buttonChild),
           ),
         ),
       ),

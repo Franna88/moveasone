@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:move_as_one/config/admin_config.dart';
+import 'package:move_as_one/services/admin_user_service.dart';
 
 class BottomChatTextField extends StatefulWidget {
   final String chatId;
   final String receiverId;
   final String receiverName;
   final String receiverPic;
+  final Function(String)? onTextChanged;
 
   const BottomChatTextField({
     super.key,
@@ -14,6 +17,7 @@ class BottomChatTextField extends StatefulWidget {
     required this.receiverId,
     required this.receiverName,
     required this.receiverPic,
+    this.onTextChanged,
   });
 
   @override
@@ -34,11 +38,57 @@ class _BottomChatTextFieldState extends State<BottomChatTextField> {
     final message = _controller.text.trim();
     _controller.clear();
 
+    // Clear typing status when message is sent
+    if (widget.onTextChanged != null) {
+      widget.onTextChanged!('');
+    }
+
     final currentUserId = currentUser.uid;
     final receiverId = widget.receiverId;
 
     try {
-      // Get the current timestamp
+      // NEW: Check if the receiver is a trainer (e.g., "Rachelle") and not the admin themselves
+      if (AdminConfig.isTrainer(widget.receiverName) &&
+          currentUserId != AdminConfig.ADMIN_USER_ID) {
+        final userDoc =
+            await _firestore.collection('users').doc(currentUserId).get();
+        final userName = userDoc.exists
+            ? (userDoc.data() as Map<String, dynamic>)['name'] ?? 'Anonymous'
+            : 'Anonymous';
+
+        await AdminUserService.storeMessageToAdmin(
+          senderId: currentUserId,
+          message: message,
+          senderName: userName,
+        );
+        print(
+            'Message to ${widget.receiverName} redirected to admin via AdminUserService');
+        return;
+      }
+
+      // Check if messaging admin/trainer
+      if (receiverId == AdminConfig.ADMIN_USER_ID) {
+        // Use AdminUserService for trainer messages
+        // Get the user's name from their document
+        final userDoc =
+            await _firestore.collection('users').doc(currentUserId).get();
+        final userName = userDoc.exists
+            ? (userDoc.data() as Map<String, dynamic>)['name'] ??
+                (userDoc.data() as Map<String, dynamic>)['userName'] ??
+                currentUser.displayName ??
+                'Anonymous'
+            : 'Anonymous';
+
+        await AdminUserService.storeMessageToAdmin(
+          senderId: currentUserId,
+          message: message,
+          senderName: userName,
+        );
+        print('Message sent to admin via AdminUserService');
+        return;
+      }
+
+      // Regular user-to-user messaging
       final timestamp = Timestamp.now();
 
       // Fetch the current user's document
@@ -162,6 +212,7 @@ class _BottomChatTextFieldState extends State<BottomChatTextField> {
                 child: TextField(
                   controller: _controller,
                   cursorColor: Colors.black,
+                  onChanged: widget.onTextChanged,
                   decoration: InputDecoration(
                     hintStyle: TextStyle(fontSize: 16),
                     hintText: 'Type your message...',
@@ -176,7 +227,7 @@ class _BottomChatTextFieldState extends State<BottomChatTextField> {
                   height: 30,
                   width: 30,
                   decoration: ShapeDecoration(
-                    color: Colors.teal,
+                    color: Color(0xFF6699CC),
                     shape: CircleBorder(),
                   ),
                   child: Icon(Icons.send, color: Colors.white, size: 16),

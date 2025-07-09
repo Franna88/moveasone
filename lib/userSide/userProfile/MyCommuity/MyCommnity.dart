@@ -18,9 +18,9 @@ class _MyCommunityState extends State<MyCommunity>
   late AnimationController _animationController;
 
   // Modern wellness color scheme
-  final Color primaryColor = const Color(0xFF025959); // Deep Teal
-  final Color secondaryColor = const Color(0xFF01B3B3); // Bright Teal
-  final Color accentColor = const Color(0xFF94FBAB); // Mint/Lime
+  final Color primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+  final Color secondaryColor = const Color(0xFF7FB2DE); // Light Blue
+  final Color accentColor = const Color(0xFFA3E1DB); // Pale Turquoise
   final Color backgroundColor =
       const Color(0xFFF8FFFA); // Off-white with hint of mint
 

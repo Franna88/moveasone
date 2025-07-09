@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:move_as_one/commonUi/uiColors.dart';
 
 class WorkoutStartScreen extends StatefulWidget {
   final Map entireExercise;
@@ -25,6 +26,9 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen>
   int totalCooldowns = 0;
   int estimatedDuration = 0;
   bool _isButtonPressed = false;
+
+  // Use app's color scheme
+  final UiColors _colors = UiColors();
 
   @override
   void initState() {
@@ -106,8 +110,8 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen>
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.deepPurple.withOpacity(0.1),
-              Colors.purple.withOpacity(0.05),
+              _colors.primaryBlue.withOpacity(0.1),
+              _colors.primaryBlue.withOpacity(0.05),
             ],
           ),
         ),
@@ -152,22 +156,22 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen>
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.deepPurple.withOpacity(0.2),
+                            color: _colors.primaryBlue.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.access_time,
                                 size: 16,
-                                color: Colors.deepPurple,
+                                color: _colors.primaryBlue,
                               ),
                               const SizedBox(width: 8),
                               Text(
                                 '${estimatedDuration}min',
-                                style: const TextStyle(
-                                  color: Colors.deepPurple,
+                                style: TextStyle(
+                                  color: _colors.primaryBlue,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -227,7 +231,7 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen>
                                 subtitle:
                                     '$totalWarmups exercise${totalWarmups > 1 ? 's' : ''}',
                                 icon: Icons.local_fire_department,
-                                color: Colors.orange,
+                                color: _colors.primaryBlue,
                                 description:
                                     'Prepare your body for the workout',
                               ),
@@ -237,7 +241,7 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen>
                                 subtitle:
                                     '$totalWorkouts exercise${totalWorkouts > 1 ? 's' : ''}',
                                 icon: Icons.fitness_center,
-                                color: Colors.red,
+                                color: _colors.primaryBlue,
                                 description:
                                     'Push your limits and get stronger',
                               ),
@@ -247,7 +251,7 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen>
                                 subtitle:
                                     '$totalCooldowns exercise${totalCooldowns > 1 ? 's' : ''}',
                                 icon: Icons.spa,
-                                color: Colors.blue,
+                                color: _colors.primaryBlue,
                                 description: 'Relax and recover properly',
                               ),
                           ],
@@ -276,7 +280,7 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen>
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _isButtonPressed
                               ? Colors.grey
-                              : Colors.deepPurple,
+                              : _colors.primaryBlue,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(28),

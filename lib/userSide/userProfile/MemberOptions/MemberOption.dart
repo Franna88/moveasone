@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/BottomNavBar/BottomNavBar.dart';
 import 'package:move_as_one/userSide/UserProfile/MemberOptions/MemberOptionComponents/MemberOptionsButton.dart';
+import 'package:move_as_one/userSide/UserVideo/UserVideoAdd.dart';
+import 'package:move_as_one/userSide/userProfile/MemberOptions/BookingPage.dart';
+import 'package:move_as_one/userSide/userProfile/MemberOptions/MealPlanRequestPage.dart';
 import 'package:move_as_one/myutility.dart';
 
 class MemberOptions extends StatefulWidget {
@@ -48,21 +51,24 @@ class _MemberOptionsState extends State<MemberOptions> {
             ),
             MemberOptionsButton(
                 images: 'images/memberoptions1.png',
-                memberoptions: "Book a Session",
-                onPressed: () {}),
-            MemberOptionsButton(
-                images: 'images/memberoptions2.png',
-                memberoptions: "Upload Video",
-                onPressed: () {}),
-            MemberOptionsButton(
-                images: 'images/memberoptions3.png',
-                memberoptions: "Send Hi-Five",
+                memberoptions: "Book a mbit",
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            const BottomNavBar(initialIndex: 3)),
+                      builder: (context) => const BookingPage(),
+                    ),
+                  );
+                }),
+            MemberOptionsButton(
+                images: 'images/memberoptions2.png',
+                memberoptions: "Upload Video",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const UserAddVideo(),
+                    ),
                   );
                 }),
             MemberOptionsButton(
@@ -78,7 +84,14 @@ class _MemberOptionsState extends State<MemberOptions> {
             MemberOptionsButton(
                 images: 'images/memberoptions5.png',
                 memberoptions: "Request Meal Plan",
-                onPressed: () {}),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MealPlanRequestPage(),
+                    ),
+                  );
+                }),
             /* MemberOptionsButton(
                 images: 'images/memberoptions6.png',
                 memberoptions: "Settings",

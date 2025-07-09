@@ -23,9 +23,9 @@ class _UpdateHeaderState extends State<UpdateHeader>
   late Animation<Offset> _slideAnimation;
 
   // Modern color palette
-  final Color primaryColor = const Color(0xFF025959);
-  final Color secondaryColor = const Color(0xFF01B3B3);
-  final Color accentColor = const Color(0xFF94FBAB);
+  final Color primaryColor = const Color(0xFF6699CC);
+  final Color secondaryColor = const Color(0xFF7FB2DE);
+  final Color accentColor = const Color(0xFFA3E1DB);
   final Color textColorLight = const Color(0xFFF8FFFA);
 
   @override

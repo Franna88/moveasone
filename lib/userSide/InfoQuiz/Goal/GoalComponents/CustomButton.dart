@@ -29,7 +29,7 @@ class _CustomButtonState extends State<CustomButton> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
             child: Material(
               color: Colors.transparent,
               child: InkWell(

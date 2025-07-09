@@ -34,7 +34,7 @@ class EnhancedWorkoutCreatorConnector {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.teal,
+              backgroundColor: Color(0xFF6699CC),
               foregroundColor: Colors.white,
               minimumSize: const Size(double.infinity, 50),
               shape: RoundedRectangleBorder(
@@ -70,7 +70,7 @@ class EnhancedWorkoutCreatorConnector {
         );
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.teal,
+        backgroundColor: Color(0xFF6699CC),
         foregroundColor: Colors.white,
         minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(

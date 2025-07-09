@@ -54,7 +54,8 @@ class _WatchNotificationsState extends State<WatchNotifications> {
                     context,
                     notificationId: notification.id,
                     userId: data['userId'],
-                    userName: data['userName'],
+                    userName:
+                        data['userName'] ?? data['name'] ?? 'Unknown User',
                     reason: data['reason'],
                     time: data['createdAt'] != null
                         ? (data['createdAt'] as Timestamp).toDate()

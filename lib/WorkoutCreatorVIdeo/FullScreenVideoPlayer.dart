@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../Services/enhanced_video_service.dart';
 
 class FullScreenVideoPlayer extends StatefulWidget {
   final String videoUrl;
@@ -106,23 +107,100 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
     }
   }
 
-  void _initializeVideoPlayer(String url) {
-    _controller = VideoPlayerController.network(url)
-      ..initialize().then((_) {
-        setState(() {
-          _isLoading = false;
-          _controller.play();
-          _isPlaying = true;
-        });
-        _startHideControlsTimer();
+  void _initializeVideoPlayer(String url) async {
+    if (url.isEmpty) {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    print('FullScreenVideoPlayer: Initializing with URL: $url');
+
+    try {
+      // Dispose previous controller if exists
+      _controller.removeListener(() {});
+      _controller.dispose();
+
+      setState(() {
+        _isLoading = true;
       });
 
-    _controller.addListener(() {
-      setState(() {});
-      if (_controller.value.isCompleted) {
-        _playNextVideo();
+      // Use EnhancedVideoService for robust video loading
+      final videoService = EnhancedVideoService();
+      final result = await videoService.loadVideo(
+        videoUrl: url,
+        timeout: const Duration(seconds: 30),
+        maxRetries: 3,
+        checkConnectivity: true,
+      );
+
+      if (mounted) {
+        if (result.state == VideoLoadState.loaded &&
+            result.controller != null) {
+          _controller = result.controller!;
+
+          // Add listener after successful initialization
+          _controller.addListener(() {
+            if (mounted) {
+              setState(() {});
+              if (_controller.value.isCompleted) {
+                _playNextVideo();
+              }
+            }
+          });
+
+          print('FullScreenVideoPlayer: Video initialized successfully');
+          setState(() {
+            _isLoading = false;
+            _controller.play();
+            _isPlaying = true;
+          });
+          _startHideControlsTimer();
+        } else {
+          // Handle different error states
+          setState(() {
+            _isLoading = false;
+          });
+
+          String errorMessage =
+              videoService.getErrorMessage(result.state, result.errorMessage);
+          Color errorColor = result.state == VideoLoadState.networkError
+              ? Colors.orange
+              : Colors.red;
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(errorMessage),
+              backgroundColor: errorColor,
+              action: SnackBarAction(
+                label: 'Retry',
+                textColor: Colors.white,
+                onPressed: () => _initializeVideoPlayer(url),
+              ),
+            ),
+          );
+        }
       }
-    });
+    } catch (error) {
+      print('FullScreenVideoPlayer: Unexpected error: $error');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Unexpected error: ${error.toString()}'),
+            backgroundColor: Colors.red,
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: Colors.white,
+              onPressed: () => _initializeVideoPlayer(url),
+            ),
+          ),
+        );
+      }
+    }
   }
 
   void _disposeCurrentController() {
@@ -254,7 +332,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
 
     return GestureDetector(
       onTap: _toggleControls,
-      behavior: HitTestBehavior.deferToChild,
+      behavior: HitTestBehavior.translucent,
       child: Container(
         color: Colors.black,
         child: Stack(
@@ -306,31 +384,6 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
                         ),
                       ),
 
-            // Always visible back button
-            if (isCurrentVideo)
-              Positioned(
-                top: 0,
-                left: 0,
-                width: 100,
-                height: 100,
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_ios_rounded,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                      onPressed: () {
-                        print('Always visible back button pressed!');
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                ),
-              ),
-
             // Controls overlay
             if (isCurrentVideo)
               FadeTransition(
@@ -362,40 +415,23 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 16),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   IconButton(
                                     icon: Icon(
-                                      Icons.arrow_back_ios_rounded,
+                                      Icons.favorite_border_rounded,
                                       color: Colors.white,
                                       size: 24,
                                     ),
-                                    onPressed: () {
-                                      print(
-                                          'Back button pressed!'); // Debug print
-                                      Navigator.pop(context);
-                                    },
+                                    onPressed: () {},
                                   ),
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.favorite_border_rounded,
-                                          color: Colors.white,
-                                          size: 24,
-                                        ),
-                                        onPressed: () {},
-                                      ),
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.share_rounded,
-                                          color: Colors.white,
-                                          size: 24,
-                                        ),
-                                        onPressed: () {},
-                                      ),
-                                    ],
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.share_rounded,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
+                                    onPressed: () {},
                                   ),
                                 ],
                               ),
@@ -554,6 +590,53 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
                   ),
                 ),
               ),
+
+            // Always visible back button - positioned last to be on top
+            Positioned(
+              top: 0,
+              left: 0,
+              child: SafeArea(
+                child: Container(
+                  margin: const EdgeInsets.all(16),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(25),
+                      onTap: () {
+                        print('🔙 BACK BUTTON PRESSED - NAVIGATING TO HOME!');
+                        print('Current video index: $_currentVideoIndex');
+                        print('Is current video: $isCurrentVideo');
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.8),
+                          borderRadius: BorderRadius.circular(25),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.5),
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.5),
+                              blurRadius: 12,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.arrow_back_ios_rounded,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

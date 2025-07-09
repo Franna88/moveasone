@@ -200,7 +200,7 @@ class _WeightState extends State<Weight> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
                   child: Container(
                     width: MyUtility(context).width * 0.9,
                     padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
@@ -228,7 +228,7 @@ class _WeightState extends State<Weight> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
                   child: Container(
                     width: MyUtility(context).width * 0.9,
                     height: 100,

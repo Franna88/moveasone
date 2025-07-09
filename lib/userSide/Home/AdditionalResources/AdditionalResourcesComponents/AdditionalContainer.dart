@@ -19,43 +19,64 @@ class AdditionsalContainer extends StatefulWidget {
 class _AdditionsalContainerState extends State<AdditionsalContainer> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return Container(
+      height: MyUtility(context).height * 0.25,
+      width: double.infinity,
+      constraints: BoxConstraints(
+        maxWidth: double.infinity,
+        minWidth: 200,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.0),
+        image: DecorationImage(
+          image: AssetImage(widget.image),
+          fit: BoxFit.cover,
+        ),
+      ),
       child: Container(
-        height: MyUtility(context).height * 0.25,
-        width: MyUtility(context).width / 1.2,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30.0),
-          image: DecorationImage(
-            image: AssetImage(widget.image),
-            fit: BoxFit.fill,
+          borderRadius: BorderRadius.circular(20.0),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.transparent,
+              Colors.black.withOpacity(0.7),
+            ],
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text(
-                widget.header,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontFamily: 'Be Vietnam',
+              Flexible(
+                child: Text(
+                  widget.header,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontFamily: 'Be Vietnam',
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Opacity(
-                opacity: 0.50,
+              const SizedBox(height: 4),
+              Flexible(
                 child: Text(
                   widget.discription,
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 14,
                     fontFamily: 'Inter',
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              )
+              ),
             ],
           ),
         ),

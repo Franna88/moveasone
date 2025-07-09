@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:move_as_one/commonUi/uiColors.dart';
 
 class SetsAndRepsTracker extends StatefulWidget {
-  final Map<String, dynamic> exerciseData;
-  final VoidCallback onExerciseComplete;
-  final Function(String) onStatusUpdate;
+  final String exerciseName;
+  final int totalSets;
+  final int repsPerSet;
+  final int exerciseDuration;
+  final bool isTimeBased;
+  final int restBetweenSets;
+  final Function() onComplete;
+  final String workoutType; // Added to determine phase colors
 
   const SetsAndRepsTracker({
-    Key? key,
-    required this.exerciseData,
-    required this.onExerciseComplete,
-    required this.onStatusUpdate,
-  }) : super(key: key);
+    super.key,
+    required this.exerciseName,
+    required this.totalSets,
+    required this.repsPerSet,
+    required this.exerciseDuration,
+    required this.isTimeBased,
+    required this.restBetweenSets,
+    required this.onComplete,
+    this.workoutType = 'workouts', // Default to main workout
+  });
 
   @override
   State<SetsAndRepsTracker> createState() => _SetsAndRepsTrackerState();
@@ -19,25 +30,24 @@ class SetsAndRepsTracker extends StatefulWidget {
 
 class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
     with TickerProviderStateMixin {
-  late AnimationController _progressController;
-  late AnimationController _pulseController;
+  int completedSets = 0;
+  int currentSet = 1;
+  bool isResting = false;
+  bool isExerciseComplete = false;
+  int remainingRestTime = 0;
+  Timer? restTimer;
+
+  late AnimationController _progressAnimationController;
+  late AnimationController _pulseAnimationController;
   late Animation<double> _progressAnimation;
   late Animation<double> _pulseAnimation;
 
-  int currentSet = 1;
-  int completedSets = 0;
-  bool isResting = false;
-  bool isExerciseComplete = false;
-  Timer? _restTimer;
-  int remainingRestTime = 0;
+  final UiColors _colors = UiColors();
 
-  // Exercise data
-  int totalSets = 1;
-  int repsPerSet = 1;
-  int restBetweenSets = 30;
-  bool isTimeBased = false;
-  int exerciseDuration = 30;
-  String exerciseName = '';
+  // Get phase color - always use primary blue for consistency
+  Color get _phaseColor {
+    return _colors.primaryBlue;
+  }
 
   @override
   void initState() {
@@ -47,32 +57,19 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
   }
 
   void _initializeExerciseData() {
-    totalSets =
-        int.tryParse(widget.exerciseData['setTotal']?.toString() ?? '1') ?? 1;
-    repsPerSet =
-        int.tryParse(widget.exerciseData['repsTotal']?.toString() ?? '1') ?? 1;
-    exerciseName = (widget.exerciseData['name'] as String?) ?? 'Exercise';
-    isTimeBased = (widget.exerciseData['isTimeBased'] as bool?) ?? false;
-    exerciseDuration = (widget.exerciseData['duration'] as int?) ?? 30;
-
-    // Get rest time - could be in different fields
-    if (widget.exerciseData['timer'] != null) {
-      restBetweenSets = (widget.exerciseData['timer'] as int?) ?? 30;
-    } else {
-      restBetweenSets = 30; // Default
-    }
+    // These are now passed as constructor arguments
 
     print(
-        'DEBUG: SetsAndRepsTracker initialized - Sets: $totalSets, Reps: $repsPerSet, Rest: $restBetweenSets');
+        'DEBUG: Sets and Reps Tracker initialized - ${widget.exerciseName}: ${widget.totalSets} sets x ${widget.repsPerSet} reps, rest: ${widget.restBetweenSets}s');
   }
 
   void _setupAnimations() {
-    _progressController = AnimationController(
+    _progressAnimationController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
 
-    _pulseController = AnimationController(
+    _pulseAnimationController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
@@ -81,7 +78,7 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(
-      parent: _progressController,
+      parent: _progressAnimationController,
       curve: Curves.easeInOut,
     ));
 
@@ -89,31 +86,31 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
       begin: 1.0,
       end: 1.2,
     ).animate(CurvedAnimation(
-      parent: _pulseController,
+      parent: _pulseAnimationController,
       curve: Curves.elasticInOut,
     ));
 
-    _pulseController.repeat(reverse: true);
+    _pulseAnimationController.repeat(reverse: true);
   }
 
   @override
   void dispose() {
-    _progressController.dispose();
-    _pulseController.dispose();
-    _restTimer?.cancel();
+    _progressAnimationController.dispose();
+    _pulseAnimationController.dispose();
+    restTimer?.cancel();
     super.dispose();
   }
 
   void _completeSet() {
-    if (completedSets < totalSets) {
+    if (completedSets < widget.totalSets) {
       setState(() {
         completedSets++;
         currentSet = completedSets + 1;
       });
 
-      _progressController.animateTo(completedSets / totalSets);
+      _progressAnimationController.animateTo(completedSets / widget.totalSets);
 
-      if (completedSets < totalSets) {
+      if (completedSets < widget.totalSets) {
         // Start rest period
         _startRestPeriod();
       } else {
@@ -126,12 +123,12 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
   void _startRestPeriod() {
     setState(() {
       isResting = true;
-      remainingRestTime = restBetweenSets;
+      remainingRestTime = widget.restBetweenSets;
     });
 
-    widget.onStatusUpdate('Resting between sets...');
+    // widget.onStatusUpdate('Resting between sets...'); // Removed as per new code
 
-    _restTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    restTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         remainingRestTime--;
       });
@@ -141,29 +138,29 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
         setState(() {
           isResting = false;
         });
-        widget.onStatusUpdate('Ready for next set!');
+        // widget.onStatusUpdate('Ready for next set!'); // Removed as per new code
       }
     });
   }
 
   void _skipRest() {
-    _restTimer?.cancel();
+    restTimer?.cancel();
     setState(() {
       isResting = false;
       remainingRestTime = 0;
     });
-    widget.onStatusUpdate('Ready for next set!');
+    // widget.onStatusUpdate('Ready for next set!'); // Removed as per new code
   }
 
   void _completeExercise() {
     setState(() {
       isExerciseComplete = true;
     });
-    widget.onStatusUpdate('Exercise completed!');
+    // widget.onStatusUpdate('Exercise completed!'); // Removed as per new code
 
     // Wait a moment then notify parent
     Future.delayed(const Duration(seconds: 1), () {
-      widget.onExerciseComplete();
+      widget.onComplete();
     });
   }
 
@@ -213,7 +210,7 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
     return Column(
       children: [
         Text(
-          exerciseName,
+          widget.exerciseName,
           style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -223,7 +220,7 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
         ),
         const SizedBox(height: 8),
         Text(
-          'Set $currentSet of $totalSets',
+          'Set $currentSet of ${widget.totalSets}',
           style: TextStyle(
             fontSize: 16,
             color: Colors.grey[600],
@@ -244,9 +241,7 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
               value: _progressAnimation.value,
               backgroundColor: Colors.grey[300],
               valueColor: AlwaysStoppedAnimation<Color>(
-                _progressAnimation.value == 1.0
-                    ? Colors.green
-                    : Colors.deepPurple,
+                _progressAnimation.value == 1.0 ? Colors.green : _phaseColor,
               ),
               minHeight: 8,
             );
@@ -257,7 +252,7 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
         // Individual set indicators
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(totalSets, (index) {
+          children: List.generate(widget.totalSets, (index) {
             bool isCompleted = index < completedSets;
             bool isCurrent = index == completedSets && !isExerciseComplete;
 
@@ -277,13 +272,11 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
                         color: isCompleted
                             ? Colors.green
                             : isCurrent
-                                ? Colors.deepPurple
+                                ? _phaseColor
                                 : Colors.grey[300],
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: isCurrent
-                              ? Colors.deepPurple
-                              : Colors.transparent,
+                          color: isCurrent ? _phaseColor : Colors.transparent,
                           width: 2,
                         ),
                       ),
@@ -319,25 +312,25 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.deepPurple.withOpacity(0.1),
+        color: _phaseColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.deepPurple.withOpacity(0.3),
+          color: _phaseColor.withOpacity(0.3),
           width: 1,
         ),
       ),
       child: Column(
         children: [
           Icon(
-            isTimeBased ? Icons.timer : Icons.repeat,
+            widget.isTimeBased ? Icons.timer : Icons.repeat,
             size: 48,
-            color: Colors.deepPurple,
+            color: _phaseColor,
           ),
           const SizedBox(height: 16),
           Text(
-            isTimeBased
-                ? 'Hold for $exerciseDuration seconds'
-                : 'Complete $repsPerSet repetitions',
+            widget.isTimeBased
+                ? 'Hold for ${widget.exerciseDuration} seconds'
+                : 'Complete ${widget.repsPerSet} repetitions',
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -347,7 +340,7 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
           ),
           const SizedBox(height: 8),
           Text(
-            isTimeBased
+            widget.isTimeBased
                 ? 'Focus on maintaining proper form'
                 : 'Take your time and maintain good form',
             style: TextStyle(
@@ -365,19 +358,19 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.1),
+        color: _colors.primaryBlue.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.blue.withOpacity(0.3),
+          color: _colors.primaryBlue.withOpacity(0.3),
           width: 1,
         ),
       ),
       child: Column(
         children: [
-          const Icon(
+          Icon(
             Icons.spa,
             size: 48,
-            color: Colors.blue,
+            color: _colors.primaryBlue,
           ),
           const SizedBox(height: 16),
           Text(
@@ -391,10 +384,10 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
           const SizedBox(height: 8),
           Text(
             '$remainingRestTime',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 48,
               fontWeight: FontWeight.bold,
-              color: Colors.blue,
+              color: _colors.primaryBlue,
             ),
           ),
           const SizedBox(height: 8),
@@ -439,7 +432,7 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
           ),
           const SizedBox(height: 8),
           Text(
-            'Great work! You completed all $totalSets sets.',
+            'Great work! You completed all ${widget.totalSets} sets.',
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey[600],
@@ -453,7 +446,7 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
                 child: ElevatedButton(
                   onPressed: () {
                     // Continue to next exercise
-                    widget.onExerciseComplete();
+                    widget.onComplete();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
@@ -545,7 +538,7 @@ class _SetsAndRepsTrackerState extends State<SetsAndRepsTracker>
               ),
             ),
             child: Text(
-              completedSets < totalSets - 1
+              completedSets < widget.totalSets - 1
                   ? 'Complete Set'
                   : 'Finish Exercise',
               style: const TextStyle(

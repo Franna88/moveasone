@@ -19,9 +19,9 @@ class MotivationalContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Modern wellness color scheme
-    final Color primaryColor = const Color(0xFF025959); // Deep Teal
-    final Color secondaryColor = const Color(0xFF01B3B3); // Bright Teal
-    final Color accentColor = const Color(0xFF94FBAB); // Mint/Lime
+    final Color primaryColor = const Color(0xFF6699CC); // Cornflower Blue
+    final Color secondaryColor = const Color(0xFF7FB2DE); // Light Blue
+    final Color accentColor = const Color(0xFFA3E1DB); // Pale Turquoise
     final Color subtleColor = const Color(0xFFE5F9E0); // Pale Mint
 
     return GestureDetector(

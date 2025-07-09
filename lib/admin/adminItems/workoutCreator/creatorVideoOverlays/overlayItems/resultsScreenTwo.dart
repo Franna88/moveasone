@@ -5,6 +5,7 @@ import 'package:move_as_one/commonUi/circularCountdown.dart';
 import 'package:move_as_one/userSide/workouts/workoutItems/workoutCreatorVideo.dart/ui/otherTrainersContainer.dart';
 import 'package:move_as_one/admin/adminItems/workoutCreator/creatorVideoOverlays/overlayItems/resultsScreenThree.dart';
 import 'package:move_as_one/commonUi/pauseButtonCon.dart';
+import '../../../../../Services/enhanced_video_service.dart';
 
 class ResultsScreenTwo extends StatefulWidget {
   final String videoUrl;
@@ -24,26 +25,52 @@ class _ResultsScreenTwoState extends State<ResultsScreenTwo> {
   void initState() {
     super.initState();
     if (widget.videoUrl.isNotEmpty) {
-      _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
-        ..addListener(() {
-          if (_controller.value.isInitialized && !_isInitialized) {
-            setState(() {
-              _isInitialized = true;
-              _controller.play();
-              _isPlaying = true;
-            });
-          }
-        })
-        ..initialize().then((_) {
+      _initializeVideo();
+    }
+  }
+
+  Future<void> _initializeVideo() async {
+    try {
+      // Use EnhancedVideoService for robust video loading
+      final videoService = EnhancedVideoService();
+      final result = await videoService.loadVideo(
+        videoUrl: widget.videoUrl,
+        timeout: const Duration(seconds: 30),
+        maxRetries: 3,
+        checkConnectivity: true,
+      );
+
+      if (mounted) {
+        if (result.state == VideoLoadState.loaded &&
+            result.controller != null) {
+          _controller = result.controller!;
+
+          // Add listener for video state changes
+          _controller.addListener(() {
+            if (mounted && _controller.value.isInitialized && !_isInitialized) {
+              setState(() {
+                _isInitialized = true;
+                _controller.play();
+                _isPlaying = true;
+              });
+            }
+          });
+
           setState(() {
             _isInitialized = true;
             _controller.play();
             _isPlaying = true;
           });
-        }).catchError((error) {
-          // Handle any errors during initialization
-          print('Error initializing video player: $error');
-        });
+        } else {
+          print('Error loading video: ${result.errorMessage}');
+          // Handle different error states
+          if (result.state == VideoLoadState.networkError) {
+            print('Network error - video may not be available');
+          }
+        }
+      }
+    } catch (error) {
+      print('Error initializing video player: $error');
     }
   }
 

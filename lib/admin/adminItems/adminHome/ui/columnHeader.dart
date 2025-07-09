@@ -20,7 +20,7 @@ class ColumnHeader extends StatelessWidget {
           fontFamily: 'Inter',
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: color ?? const Color(0xFF6A3EA1),
+          color: color ?? const Color(0xFF6699CC),
           letterSpacing: 0.5,
         ),
       ),

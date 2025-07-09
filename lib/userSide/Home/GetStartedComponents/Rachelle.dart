@@ -19,9 +19,9 @@ class _RachelleState extends State<Rachelle>
   late AnimationController _animationController;
 
   // Modern color scheme - coordinated with main app colors
-  final Color primaryColor = const Color(0xFF025959);
-  final Color secondaryColor = const Color(0xFF01B3B3);
-  final Color accentColor = const Color(0xFF94FBAB);
+  final Color primaryColor = const Color(0xFF6699CC);
+  final Color secondaryColor = const Color(0xFF7FB2DE);
+  final Color accentColor = const Color(0xFFA3E1DB);
 
   @override
   void initState() {

@@ -45,7 +45,10 @@ class _PaymentMainState extends State<PaymentMain> {
                         padding: const EdgeInsets.only(left: 20, top: 20),
                         child: Text(
                           'Payment Method',
-                          style: TextStyle(fontFamily: 'Inter',color: Colors.black, fontSize: 17),
+                          style: TextStyle(
+                              fontFamily: 'Inter',
+                              color: Colors.black,
+                              fontSize: 17),
                         ),
                       ),
                       Padding(
@@ -67,7 +70,10 @@ class _PaymentMainState extends State<PaymentMain> {
                             left: 20, top: 20, bottom: 20),
                         child: Text(
                           'Order Details',
-                          style: TextStyle(fontFamily: 'Inter',color: Colors.black, fontSize: 17),
+                          style: TextStyle(
+                              fontFamily: 'Inter',
+                              color: Colors.black,
+                              fontSize: 17),
                         ),
                       ),
                       GreyDivider(),
@@ -97,18 +103,22 @@ class _PaymentMainState extends State<PaymentMain> {
                       //PAYMENT TIME
                       PaymentTime(paymentTime: '09:30 AM'),
                       GreyDivider(),
-                      EstimatedCost(estimatedCost: '\$ 19.99'),
+                      EstimatedCost(estimatedCost: 'R 199.99'),
                       GreyDivider(),
                     ],
                   ),
                 ),
               ),
               GreyDivider(),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Center(
-                child: BlackButton(buttonText: 'Confirm', onTap: () {
-                  //ADD LOGIC
-                }),
+                child: BlackButton(
+                    buttonText: 'Confirm',
+                    onTap: () {
+                      //ADD LOGIC
+                    }),
               )
             ],
           ),

@@ -66,7 +66,7 @@ class _NotFriendsState extends State<NotFriends> {
   void _showSnackBar(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message),
-      backgroundColor: Colors.teal,
+      backgroundColor: Color(0xFF6699CC),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
@@ -83,7 +83,7 @@ class _NotFriendsState extends State<NotFriends> {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Color(0xFF006261).withOpacity(0.8),
+            color: Color(0xFF6699CC).withOpacity(0.8),
             width: 0.5,
           ),
         ),
@@ -121,12 +121,12 @@ class _NotFriendsState extends State<NotFriends> {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFFFFFFFF),
-              foregroundColor: Color(0xFF006261),
+              foregroundColor: Color(0xFF6699CC),
               padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 1.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
                 side: BorderSide(
-                  color: Color(0xFF006261),
+                  color: Color(0xFF6699CC),
                   width: 1.0,
                 ),
               ),
@@ -137,7 +137,7 @@ class _NotFriendsState extends State<NotFriends> {
                 fontSize: 14,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w300,
-                color: Color(0xFF006261),
+                color: Color(0xFF6699CC),
               ),
             ),
           ),

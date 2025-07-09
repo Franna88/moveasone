@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:move_as_one/Services/UserState.dart';
-import 'package:move_as_one/userSide/LoginSighnUp/Signup/IntroVideoScreen.dart';
-import 'package:move_as_one/Services/debug_service.dart';
+import 'package:move_as_one/services/UserState.dart';
+import 'package:move_as_one/services/debug_service.dart';
 
 class AuthService {
   successProcess(context) {
@@ -18,7 +17,7 @@ class AuthService {
         fontSize: 16.0);
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (BuildContext context) => IntroVideoScreen()),
+      MaterialPageRoute(builder: (BuildContext context) => UserState()),
     );
   }
 

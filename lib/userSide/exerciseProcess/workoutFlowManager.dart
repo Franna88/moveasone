@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:move_as_one/userSide/exerciseProcess/exerciseProcess.dart';
 import 'package:move_as_one/userSide/exerciseProcess/sceenTypes/workoutStartScreen.dart';
+import 'package:move_as_one/commonUi/uiColors.dart';
 
 class WorkoutFlowManager extends StatefulWidget {
   final Map entireExercise;
@@ -37,6 +38,8 @@ class _WorkoutFlowManagerState extends State<WorkoutFlowManager> {
 
   @override
   Widget build(BuildContext context) {
+    final UiColors colors = UiColors();
+
     print(
         'DEBUG: WorkoutFlowManager build - hasStarted: $_hasStarted, isLoading: $_isLoading'); // Debug print
 
@@ -48,25 +51,25 @@ class _WorkoutFlowManagerState extends State<WorkoutFlowManager> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Colors.deepPurple.withOpacity(0.1),
-                Colors.purple.withOpacity(0.05),
+                colors.primaryBlue.withOpacity(0.1),
+                colors.primaryBlue.withOpacity(0.05),
               ],
             ),
           ),
-          child: const Center(
+          child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.deepPurple),
+                  valueColor: AlwaysStoppedAnimation<Color>(colors.primaryBlue),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Text(
                   'Starting your workout...',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
-                    color: Colors.deepPurple,
+                    color: colors.primaryBlue,
                   ),
                 ),
               ],

@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:move_as_one/userSide/Home/GetStarted.dart';
 import 'package:move_as_one/userSide/UserProfile/UserProfile.dart';
 import 'package:move_as_one/userSide/UserVideo/UserVideoAdd.dart';
-import 'package:move_as_one/userSide/UserVideo/UserVideoView.dart';
+
 import 'package:move_as_one/userSide/userProfile/MyCommuity/MyCommnity.dart';
 import 'package:move_as_one/userSide/userProfile/MyCommuity/Other/AllMessagesDisplay.dart';
 import 'dart:ui';
@@ -24,16 +24,16 @@ class _BottomNavBarState extends State<BottomNavBar>
   late List<Widget> _pages; // List of all pages
   late AnimationController _animationController;
 
-  // Modern wellness color scheme
+  // Modern blue color scheme
   final Color primaryColor =
-      const Color(0xFF025959); // Deep Teal - primary brand
-  final Color secondaryColor = const Color(0xFF01B3B3); // Bright Teal - accent
+      const Color(0xFF6699CC); // Cornflower Blue - primary brand
+  final Color secondaryColor = const Color(0xFF7FB2DE); // Light Blue - accent
   final Color accentColor =
-      const Color(0xFF94FBAB); // Mint/Lime - energizing accent
+      const Color(0xFFA3E1DB); // Pale Turquoise - energizing accent
   final Color subtleColor =
-      const Color(0xFFE5F9E0); // Pale Mint - background hint
+      const Color(0xFFE3F2FD); // Ice Blue - background hint
   final Color backgroundColor =
-      const Color(0xFFF8FFFA); // Off-white with hint of mint
+      const Color(0xFFF8FBFF); // Off-white with hint of blue
 
   @override
   void initState() {
@@ -49,18 +49,13 @@ class _BottomNavBarState extends State<BottomNavBar>
     );
     _animationController.forward();
 
-    // List of all pages including hidden ones
+    // List of all pages
     _pages = [
       GetStarted(),
-      UserAddVideo(onNavigateToMyVideos: () {
-        _onDirectItemTapped(5); // Navigate directly to UserVideoView (index 5)
-      }),
+      UserAddVideo(),
       AllMessagesDisplay(),
       MyCommunity(),
       UserProfile(),
-      Uservideoview(onNavigateToNewVideos: () {
-        _onDirectItemTapped(1); // Navigate back to UserAddVideo (index 1)
-      }),
     ];
   }
 
@@ -70,7 +65,7 @@ class _BottomNavBarState extends State<BottomNavBar>
     super.dispose();
   }
 
-  // Method for handling direct navigation to hidden pages (UserVideoView)
+  // Method for handling direct navigation between pages
   void _onDirectItemTapped(int index) {
     if (index >= 0 && index < _pages.length) {
       setState(() {
@@ -194,7 +189,7 @@ class _BottomNavBarState extends State<BottomNavBar>
                       BottomNavigationBarItem(
                         icon: _buildIcon('images/Video.svg', 1),
                         label: '',
-                        tooltip: 'Videos',
+                        tooltip: 'Uploaded Videos',
                       ),
                       BottomNavigationBarItem(
                         icon: Container(

@@ -14,6 +14,10 @@ class VideoImages extends StatefulWidget {
 }
 
 class _VideoImagesState extends State<VideoImages> {
+  bool _isNetworkImage(String imagePath) {
+    return imagePath.startsWith('http://') || imagePath.startsWith('https://');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -23,10 +27,56 @@ class _VideoImagesState extends State<VideoImages> {
         width: MyUtility(context).width / 3.0,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
-          image: DecorationImage(
-            image: AssetImage(widget.image),
-            fit: BoxFit.cover,
-          ),
+          color: Colors.grey[300], // Fallback color
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),
+          child: _isNetworkImage(widget.image)
+              ? Image.network(
+                  widget.image,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey[300],
+                      child: Icon(
+                        Icons.video_library,
+                        size: 40,
+                        color: Colors.grey[600],
+                      ),
+                    );
+                  },
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      color: Colors.grey[300],
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Color(0xFF0085FF),
+                          ),
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
+                        ),
+                      ),
+                    );
+                  },
+                )
+              : Image.asset(
+                  widget.image,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey[300],
+                      child: Icon(
+                        Icons.video_library,
+                        size: 40,
+                        color: Colors.grey[600],
+                      ),
+                    );
+                  },
+                ),
         ),
       ),
     );

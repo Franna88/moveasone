@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'workoutFlowManager.dart';
 import 'enhancedWorkoutFlow.dart' as enhanced;
+import 'package:move_as_one/commonUi/uiColors.dart';
 
 class WorkoutFlowDemo extends StatelessWidget {
   const WorkoutFlowDemo({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final UiColors colors = UiColors();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Enhanced Workout Flow Demo'),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: colors.primaryBlue,
         foregroundColor: Colors.white,
       ),
       body: Padding(
@@ -42,7 +45,7 @@ class WorkoutFlowDemo extends StatelessWidget {
               title: 'Full Workout (All Phases)',
               description: 'Warm-up, Main workout, and Cool-down',
               workout: _createFullWorkout(),
-              color: Colors.deepPurple,
+              color: colors.primaryBlue,
             ),
 
             const SizedBox(height: 16),
@@ -52,7 +55,7 @@ class WorkoutFlowDemo extends StatelessWidget {
               title: 'Main Workout Only',
               description: 'Just the main exercises',
               workout: _createMainWorkoutOnly(),
-              color: Colors.red,
+              color: colors.brown,
             ),
 
             const SizedBox(height: 16),
@@ -62,7 +65,7 @@ class WorkoutFlowDemo extends StatelessWidget {
               title: 'Quick Warm-up',
               description: 'Just warm-up exercises',
               workout: _createWarmupOnly(),
-              color: Colors.orange,
+              color: colors.teal,
             ),
 
             const SizedBox(height: 16),
@@ -76,7 +79,7 @@ class WorkoutFlowDemo extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
+                backgroundColor: colors.lightMoss,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
@@ -148,7 +151,7 @@ class WorkoutFlowDemo extends StatelessWidget {
                       EnhancedWorkoutStarter.startWorkout(context, testWorkout);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      backgroundColor: colors.lightMoss,
                       foregroundColor: Colors.white,
                     ),
                     child: const Text('Test Button Responsiveness'),

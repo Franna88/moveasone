@@ -396,38 +396,27 @@ class _ExerciseProcessState extends State<ExerciseProcess> {
                     "setsAndReps" &&
                 (exerciseBuildList[exerciseIndex]['type'] as String?) != 'rest',
             child: SetsAndRepsTracker(
-              exerciseData: {
-                'name': (exerciseBuildList[exerciseIndex]['name'] as String?) ??
-                    "Exercise",
-                'setTotal':
-                    (exerciseBuildList[exerciseIndex]['totalSets'] as int?) ??
-                        1,
-                'repsTotal':
-                    (exerciseBuildList[exerciseIndex]['repsPerSet'] as int?) ??
-                        1,
-                'timer': (exerciseBuildList[exerciseIndex]['restBetweenSets']
-                        as int?) ??
-                    30,
-                'image':
-                    (exerciseBuildList[exerciseIndex]['image'] as String?) ??
-                        "",
-                'videoUrl': (exerciseBuildList[exerciseIndex]['mediaTypeUrl']
-                        as String?) ??
-                    "",
-                'isTimeBased': (exerciseBuildList[exerciseIndex]['isTimeBased']
-                        as bool?) ??
-                    false,
-                'duration':
-                    (exerciseBuildList[exerciseIndex]['duration'] as int?) ??
-                        30,
-              },
-              onExerciseComplete: () {
+              exerciseName:
+                  (exerciseBuildList[exerciseIndex]['name'] as String?) ??
+                      "Exercise",
+              totalSets:
+                  (exerciseBuildList[exerciseIndex]['totalSets'] as int?) ?? 1,
+              repsPerSet:
+                  (exerciseBuildList[exerciseIndex]['repsPerSet'] as int?) ?? 1,
+              exerciseDuration:
+                  (exerciseBuildList[exerciseIndex]['duration'] as int?) ?? 30,
+              isTimeBased:
+                  (exerciseBuildList[exerciseIndex]['isTimeBased'] as bool?) ??
+                      false,
+              restBetweenSets: (exerciseBuildList[exerciseIndex]
+                      ['restBetweenSets'] as int?) ??
+                  30,
+              workoutType:
+                  (exerciseBuildList[exerciseIndex]['type'] as String?) ??
+                      'workouts',
+              onComplete: () {
                 // When all sets are complete, move to next exercise
                 changePageIndex();
-              },
-              onStatusUpdate: (String status) {
-                // Update workout status - you can use this for feedback to user
-                print('Sets & Reps Status: $status');
               },
             ),
           ),

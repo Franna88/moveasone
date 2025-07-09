@@ -18,7 +18,7 @@ class MembersColumn extends StatefulWidget {
 class _MembersColumnState extends State<MembersColumn>
     with SingleTickerProviderStateMixin {
   // Modern color scheme - perfectly matched to the screenshot
-  final Color primaryColor = const Color(0xFF6A3EA1); // Purple
+  final Color primaryColor = const Color(0xFF6699CC); // Cornflower Blue
   final Color secondaryColor = const Color(0xFF60BFC5); // Teal
   final Color accentColor = const Color(0xFFFF7F5C); // Coral/Orange
   final Color inactiveColor = const Color(0xFFEF5350); // Red for inactive
@@ -29,7 +29,7 @@ class _MembersColumnState extends State<MembersColumn>
   final Color redCardColor = const Color(0xFFEF5350);
   final Color yellowCardColor = const Color(0xFFF7B731);
   final Color blueCardColor = const Color(0xFF60BFC5);
-  final Color purpleButtonColor = const Color(0xFF6A3EA1);
+  final Color purpleButtonColor = const Color(0xFF6699CC);
 
   int _unreadNotifications = 0;
   late AnimationController _animationController;

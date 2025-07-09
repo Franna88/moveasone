@@ -15,7 +15,7 @@ class _MyVideosMainState extends State<MyVideosMain>
   late TabController _tabController;
 
   // Modern color scheme to match motivation section
-  final Color primaryColor = const Color(0xFF6A3EA1); // Purple
+  final Color primaryColor = const Color(0xFF6699CC); // Cornflower Blue
   final Color secondaryColor = const Color(0xFF60BFC5); // Teal
   final Color accentColor = const Color(0xFFFF7F5C); // Coral/Orange
   final Color backgroundColor = const Color(0xFFF7F5FA); // Light purple tint

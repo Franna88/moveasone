@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:move_as_one/Services/auth_services.dart';
-import 'package:move_as_one/userSide/InfoQuiz/Goal/Goal.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/ForgotPassword/ForgotPassword.dart';
+import 'package:move_as_one/userSide/LoginSighnUp/Signup/IntroVideoScreen.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Login/LoginComponents/SvgIconButton.dart';
 import 'package:move_as_one/myutility.dart';
 import 'package:move_as_one/userSide/LoginSighnUp/Signup/SignupComponents/CustomTextField.dart';
@@ -45,7 +45,7 @@ class _SigninState extends State<Signin> {
             height: MyUtility(context).height,
             decoration: BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage('images/new_photos/home_main.jpeg'),
+                  image: AssetImage('images/welcomeImage.jpeg'),
                   alignment: Alignment.center,
                   fit: BoxFit.cover),
             ),
@@ -76,9 +76,9 @@ class _SigninState extends State<Signin> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Welcome back ',
+                              'Welcome back!',
                               style: TextStyle(
-                                fontSize: 34,
+                                fontSize: 38,
                                 fontFamily: 'belight',
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -91,13 +91,15 @@ class _SigninState extends State<Signin> {
                                 ],
                               ),
                             ),
+                            SizedBox(height: 10),
                             Text(
-                              'welcome back!',
+                              'Join a community that moves together',
                               style: TextStyle(
-                                fontSize: 44,
-                                fontFamily: 'belight',
+                                fontFamily: 'italiana',
+                                fontSize: 18.0,
                                 color: Colors.white,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 0.5,
                                 shadows: [
                                   Shadow(
                                     offset: Offset(1.0, 1.0),
@@ -119,7 +121,7 @@ class _SigninState extends State<Signin> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
                       child: Container(
                         width: MyUtility(context).width * 0.9,
                         padding:
@@ -190,7 +192,7 @@ class _SigninState extends State<Signin> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
                         child: Container(
                           width: MyUtility(context).width * 0.9,
                           padding: EdgeInsets.symmetric(
@@ -284,12 +286,13 @@ class _SigninState extends State<Signin> {
                                     onPressed: () {
                                       DebugService().logUserAction('tap_signup',
                                           screen: 'Signin');
-                                      DebugService()
-                                          .logNavigation('Signin', 'Goal');
+                                      DebugService().logNavigation(
+                                          'Signin', 'IntroVideo');
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => const Goal()),
+                                            builder: (context) =>
+                                                const IntroVideoScreen()),
                                       );
                                     },
                                     child: Text(
