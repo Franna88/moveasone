@@ -1,9 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:move_as_one/Services/UserState.dart';
-import 'package:move_as_one/userSide/userProfile/MyCommuity/Other/AllMessagesDisplay.dart';
+import 'package:move_as_one/admin/adminItems/mealPlanRequests/mealPlanRequests.dart';
 import 'package:move_as_one/admin/adminItems/adminHome/ui/adminInboxPage.dart';
-import 'package:move_as_one/admin/adminItems/adminHome/ui/adminMembersList.dart';
 
 class MessagesColumn extends StatefulWidget {
   const MessagesColumn({super.key});
@@ -15,9 +14,7 @@ class MessagesColumn extends StatefulWidget {
 class _MessagesColumnState extends State<MessagesColumn> {
   // Modern color scheme
   final Color primaryColor = const Color(0xFF6A3EA1); // Purple
-  final Color secondaryColor = const Color(0xFF60BFC5); // Teal
   final Color accentColor = const Color(0xFFFF7F5C); // Coral/Orange
-  final Color messageColor = const Color(0xFF3498DB); // Blue for messages
   final Color logoutColor = const Color(0xFF7E8C8D); // Grey for logout
 
   @override
@@ -25,9 +22,9 @@ class _MessagesColumnState extends State<MessagesColumn> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Messages section header
+        // Admin actions section header
         Text(
-          'Messages',
+          'Admin Actions',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -37,16 +34,16 @@ class _MessagesColumnState extends State<MessagesColumn> {
         ),
         const SizedBox(height: 16),
 
-        // Messages buttons
+        // Admin actions
         _buildActionButton(
-          title: 'Inbox',
+          title: 'All Requests',
           icon: Icons.inbox,
-          color: messageColor,
+          color: accentColor,
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const AdminInboxPage(),
+                builder: (context) => const AdminRequestsPage(),
               ),
             );
           },
@@ -54,14 +51,14 @@ class _MessagesColumnState extends State<MessagesColumn> {
         const SizedBox(height: 12),
 
         _buildActionButton(
-          title: 'Message a Member',
-          icon: Icons.chat_bubble_outline,
-          color: messageColor,
+          title: 'Meal Plan Requests',
+          icon: Icons.restaurant,
+          color: accentColor,
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminMembersList(),
+                builder: (context) => const MealPlanRequests(),
               ),
             );
           },

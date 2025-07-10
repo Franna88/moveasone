@@ -34,15 +34,6 @@ class _LastWorkoutState extends State<LastWorkout> {
                       fontWeight: FontWeight.w300,
                     ),
                   ),
-                  Text(
-                    'See more',
-                    style: TextStyle(
-                      color: Color(0xFF006261),
-                      fontSize: 16,
-                      fontFamily: 'BeVietnam',
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
                 ],
               ),
             ),

@@ -7,6 +7,8 @@ import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/Mo
 import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/WatchNotifications.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/managementItems/WatchedMembers.dart';
 import 'package:move_as_one/admin/adminItems/memberManagement/ui/AllMemberList.dart';
+import 'package:move_as_one/admin/adminItems/mealPlanRequests/mealPlanRequests.dart';
+import 'package:move_as_one/admin/adminItems/adminHome/ui/adminInboxPage.dart';
 
 class MembersColumn extends StatefulWidget {
   const MembersColumn({super.key});
@@ -244,15 +246,15 @@ class _MembersColumnState extends State<MembersColumn>
                       _buildPremiumCard(
                         context: context,
                         index: 4,
-                        title: 'Bookings',
-                        icon: Icons.calendar_today_outlined,
+                        title: 'Requests',
+                        icon: Icons.inbox_outlined,
                         color: blueCardColor,
                         onTap: () {
                           _triggerHaptic();
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const BookingsRequested(),
+                              builder: (context) => const AdminRequestsPage(),
                             ),
                           );
                         },
@@ -260,6 +262,22 @@ class _MembersColumnState extends State<MembersColumn>
                       _buildPremiumCard(
                         context: context,
                         index: 5,
+                        title: 'Meal Plans',
+                        icon: Icons.restaurant_outlined,
+                        color: accentColor,
+                        onTap: () {
+                          _triggerHaptic();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MealPlanRequests(),
+                            ),
+                          );
+                        },
+                      ),
+                      _buildPremiumCard(
+                        context: context,
+                        index: 6,
                         title: 'All Members',
                         icon: Icons.people_alt_outlined,
                         color: blueCardColor,

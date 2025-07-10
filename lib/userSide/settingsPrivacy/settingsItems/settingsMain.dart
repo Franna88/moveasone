@@ -88,54 +88,53 @@ class SettingsMain extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () async {
-                              DebugService().logUserAction('tap_logout',
-                                  screen: 'SettingsMain');
-                              DebugService()
-                                  .startPerformanceTimer('logout_process');
+                      child: InkWell(
+                        onTap: () async {
+                          print('Logout row tapped');
+                          DebugService().logUserAction('tap_logout',
+                              screen: 'SettingsMain');
+                          DebugService()
+                              .startPerformanceTimer('logout_process');
 
-                              try {
-                                DebugService().log(
-                                    'Starting logout process', LogLevel.info,
-                                    tag: 'AUTH');
-                                await FirebaseAuth.instance.signOut();
-                                DebugService().log(
-                                    'Firebase signOut successful',
-                                    LogLevel.info,
-                                    tag: 'AUTH');
-                                DebugService()
-                                    .logNavigation('SettingsMain', 'UserState');
+                          try {
+                            DebugService().log(
+                                'Starting logout process', LogLevel.info,
+                                tag: 'AUTH');
+                            await FirebaseAuth.instance.signOut();
+                            DebugService().log(
+                                'Firebase signOut successful', LogLevel.info,
+                                tag: 'AUTH');
+                            DebugService()
+                                .logNavigation('SettingsMain', 'UserState');
 
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const UserState()),
-                                  (route) => false,
-                                );
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const UserState()),
+                              (route) => false,
+                            );
 
-                                DebugService().log(
-                                    'Logout completed successfully',
-                                    LogLevel.info,
-                                    tag: 'AUTH');
-                              } catch (e, stackTrace) {
-                                DebugService().logError(
-                                    'Logout failed', e, stackTrace,
-                                    tag: 'AUTH');
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text('Error logging out: $e')),
-                                );
-                              } finally {
-                                DebugService()
-                                    .endPerformanceTimer('logout_process');
-                              }
-                            },
-                            child: Text(
+                            DebugService().log(
+                                'Logout completed successfully', LogLevel.info,
+                                tag: 'AUTH');
+                          } catch (e, stackTrace) {
+                            DebugService().logError(
+                                'Logout failed', e, stackTrace,
+                                tag: 'AUTH');
+                            print('Error logging out: $e');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error logging out: $e')),
+                            );
+                          } finally {
+                            DebugService()
+                                .endPerformanceTimer('logout_process');
+                          }
+                        },
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
                               'Log Out',
                               style: TextStyle(
                                   fontFamily: 'BeVietnam',
@@ -143,9 +142,9 @@ class SettingsMain extends StatelessWidget {
                                   color: Colors.red,
                                   fontWeight: FontWeight.w400),
                             ),
-                          ),
-                          ArrowRightIcon()
-                        ],
+                            ArrowRightIcon()
+                          ],
+                        ),
                       ),
                     ),
                     Container(

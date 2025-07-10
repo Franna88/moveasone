@@ -500,12 +500,6 @@ class _UserProfileState extends State<UserProfile> {
                           ),
                         ),
                         InkWell(
-                          onTap: () {},
-                          child: SvgPicture.asset(
-                            'images/notification.svg',
-                          ),
-                        ),
-                        InkWell(
                           onTap: () {
                             Navigator.push(
                               context,

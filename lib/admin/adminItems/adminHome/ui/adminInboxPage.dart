@@ -1,137 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:move_as_one/config/admin_config.dart';
-import 'package:move_as_one/services/admin_user_service.dart';
-import 'package:move_as_one/admin/adminItems/bookings/chat/myChat.dart';
 
-class AdminInboxPage extends StatefulWidget {
-  const AdminInboxPage({super.key});
+class AdminRequestsPage extends StatefulWidget {
+  const AdminRequestsPage({super.key});
 
   @override
-  State<AdminInboxPage> createState() => _AdminInboxPageState();
+  State<AdminRequestsPage> createState() => _AdminRequestsPageState();
 }
 
-class _AdminInboxPageState extends State<AdminInboxPage> {
+class _AdminRequestsPageState extends State<AdminRequestsPage> {
   final Color primaryColor = const Color(0xFF6699CC);
   final Color secondaryColor = const Color(0xFF94D8E0);
   final Color accentColor = const Color(0xFFEDCBA4);
-
-  void _runDiagnostics() async {
-    try {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Running diagnostics...'),
-          backgroundColor: primaryColor,
-        ),
-      );
-
-      // Run simplified diagnostic
-      await _runSimpleDiagnostic();
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Diagnostics completed! Check console for details.'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error running diagnostics: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
-  Future<void> _runSimpleDiagnostic() async {
-    final firestore = FirebaseFirestore.instance;
-    final auth = FirebaseAuth.instance;
-
-    print('=== MESSAGING DIAGNOSTIC ===');
-
-    // Check current user
-    final currentUser = auth.currentUser;
-    print('Current User: ${currentUser?.uid} (${currentUser?.email})');
-
-    if (currentUser != null) {
-      // Check current user document
-      final userDoc =
-          await firestore.collection('users').doc(currentUser.uid).get();
-      print('Current User Doc Exists: ${userDoc.exists}');
-
-      if (userDoc.exists) {
-        final data = userDoc.data()!;
-        print('Current User Status: ${data['status']}');
-        print('Current User Name: ${data['name']}');
-        print('Current User UserName: ${data['userName']}');
-        print(
-            'Current User Friends List Length: ${(data['friendsList'] as List?)?.length ?? 0}');
-
-        // Check for admin in friends list
-        final friendsList = data['friendsList'] as List? ?? [];
-        final adminFriend = friendsList.firstWhere(
-          (friend) => friend['id'] == AdminConfig.ADMIN_USER_ID,
-          orElse: () => null,
-        );
-
-        print('Has Admin in Friends List: ${adminFriend != null}');
-        if (adminFriend != null) {
-          print('Messages with Admin: ${adminFriend['messages']?.length ?? 0}');
-          if (adminFriend['messages'] != null &&
-              adminFriend['messages'].isNotEmpty) {
-            print('Last Message: ${adminFriend['messages'].last}');
-          }
-        }
-      }
-    }
-
-    // Check admin user
-    final adminDoc = await firestore
-        .collection('users')
-        .doc(AdminConfig.ADMIN_USER_ID)
-        .get();
-    print('Admin User Exists: ${adminDoc.exists}');
-
-    if (adminDoc.exists) {
-      final adminData = adminDoc.data()!;
-      print('Admin Status: ${adminData['status']}');
-      print('Admin UserName: ${adminData['userName']}');
-      print(
-          'Admin Friends List Length: ${(adminData['friendsList'] as List?)?.length ?? 0}');
-    }
-
-    // Test the query
-    final usersSnapshot = await firestore
-        .collection('users')
-        .where('status', isEqualTo: 'user')
-        .get();
-
-    print('Users with status=user: ${usersSnapshot.docs.length}');
-
-    int messagesFound = 0;
-    for (var doc in usersSnapshot.docs) {
-      final data = doc.data();
-      final friendsList = data['friendsList'] as List? ?? [];
-      final adminFriend = friendsList.firstWhere(
-        (friend) => friend['id'] == AdminConfig.ADMIN_USER_ID,
-        orElse: () => null,
-      );
-
-      if (adminFriend != null && adminFriend['messages'] != null) {
-        final messages = adminFriend['messages'] as List;
-        if (messages.isNotEmpty) {
-          messagesFound++;
-          print(
-              'Found ${messages.length} messages from ${data['name'] ?? data['userName']}');
-        }
-      }
-    }
-
-    print('Total users with messages to admin: $messagesFound');
-    print('=== END DIAGNOSTIC ===');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +20,7 @@ class _AdminInboxPageState extends State<AdminInboxPage> {
       appBar: AppBar(
         backgroundColor: primaryColor,
         title: Text(
-          'Admin Inbox',
+          'Admin Requests',
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -151,13 +31,6 @@ class _AdminInboxPageState extends State<AdminInboxPage> {
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.bug_report, color: Colors.white),
-            onPressed: _runDiagnostics,
-            tooltip: 'Run Diagnostics',
-          ),
-        ],
       ),
       body: DefaultTabController(
         length: 2,
@@ -170,90 +43,22 @@ class _AdminInboxPageState extends State<AdminInboxPage> {
                 labelColor: primaryColor,
                 unselectedLabelColor: Colors.grey,
                 tabs: [
-                  Tab(text: 'Messages'),
                   Tab(text: 'Bookings'),
+                  Tab(text: 'Meal Plans'),
                 ],
               ),
             ),
             Expanded(
               child: TabBarView(
                 children: [
-                  _buildMessagesTab(),
                   _buildBookingsTab(),
+                  _buildMealPlansTab(),
                 ],
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildMessagesTab() {
-    return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: AdminUserService.getAdminMessages(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-            ),
-          );
-        }
-
-        if (snapshot.hasError) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.error_outline, color: Colors.red, size: 48),
-                SizedBox(height: 16),
-                Text('Error loading messages', style: TextStyle(fontSize: 16)),
-                SizedBox(height: 8),
-                Text('Error: ${snapshot.error}',
-                    style: TextStyle(fontSize: 12, color: Colors.red)),
-              ],
-            ),
-          );
-        }
-
-        if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.chat_bubble_outline, color: Colors.grey, size: 48),
-                SizedBox(height: 16),
-                Text('No messages yet', style: TextStyle(fontSize: 16)),
-                SizedBox(height: 8),
-                Text('User messages will appear here',
-                    style: TextStyle(fontSize: 14, color: Colors.grey)),
-              ],
-            ),
-          );
-        }
-
-        final adminMessages = snapshot.data!;
-
-        return ListView.builder(
-          padding: EdgeInsets.all(16),
-          itemCount: adminMessages.length,
-          itemBuilder: (context, index) {
-            final messageData = adminMessages[index];
-            final lastMessage = messageData['lastMessage'];
-
-            return _buildMessageItem(
-              userName: messageData['userName'] ??
-                  messageData['name'] ??
-                  'Unknown User',
-              userEmail: messageData['userEmail'] ?? '',
-              lastMessage: lastMessage['message'] ?? '',
-              timestamp: lastMessage['timestamp'],
-              userId: messageData['userId'] ?? '',
-            );
-          },
-        );
-      },
     );
   }
 
@@ -323,114 +128,79 @@ class _AdminInboxPageState extends State<AdminInboxPage> {
     );
   }
 
-  Widget _buildMessageItem({
-    required String userName,
-    required String userEmail,
-    required String lastMessage,
-    required dynamic timestamp,
-    required String userId,
-  }) {
-    return GestureDetector(
-      onTap: () {
-        // Open chat with the user
-        final chatId = (userId.compareTo(AdminConfig.ADMIN_USER_ID) > 0)
-            ? '${userId}_${AdminConfig.ADMIN_USER_ID}'
-            : '${AdminConfig.ADMIN_USER_ID}_$userId';
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MyChat(
-              userName: userName,
-              userPic: AdminConfig.ADMIN_PROFILE_PIC,
-              userId: userId,
-              chatId: chatId,
+  Widget _buildMealPlansTab() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('mealPlanRequests')
+          .where('status', isEqualTo: 'pending')
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
             ),
-          ),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error_outline, color: Colors.red, size: 48),
+                SizedBox(height: 16),
+                Text('Error loading meal plans',
+                    style: TextStyle(fontSize: 16)),
+              ],
+            ),
+          );
+        }
+
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.restaurant, color: Colors.grey, size: 48),
+                SizedBox(height: 16),
+                Text('No pending meal plans', style: TextStyle(fontSize: 16)),
+                SizedBox(height: 8),
+                Text('New meal plan requests will appear here',
+                    style: TextStyle(fontSize: 14, color: Colors.grey)),
+              ],
+            ),
+          );
+        }
+
+        final mealPlans = snapshot.data!.docs;
+
+        return ListView.builder(
+          padding: EdgeInsets.all(16),
+          itemCount: mealPlans.length,
+          itemBuilder: (context, index) {
+            final mealPlan = mealPlans[index];
+            final data = mealPlan.data() as Map<String, dynamic>;
+
+            return _buildMealPlanItem(
+              userName: data['name'] ?? 'Unknown User',
+              email: data['email'] ?? '',
+              phone: data['phone'] ?? '',
+              height: data['height'] ?? '',
+              weight: data['weight'] ?? '',
+              goal: data['goal'] ?? '',
+              activityLevel: data['activityLevel'] ?? '',
+              dietType: data['dietType'] ?? '',
+              mealCount: data['mealCount'] ?? '',
+              budget: data['budget'] ?? '',
+              allergies: data['allergies'] ?? '',
+              notes: data['notes'] ?? '',
+              createdAt: data['createdAt'],
+              documentId: mealPlan.id,
+            );
+          },
         );
       },
-      child: Container(
-        margin: EdgeInsets.only(bottom: 12),
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 4,
-              offset: Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CircleAvatar(
-              backgroundColor: primaryColor,
-              radius: 24,
-              child: Text(
-                userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        userName,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        _formatTimestamp(timestamp),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    userEmail,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    lastMessage,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.black87,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: Colors.grey,
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -535,6 +305,282 @@ class _AdminInboxPageState extends State<AdminInboxPage> {
         ],
       ),
     );
+  }
+
+  Widget _buildMealPlanItem({
+    required String userName,
+    required String email,
+    required String phone,
+    required String height,
+    required String weight,
+    required String goal,
+    required String activityLevel,
+    required String dietType,
+    required String mealCount,
+    required String budget,
+    required String allergies,
+    required String notes,
+    required dynamic createdAt,
+    required String documentId,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        _showMealPlanDetails(
+          userName: userName,
+          email: email,
+          phone: phone,
+          height: height,
+          weight: weight,
+          goal: goal,
+          activityLevel: activityLevel,
+          dietType: dietType,
+          mealCount: mealCount,
+          budget: budget,
+          allergies: allergies,
+          notes: notes,
+          createdAt: createdAt,
+          documentId: documentId,
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 12),
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              backgroundColor: accentColor,
+              radius: 24,
+              child: Icon(
+                Icons.restaurant,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        userName,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.green[100],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          'Pending',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.green[700],
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(Icons.email, size: 16, color: Colors.grey),
+                      SizedBox(width: 4),
+                      Text(
+                        email,
+                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(Icons.fitness_center, size: 16, color: Colors.grey),
+                      SizedBox(width: 4),
+                      Text(
+                        '$goal • $dietType',
+                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(Icons.attach_money, size: 16, color: Colors.grey),
+                      SizedBox(width: 4),
+                      Text(
+                        budget,
+                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Requested ${_formatTimestamp(createdAt)}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Colors.grey,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showMealPlanDetails({
+    required String userName,
+    required String email,
+    required String phone,
+    required String height,
+    required String weight,
+    required String goal,
+    required String activityLevel,
+    required String dietType,
+    required String mealCount,
+    required String budget,
+    required String allergies,
+    required String notes,
+    required dynamic createdAt,
+    required String documentId,
+  }) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: [
+            Icon(Icons.restaurant, color: primaryColor),
+            SizedBox(width: 8),
+            Text(
+              'Meal Plan Request',
+              style: TextStyle(
+                color: primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildDetailRow('Name', userName),
+              _buildDetailRow('Email', email),
+              _buildDetailRow('Phone', phone),
+              _buildDetailRow('Height', height),
+              _buildDetailRow('Weight', weight),
+              _buildDetailRow('Goal', goal),
+              _buildDetailRow('Activity Level', activityLevel),
+              _buildDetailRow('Diet Type', dietType),
+              _buildDetailRow('Meal Count', mealCount),
+              _buildDetailRow('Budget', budget),
+              if (allergies.isNotEmpty) _buildDetailRow('Allergies', allergies),
+              if (notes.isNotEmpty) _buildDetailRow('Notes', notes),
+              _buildDetailRow('Requested', _formatTimestamp(createdAt)),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Close'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _updateMealPlanStatus(documentId, 'approved');
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryColor,
+              foregroundColor: Colors.white,
+            ),
+            child: Text('Approve'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              '$label:',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[700],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(color: Colors.black87),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _updateMealPlanStatus(String documentId, String status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('mealPlanRequests')
+          .doc(documentId)
+          .update({'status': status});
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Meal plan request $status successfully'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error updating meal plan request: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   String _formatTimestamp(dynamic timestamp) {
